@@ -11,7 +11,7 @@ test('new user can register without choosing role and becomes unified member', f
         'password_confirmation' => 'password123',
     ]);
 
-    $response->assertRedirect('/customer/dashboard');
+    $response->assertRedirect('/dashboard');
 
     $this->assertDatabaseHas('users', [
         'email' => 'budi@example.com',
@@ -32,9 +32,13 @@ test('unified member can access both customer booking dashboard and student lms 
         'status' => 'active',
     ]);
 
+    // Can access unified dashboard
+    $this->actingAs($user)->get('/dashboard')->assertStatus(200);
+
     // Can access customer dashboard & booking
     $this->actingAs($user)->get('/customer/dashboard')->assertStatus(200);
     $this->actingAs($user)->get('/customer/bookings')->assertStatus(200);
+    $this->actingAs($user)->get('/reservasi')->assertStatus(200);
 
     // Can also access student lms dashboard
     $this->actingAs($user)->get('/student/dashboard')->assertStatus(200);

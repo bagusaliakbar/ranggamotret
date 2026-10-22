@@ -123,21 +123,11 @@ class AuthController extends Controller
 
     public function getDashboardRouteByRole()
     {
-        $role = Auth::user() ? Auth::user()->role : 'customer';
-        switch ($role) {
-            case 'admin':
-                return route('admin.dashboard');
-            case 'instruktur':
-                return route('instructor.dashboard');
-            case 'customer':
-            case 'peserta':
-            default:
-                return route('customer.dashboard');
-        }
+        return route('dashboard');
     }
 
     private function redirectBasedOnRole()
     {
-        return redirect($this->getDashboardRouteByRole());
+        return redirect()->route('dashboard');
     }
 }

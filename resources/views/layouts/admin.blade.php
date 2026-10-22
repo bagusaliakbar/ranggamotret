@@ -131,7 +131,7 @@
                     <div class="space-y-1">
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Utama</div>
 
-                        <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chart-line-up text-base w-5"></i>
                             <span>Dashboard</span>
                         </a>
@@ -204,7 +204,7 @@
                     <div class="space-y-1">
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Instruktur Portal</div>
 
-                        <a href="{{ route('instructor.dashboard') }}" class="sidebar-link {{ request()->routeIs('instructor.dashboard') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('instructor.dashboard') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chalkboard-teacher text-base w-5"></i>
                             <span>Panel Kursus Saya</span>
                         </a>
@@ -225,7 +225,7 @@
                     <div class="space-y-1">
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Utama</div>
 
-                        <a href="{{ route('customer.dashboard') }}" class="sidebar-link {{ request()->routeIs('customer.dashboard') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('customer.dashboard') ? 'active' : '' }}">
                             <i class="ph-duotone ph-gauge text-base w-5"></i>
                             <span>Dashboard Saya</span>
                         </a>

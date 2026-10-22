@@ -155,16 +155,11 @@
                                     <p class="text-slate-500 text-[10px] capitalize">{{ Auth::user()->role }}</p>
                                 </div>
 
-                                @if(Auth::user()->isAdmin())
-                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
-                                        <i class="ph-duotone ph-chart-line-up mr-2 text-slate-700 text-sm"></i> Admin Dashboard
-                                    </a>
-                                @endif
+                                <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
+                                    <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard Terpadu
+                                </a>
 
                                 @if(Auth::user()->isMember())
-                                    <a href="{{ route('customer.dashboard') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="ph-duotone ph-gauge mr-2 text-slate-500 text-sm"></i> Dashboard Member
-                                    </a>
                                     <a href="{{ route('customer.bookings.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
                                         <i class="ph-duotone ph-camera mr-2 text-slate-500 text-sm"></i> Pesanan & Sesi Foto
                                     </a>
@@ -177,8 +172,8 @@
                                 @endif
 
                                 @if(Auth::user()->isInstruktur())
-                                    <a href="{{ route('instructor.dashboard') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="ph-duotone ph-chalkboard-teacher mr-2 text-slate-500 text-sm"></i> Panel Instruktur
+                                    <a href="{{ route('instructor.assignments.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
+                                        <i class="ph-duotone ph-pencil-simple-line mr-2 text-slate-500 text-sm"></i> Penilaian Tugas Siswa
                                     </a>
                                 @endif
 
