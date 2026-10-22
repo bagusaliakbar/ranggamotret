@@ -142,6 +142,10 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::get('/student/courses', [KursusController::class, 'studentIndex'])->name('student.courses');
     Route::get('/customer/courses', [KursusController::class, 'studentIndex'])->name('customer.courses.index');
 
+    // Riwayat Reservasi Kursus (Boundary ICONIX: reservasi_kursus)
+    Route::get('/customer/reservasi-kursus', [KursusController::class, 'customerCourseReservations'])->name('customer.courses.reservations');
+    Route::get('/reservasi-kursus', [KursusController::class, 'customerCourseReservations'])->name('reservasi.kursus.index');
+
     Route::get('/student/courses/{kursusId}/learn', [KursusController::class, 'learn'])->name('student.learn');
     Route::post('/student/materi/{materiId}/complete', [MateriController::class, 'complete'])->name('student.materi.complete');
     Route::post('/student/courses/{kursusId}/issue-certificate', [KursusController::class, 'issueCertificate'])->name('student.certificate.issue');

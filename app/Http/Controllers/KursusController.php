@@ -16,6 +16,7 @@ use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\Notifikasi;
 use App\Models\User;
+use App\Models\Pembayaran;
 use Carbon\Carbon;
 
 /**
@@ -89,6 +90,40 @@ class KursusController extends Controller
             'completedCourses',
             'inProgressCourses',
             'totalCertificates'
+        ));
+    }
+
+    /**
+     * Menampilkan riwayat pemesanan / reservasi kursus oleh pelanggan
+     */
+    public function customerCourseReservations(Request $request)
+    {
+        $user = Auth::user();
+
+        // Data enrollment kursus beserta pembayaran & invoice
+        $enrollments = Enrollment::where('user_id', $user->id)
+            ->with(['kursus.instruktur', 'pembayaran.invoice', 'sertifikat'])
+            ->latest()
+            ->get();
+
+        // Data transaksi pembayaran kursus
+        $coursePayments = Pembayaran::where('user_id', $user->id)
+            ->whereNotNull('kursus_id')
+            ->with(['kursus.instruktur', 'invoice'])
+            ->latest()
+            ->get();
+
+        $totalReservasi = $enrollments->count() > 0 ? $enrollments->count() : $coursePayments->count();
+        $totalInvestasi = $coursePayments->where('status', 'Dibayar')->sum('jumlah');
+        if ($totalInvestasi == 0 && $enrollments->count() > 0) {
+            $totalInvestasi = $enrollments->sum(fn($e) => $e->kursus->harga ?? 0);
+        }
+
+        return view('kursus.reservasi', compact(
+            'enrollments',
+            'coursePayments',
+            'totalReservasi',
+            'totalInvestasi'
         ));
     }
 

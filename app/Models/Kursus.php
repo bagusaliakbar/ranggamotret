@@ -124,6 +124,12 @@ class Enrollment extends Model
             ->where('user_id', $this->user_id);
     }
 
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'kursus_id', 'kursus_id')
+            ->where('user_id', $this->user_id);
+    }
+
     public function getProgressPersenAttribute(): int
     {
         if ($this->status === 'selesai' || $this->sertifikat()->exists()) {

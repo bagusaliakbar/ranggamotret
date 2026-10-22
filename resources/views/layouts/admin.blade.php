@@ -224,19 +224,28 @@
                             <span>Riwayat Reservasi Fotografi</span>
                         </a>
 
+                        <!-- 3. Menu Kursus (Kelas & Materi Belajar yang Diikuti) -->
+                        <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') || request()->routeIs('student.courses') || request()->routeIs('customer.courses.index') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
+                            <span>Kursus</span>
+                        </a>
+
+                        <!-- 4. Menu Riwayat Reservasi Kursus (Riwayat Pemesanan Kursus) -->
+                        <a href="{{ route('customer.courses.reservations') }}" class="sidebar-link {{ request()->routeIs('customer.courses.reservations') || request()->routeIs('reservasi.kursus.*') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-receipt text-base w-5"></i>
+                            <span>Riwayat Reservasi Kursus</span>
+                        </a>
+
+                        <!-- 5. Menu Riwayat Konsultasi -->
                         <a href="{{ route('customer.consultations.index') }}" class="sidebar-link {{ request()->routeIs('customer.consultations.*') || request()->routeIs('konsultasi.riwayat') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chats-circle text-base w-5"></i>
                             <span>Riwayat Konsultasi</span>
                         </a>
 
+                        <!-- 6. Menu Riwayat Pembayaran -->
                         <a href="{{ route('payments.index') }}" class="sidebar-link {{ request()->routeIs('payments.*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-receipt text-base w-5"></i>
+                            <i class="ph-duotone ph-wallet text-base w-5"></i>
                             <span>Riwayat Pembayaran</span>
-                        </a>
-
-                        <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') || request()->routeIs('student.courses') || request()->routeIs('customer.courses.*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
-                            <span>Kursus</span>
                         </a>
                     </div>
                     <div class="space-y-1">
