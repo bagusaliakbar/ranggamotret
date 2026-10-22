@@ -33,55 +33,6 @@
             </a>
         </div>
     </div>
-
-    <!-- Upcoming Session Spotlight Card -->
-    @if($upcomingBooking)
-        <div class="clean-card p-6 sm:p-7 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl relative overflow-hidden">
-            <div class="absolute -right-12 -top-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-                <div class="space-y-2 max-w-2xl">
-                    <div class="flex items-center gap-2">
-                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30">
-                            <i class="ph-duotone ph-lightning mr-1"></i> Sesi Pemotretan Terdekat
-                        </span>
-                        <span class="font-mono text-slate-400 text-[11px]">{{ $upcomingBooking->nomor_booking }}</span>
-                    </div>
-
-                    <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
-                        {{ $upcomingBooking->layanan->nama }} — Paket {{ $upcomingBooking->paket->nama_paket }}
-                    </h2>
-
-                    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-300 font-medium pt-1">
-                        <span class="flex items-center gap-1.5">
-                            <i class="ph-duotone ph-calendar-blank text-emerald-400 text-sm"></i>
-                            <span>{{ date('d F Y', strtotime($upcomingBooking->tanggal)) }}</span>
-                        </span>
-                        <span class="flex items-center gap-1.5">
-                            <i class="ph-duotone ph-clock text-emerald-400 text-sm"></i>
-                            <span>{{ substr($upcomingBooking->waktu, 0, 5) }} WIB</span>
-                        </span>
-                        <span class="flex items-center gap-1.5">
-                            <i class="ph-duotone ph-map-pin text-rose-400 text-sm"></i>
-                            <span class="truncate max-w-xs">{{ $upcomingBooking->lokasi }}</span>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 shrink-0">
-                    <a href="{{ route('customer.bookings.show', $upcomingBooking->id) }}" class="btn-dark bg-white hover:bg-slate-100 text-slate-900 px-5 py-3 rounded-2xl text-xs font-black shadow-lg flex items-center gap-2 transition-transform active:scale-95">
-                        <span>Lihat Detail Sesi</span> &rarr;
-                    </a>
-                    @if($upcomingBooking->status === 'Menunggu Pembayaran' || !$upcomingBooking->is_paid)
-                        <a href="{{ route('payments.create', ['booking_id' => $upcomingBooking->id]) }}" class="px-4 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-md flex items-center gap-1.5 transition-transform active:scale-95">
-                            <i class="ph-duotone ph-receipt text-sm"></i> Bayar Sesi
-                        </a>
-                    @endif
-                </div>
-            </div>
-        </div>
-    @endif
-
     <!-- Visual 5-Step Booking Stepper Tracker for Latest Booking -->
     @if($latestBooking)
         @php
