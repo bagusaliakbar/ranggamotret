@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Kalender Jadwal Pemotretan — RanggaMotret.id')
+@section('title', 'Kelola Jadwal Pemotretan — RanggaMotret.id')
 
 @push('styles')
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
@@ -13,10 +13,10 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <span class="text-slate-700">Kalender Jadwal</span>
+                <span class="text-slate-700">Kelola Jadwal</span>
             </div>
-            <h1 class="text-3xl font-extrabold text-slate-900">Kalender Jadwal Pemotretan</h1>
-            <p class="text-xs text-slate-600 font-medium">Jadwal sesi foto terkonfirmasi dan ketersediaan slot studio.</p>
+            <h1 class="text-3xl font-extrabold text-slate-900">Kelola Jadwal Pemotretan</h1>
+            <p class="text-xs text-slate-600 font-medium">Kalender jadwal sesi foto terkonfirmasi dan ketersediaan slot studio.</p>
         </div>
         <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md flex items-center gap-1.5">
             <i class="ph-duotone ph-plus"></i> Reservasi Pemotretan

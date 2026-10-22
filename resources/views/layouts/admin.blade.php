@@ -194,7 +194,7 @@
 
                         <a href="{{ route('calendar') }}" class="sidebar-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
                             <i class="ph-duotone ph-calendar-blank text-base w-5"></i>
-                            <span>Kalender Sesi Foto</span>
+                            <span>Kelola Jadwal</span>
                         </a>
                     </div>
 
