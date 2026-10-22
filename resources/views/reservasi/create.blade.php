@@ -359,7 +359,7 @@
                         class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2"
                         :class="isPastTime(waktu) ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none' : 'btn-dark shadow-slate-900/20 hover:scale-[1.02] active:scale-95'">
                         <i class="ph-duotone ph-lock-key" x-show="!isPastTime(waktu)"></i>
-                        <span x-text="isPastTime(waktu) ? 'Pilih Jam Sesi yang Belum Terlewat' : 'Kirim Reservasi Pemotretan &rarr;'"></span>
+                        <span x-text="isPastTime(waktu) ? 'Pilih Jam Sesi yang Belum Terlewat' : 'Buat Reservasi Fotografi'"></span>
                     </button>
 
                     <!-- Trust Guarantees -->
