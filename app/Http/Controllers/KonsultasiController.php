@@ -5,28 +5,36 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Konsultasi;
-use App\Models\Layanan;
 use App\Models\Notifikasi;
 
 /**
- * Controller Layanan Konsultasi Fotografer
+ * Controller Layanan Konsultasi Konsep Fotografi (ICONIX Robustness: KonsultasiController)
  * 
- * Merepresentasikan Control Object 'KonsultasiController' pada Robustness Diagram.
- * Terhubung dengan boundary 'konsultasi' dan entity 'Konsultasi'.
+ * Bertanggung jawab atas:
+ * - Pengajuan konsultasi konsep foto oleh calon klien/member
+ * - Manajemen dan pemberian tanggapan resmi oleh fotografer/Admin
  */
-class KonsultasiController extends ConsultationController
+class KonsultasiController extends Controller
 {
     /**
-     * Menampilkan form konsultasi konsep foto
+     * Menampilkan halaman konsultasi publik
      */
     public function index()
     {
-        $layananList = Layanan::where('status', 'aktif')->pluck('nama');
-        return view('public.consultation', compact('layananList'));
+        $layananList = \App\Models\Layanan::where('status', 'aktif')->pluck('nama');
+        if ($layananList->isEmpty()) {
+            $layananList = collect(['Wedding & Prewedding', 'Wisuda / Graduation', 'Studio Portrait & Group', 'Event & Gathering', 'Produk & Komersial']);
+        }
+
+        $konsultasiList = Auth::check()
+            ? Konsultasi::where('user_id', Auth::id())->latest()->get()
+            : collect([]);
+
+        return view('public.consultation', compact('konsultasiList', 'layananList'));
     }
 
     /**
-     * Menyimpan formulir konsultasi dari calon klien
+     * Mengirim pesan konsultasi baru
      */
     public function store(Request $request)
     {
@@ -34,9 +42,7 @@ class KonsultasiController extends ConsultationController
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'no_hp' => 'required|string|max:20',
-            'jenis_layanan' => 'required|string',
-            'estimasi_tanggal' => 'nullable|date',
-            'budget' => 'nullable|string',
+            'jenis_layanan' => 'required|string|max:100',
             'pesan' => 'required|string',
         ]);
 
@@ -46,20 +52,52 @@ class KonsultasiController extends ConsultationController
             'email' => $validated['email'],
             'no_hp' => $validated['no_hp'],
             'jenis_layanan' => $validated['jenis_layanan'],
-            'estimasi_tanggal' => $validated['estimasi_tanggal'] ?? null,
-            'budget' => $validated['budget'] ?? null,
             'pesan' => $validated['pesan'],
             'status' => 'pending',
         ]);
 
-        // Kirim notifikasi ke Admin
         Notifikasi::create([
             'user_id' => 1,
-            'judul' => 'Konsultasi Klien Baru',
-            'pesan' => 'Pertanyaan baru dari ' . $validated['nama'] . ' untuk layanan ' . $validated['jenis_layanan'],
+            'judul' => 'Konsultasi Baru Masuk',
+            'pesan' => 'Konsultasi konsep foto dari ' . $konsultasi->nama . ' (' . $konsultasi->jenis_layanan . ').',
             'link' => '/admin/consultations',
         ]);
 
-        return back()->with('success', 'Pesan konsultasi Anda telah berhasil dikirim! Tim kami akan segera menghubungi via WhatsApp/Email.');
+        return back()->with('success', 'Pesan konsultasi Anda telah dikirim! Tim RanggaMotret akan segera menghubungi Anda.');
+    }
+
+    /**
+     * Daftar seluruh konsultasi di panel Admin
+     */
+    public function adminIndex()
+    {
+        $consultations = Konsultasi::latest()->paginate(15);
+        return view('admin.consultations.index', compact('consultations'));
+    }
+
+    /**
+     * Admin memberikan balasan konsultasi
+     */
+    public function adminReply(Request $request, $id)
+    {
+        $request->validate([
+            'tanggapan_admin' => 'required|string',
+        ]);
+
+        $konsultasi = Konsultasi::findOrFail($id);
+        $konsultasi->tanggapan_admin = $request->tanggapan_admin;
+        $konsultasi->status = 'replied';
+        $konsultasi->save();
+
+        if ($konsultasi->user_id) {
+            Notifikasi::create([
+                'user_id' => $konsultasi->user_id,
+                'judul' => 'Tanggapan Konsultasi RanggaMotret',
+                'pesan' => 'Konsultasi Anda mengenai layanan ' . $konsultasi->jenis_layanan . ' telah ditanggapi oleh admin.',
+                'link' => '/customer/dashboard',
+            ]);
+        }
+
+        return back()->with('success', 'Tanggapan konsultasi berhasil dikirim.');
     }
 }

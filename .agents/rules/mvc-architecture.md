@@ -35,17 +35,27 @@ Dokumen arsitektur ini mendefinisikan standar pemetaan **Model-View-Controller (
 | `pembayaran` | `PembayaranController` | `Pembayaran`, `Invoice` | `pembayarans`, `invoices` | Checkout Midtrans Snap, transfer manual, & verifikasi |
 | `laporan` | `LaporanController` | `Reservasi`, `Pembayaran`, `User` | `booking`, `pembayarans` | Laporan keuangan, sesi foto, & progres akademi |
 
+## 3. Konsolidasi & Jembatan Kompatibilitas (Bridge Controllers)
+
+Untuk menjaga kebersihan arsitektur MVC sekaligus memastikan kode lama/referensi tidak mengalami *breaking change*:
+- **Primary Canonical Controllers (Mandatori untuk Pengembangan Baru):**
+  - Seluruh logika bisnis inti diimplementasikan 100% pada Controller Utama: `AuthController`, `ProfileController`, `DashboardController`, `KatalogController`, `KursusController`, `MateriController`, `JadwalController`, `ReservasiController`, `KonsultasiController`, `PortofolioController`, `PembayaranController`, `LaporanController`, dan `UserController`.
+- **Bridge Controllers (Inheritance Wrappers):**
+  - Berkas lama seperti `BookingController`, `CourseController`, `PaymentController`, `ReportController`, `ConsultationController`, `AdminDashboardController`, `AssignmentController`, `QuizController`, `LayananController`, `KategoriLayananController`, `ProofingController`, dan `TestimonialController` mewarisi (*extends*) Controller Utama dengan anotasi `@deprecated`.
+  - Hal ini menjamin bahwa setiap dependensi lama tetap berfungsi secara mulus sementara semua route di `routes/web.php` diarahkan langsung ke Controller Utama.
+
 ---
 
-## 3. Pedoman Pengembangan Selanjutnya
+## 4. Pedoman Pengembangan Selanjutnya
 
 Setiap kali menambahkan modul, fitur, atau perbaikan baru:
 1. **Controller Baru:**
-   - Tempatkan di `app/Http/Controllers/`.
-   - Gunakan nama Controller sesuai domain bisnis pada tabel di atas.
+   - Gunakan nama Controller kanonikal sesuai domain bisnis pada tabel di atas.
+   - Hindari membuat Controller baru dengan nama bahasa Inggris atau nama parsial yang redundant.
 2. **Model Baru:**
    - Gunakan Model yang sudah terdefinisi. Jika memerlukan perluasan, inherit dari entitas inti.
 3. **Route:**
    - Cantumkan route canonical sesuai nama modul (misal: `/katalog`, `/kursus`, `/reservasi`, `/pembayaran`, `/dashboard`).
 4. **View:**
    - Letakkan template blade dalam folder yang mencerminkan nama boundary di atas.
+

@@ -16,16 +16,10 @@ use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\LaporanController;
 
-// Existing Specialized Controllers
+// Specialized Utility Controllers
 use App\Http\Controllers\PublicController;
-use App\Http\Controllers\ProofingController;
-use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\QuizController;
-use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\LayananController;
-use App\Http\Controllers\KategoriLayananController;
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,10 +121,10 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::post('/reservasi', [ReservasiController::class, 'store'])->name('reservasi.store');
     Route::get('/reservasi/{id}', [ReservasiController::class, 'customerShow'])->name('reservasi.show');
 
-    // Proofing Studio
-    Route::get('/customer/proofing/{bookingId}', [ProofingController::class, 'customerShow'])->name('customer.proofing.show');
-    Route::post('/customer/proofing/{id}/toggle', [ProofingController::class, 'toggleSelect'])->name('customer.proofing.toggle');
-    Route::post('/customer/testimonials', [TestimonialController::class, 'store'])->name('customer.testimonials.store');
+    // Proofing Studio & Testimoni
+    Route::get('/customer/proofing/{bookingId}', [ReservasiController::class, 'customerProofing'])->name('customer.proofing.show');
+    Route::post('/customer/proofing/{id}/toggle', [ReservasiController::class, 'toggleProofingSelection'])->name('customer.proofing.toggle');
+    Route::post('/customer/testimonials', [ReservasiController::class, 'storeTestimonial'])->name('customer.testimonials.store');
 });
 
 // ==========================================
@@ -143,7 +137,7 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::get('/student/certificates/{id}', [KursusController::class, 'showCertificate'])->name('student.certificate.show');
 
     Route::post('/student/tugas/{tugasId}/submit', [MateriController::class, 'submitTugas'])->name('student.tugas.submit');
-    Route::get('/student/quiz/{quizId}', [QuizController::class, 'show'])->name('student.quiz.show');
+    Route::get('/student/quiz/{quizId}', [MateriController::class, 'showQuiz'])->name('student.quiz.show');
     Route::post('/student/quiz/{quizId}/submit', [MateriController::class, 'submitQuiz'])->name('student.quiz.submit');
 });
 
@@ -151,8 +145,8 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
 // 6. INSTRUKTUR ROUTES (Penilaian Tugas Siswa)
 // ==========================================
 Route::middleware(['auth', 'role:instruktur,admin'])->group(function () {
-    Route::get('/instructor/assignments', [AssignmentController::class, 'instructorIndex'])->name('instructor.assignments.index');
-    Route::post('/instructor/assignments/{id}/grade', [AssignmentController::class, 'grade'])->name('instructor.assignments.grade');
+    Route::get('/instructor/assignments', [MateriController::class, 'instructorAssignmentsIndex'])->name('instructor.assignments.index');
+    Route::post('/instructor/assignments/{id}/grade', [MateriController::class, 'gradeAssignment'])->name('instructor.assignments.grade');
 });
 
 // ==========================================
@@ -162,23 +156,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Manajemen Katalog Layanan & Paket
-    Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
-    Route::post('/layanan', [LayananController::class, 'store'])->name('layanan.store');
-    Route::put('/layanan/{id}', [LayananController::class, 'update'])->name('layanan.update');
-    Route::delete('/layanan/{id}', [LayananController::class, 'destroy'])->name('layanan.destroy');
-    Route::post('/layanan/{id}/toggle-status', [LayananController::class, 'toggleStatus'])->name('layanan.toggle-status');
+    Route::get('/layanan', [KatalogController::class, 'adminIndex'])->name('layanan.index');
+    Route::post('/layanan', [KatalogController::class, 'store'])->name('layanan.store');
+    Route::put('/layanan/{id}', [KatalogController::class, 'update'])->name('layanan.update');
+    Route::delete('/layanan/{id}', [KatalogController::class, 'destroy'])->name('layanan.destroy');
+    Route::post('/layanan/{id}/toggle-status', [KatalogController::class, 'toggleStatus'])->name('layanan.toggle-status');
 
-    Route::post('/layanan/{layananId}/paket', [LayananController::class, 'storePaket'])->name('layanan.paket.store');
-    Route::put('/paket/{id}', [LayananController::class, 'updatePaket'])->name('layanan.paket.update');
-    Route::delete('/paket/{id}', [LayananController::class, 'destroyPaket'])->name('layanan.paket.destroy');
-    Route::post('/paket/{id}/toggle-status', [LayananController::class, 'togglePaketStatus'])->name('layanan.paket.toggle-status');
+    Route::post('/layanan/{layananId}/paket', [KatalogController::class, 'storePaket'])->name('layanan.paket.store');
+    Route::put('/paket/{id}', [KatalogController::class, 'updatePaket'])->name('layanan.paket.update');
+    Route::delete('/paket/{id}', [KatalogController::class, 'destroyPaket'])->name('layanan.paket.destroy');
+    Route::post('/paket/{id}/toggle-status', [KatalogController::class, 'togglePaketStatus'])->name('layanan.paket.toggle-status');
 
     // Kategori Layanan
-    Route::get('/kategori-layanan', [KategoriLayananController::class, 'index'])->name('kategori-layanan.index');
-    Route::post('/kategori-layanan', [KategoriLayananController::class, 'store'])->name('kategori-layanan.store');
-    Route::put('/kategori-layanan/{id}', [KategoriLayananController::class, 'update'])->name('kategori-layanan.update');
-    Route::delete('/kategori-layanan/{id}', [KategoriLayananController::class, 'destroy'])->name('kategori-layanan.destroy');
-    Route::post('/kategori-layanan/{id}/toggle-status', [KategoriLayananController::class, 'toggleStatus'])->name('kategori-layanan.toggle-status');
+    Route::get('/kategori-layanan', [KatalogController::class, 'kategoriIndex'])->name('kategori-layanan.index');
+    Route::post('/kategori-layanan', [KatalogController::class, 'kategoriStore'])->name('kategori-layanan.store');
+    Route::put('/kategori-layanan/{id}', [KatalogController::class, 'kategoriUpdate'])->name('kategori-layanan.update');
+    Route::delete('/kategori-layanan/{id}', [KatalogController::class, 'kategoriDestroy'])->name('kategori-layanan.destroy');
+    Route::post('/kategori-layanan/{id}/toggle-status', [KatalogController::class, 'kategoriToggleStatus'])->name('kategori-layanan.toggle-status');
 
     // Kelola Reservasi / Booking
     Route::get('/bookings', [ReservasiController::class, 'adminIndex'])->name('bookings.index');
@@ -186,8 +180,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/bookings/{id}/status', [ReservasiController::class, 'adminUpdateStatus'])->name('bookings.update-status');
 
     // Proofing Upload & Moderasi
-    Route::post('/proofing/{bookingId}/upload', [ProofingController::class, 'adminUpload'])->name('proofing.upload');
-    Route::post('/proofing/{id}/delete', [ProofingController::class, 'adminDeletePhoto'])->name('proofing.delete');
+    Route::post('/proofing/{bookingId}/upload', [ReservasiController::class, 'adminUploadProofing'])->name('proofing.upload');
+    Route::post('/proofing/{id}/delete', [ReservasiController::class, 'adminDeleteProofingPhoto'])->name('proofing.delete');
 
     // Verifikasi Pembayaran
     Route::get('/payments', [PembayaranController::class, 'adminIndex'])->name('payments.index');
@@ -212,8 +206,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/consultations', [KonsultasiController::class, 'adminIndex'])->name('consultations.index');
     Route::post('/consultations/{id}/reply', [KonsultasiController::class, 'adminReply'])->name('consultations.reply');
 
-    Route::get('/testimonials', [TestimonialController::class, 'adminIndex'])->name('testimonials.index');
-    Route::post('/testimonials/{id}/status', [TestimonialController::class, 'adminUpdateStatus'])->name('testimonials.update-status');
+    Route::get('/testimonials', [ReservasiController::class, 'adminTestimonialsIndex'])->name('testimonials.index');
+    Route::post('/testimonials/{id}/status', [ReservasiController::class, 'adminUpdateTestimonialStatus'])->name('testimonials.update-status');
 
     // Manajemen Pengguna
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
