@@ -11,7 +11,24 @@ Setiap kali melakukan penambahan, perbaikan, atau perubahan pada kode atau berka
    - Eksekusi perintah `git push origin <branch>` (cabang saat ini: `main`) segera setelah commit dibuat sebelum menyelesaikan respon kepada pengguna.
    - Jangan tunda commit dan push; pastikan remote repository selalu tersinkronisasi secara otomatis.
 
-## 2. Standar UI/UX & Kualitas Kode
+## 2. Standar Icon Desain — Phosphor Icons (Duotone)
+Seluruh antarmuka web wajib menggunakan **Phosphor Icons** sebagai sistem ikon standar proyek:
+1. **Gaya Utama (Default):**
+   - Gunakan varian **Duotone** (`<i class="ph-duotone ph-<nama-icon>"></i>`) untuk menghadirkan visual mewah dua-nada (*two-tone depth*) dengan layer primer dan sekunder ber-opacity lembut.
+   - Gunakan varian **Fill** (`<i class="ph-fill ph-<nama-icon>"></i>`) khusus untuk status aktif terpilih (misal: bintang rating/favorit terisi).
+   - Gunakan varian **Regular** (`<i class="ph ph-<nama-icon>"></i>`) untuk icon utilitarian kecil.
+2. **Larangan SVG Mentah:**
+   - Dilarang menuliskan raw inline `<svg>` secara langsung di dalam Blade template, kecuali untuk logo brand pihak ketiga khusus yang tidak tersedia di Phosphor.
+3. **Daftar Ikon Acuan Sering Digunakan:**
+   - *Studio & Kamera:* `ph-camera`, `ph-aperture`, `ph-image`, `ph-images`, `ph-film-strip`, `ph-camera-rotate`
+   - *Kalender & Booking:* `ph-calendar-blank`, `ph-calendar-check`, `ph-clock`, `ph-map-pin`
+   - *Akademi & Edukasi:* `ph-graduation-cap`, `ph-student`, `ph-book-open`, `ph-certificate`, `ph-chalkboard-teacher`
+   - *Aksi & Navigasi:* `ph-plus`, `ph-arrow-left`, `ph-arrow-right`, `ph-check`, `ph-x`, `ph-download-simple`, `ph-upload-simple`, `ph-paper-plane-tilt`
+   - *Status & Rating:* `ph-star`, `ph-check-circle`, `ph-warning-circle`, `ph-info`, `ph-sparkle`
+   - *Keuangan:* `ph-credit-card`, `ph-wallet`, `ph-receipt`, `ph-bank`, `ph-qrcode`
+   - *Komunikasi:* `ph-whatsapp-logo`, `ph-chats-circle`, `ph-envelope`, `ph-phone`
+
+## 3. Standar UI/UX & Kualitas Kode
 - Pertahankan standar desain mewah (Luxury Editorial Aesthetic) sesuai pedoman `ui-ux-pro-max`.
 - Gunakan Tailwind CSS, Alpine.js, dan Blade templating dengan hierarki kontras yang tajam dan responsif.
 - Seluruh teks antarmuka menggunakan Bahasa Indonesia yang profesional dan ramah pengguna.

@@ -30,13 +30,13 @@
                 <!-- Action CTAs -->
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
                     <a href="{{ route('public.services') }}" class="btn-dark px-8 py-4 rounded-2xl text-xs uppercase tracking-wider font-extrabold text-center flex items-center justify-center gap-2.5 shadow-lg shadow-slate-900/15 hover:shadow-xl transition-all">
-                        <i class="fa-solid fa-calendar-check text-emerald-400"></i> Reservasi Layanan Foto
+                        <i class="ph-duotone ph-calendar-check text-base text-emerald-400"></i> Reservasi Layanan Foto
                     </a>
                     <a href="{{ route('public.courses') }}" class="btn-outline px-8 py-4 rounded-2xl text-xs uppercase tracking-wider font-extrabold text-center flex items-center justify-center gap-2.5 hover:bg-slate-100 transition-all">
-                        <i class="fa-solid fa-graduation-cap text-slate-700"></i> Eksplorasi Kursus
+                        <i class="ph-duotone ph-graduation-cap text-base text-slate-700"></i> Eksplorasi Kursus
                     </a>
                     <a href="{{ route('public.consultation') }}" class="px-5 py-4 rounded-2xl text-xs font-bold text-slate-600 hover:text-slate-900 text-center flex items-center justify-center gap-1.5 transition-colors">
-                        <i class="fa-regular fa-comments"></i> Konsultasi Gratis &rarr;
+                        <i class="ph-duotone ph-chats-circle text-base"></i> Konsultasi Gratis &rarr;
                     </a>
                 </div>
 
@@ -65,7 +65,7 @@
                     <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
 
                     <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
-                        <i class="fa-solid fa-award text-slate-900 text-base"></i>
+                        <i class="ph-duotone ph-certificate text-slate-900 text-lg"></i>
                         <span>Studio Resmi & Terakreditasi</span>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
 
                     <!-- Floating Floating Badge -->
                     <div class="absolute -top-4 -left-4 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-xl border border-slate-800 hidden sm:flex items-center gap-2">
-                        <i class="fa-solid fa-bolt text-amber-400"></i>
+                        <i class="ph-duotone ph-lightning text-amber-400 text-base"></i>
                         <span>Proofing Galeri Online 48 Jam</span>
                     </div>
                 </div>
@@ -121,28 +121,28 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                 <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="fa-solid fa-camera"></i>
+                    <i class="ph-duotone ph-camera text-xl text-emerald-400"></i>
                 </div>
                 <h3 class="font-extrabold text-sm text-slate-900">Gear Flagship Standar Industri</h3>
                 <p class="text-xs text-slate-600 leading-relaxed font-medium">Sony Alpha Full-Frame & prime lens G-Master menjamin ketajaman visual setiap piksel.</p>
             </div>
             <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                 <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+                    <i class="ph-duotone ph-sparkle text-xl text-amber-400"></i>
                 </div>
                 <h3 class="font-extrabold text-sm text-slate-900">Color Grading Sinematik</h3>
                 <p class="text-xs text-slate-600 leading-relaxed font-medium">Palet warna elegan & natural skin tone khas RanggaMotret yang tahan uji waktu.</p>
             </div>
             <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                 <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="fa-solid fa-cloud-arrow-down text-emerald-400"></i>
+                    <i class="ph-duotone ph-cloud-arrow-down text-xl text-sky-400"></i>
                 </div>
                 <h3 class="font-extrabold text-sm text-slate-900">Sistem Digital Proofing</h3>
                 <p class="text-xs text-slate-600 leading-relaxed font-medium">Pilih foto favorit dan unduh berkas resolusi tinggi langsung dari portal klien Anda.</p>
             </div>
             <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
                 <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="fa-solid fa-certificate text-blue-400"></i>
+                    <i class="ph-duotone ph-certificate text-xl text-indigo-400"></i>
                 </div>
                 <h3 class="font-extrabold text-sm text-slate-900">Sertifikasi & Praktik Nyata</h3>
                 <p class="text-xs text-slate-600 leading-relaxed font-medium">Kurikulum akademi disertai evaluasi tugas praktik dan sertifikat resmi terverifikasi.</p>
