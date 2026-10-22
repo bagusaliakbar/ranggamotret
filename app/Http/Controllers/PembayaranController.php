@@ -29,7 +29,37 @@ class PembayaranController extends Controller
      */
     public function index()
     {
-        $pembayarans = Pembayaran::where('user_id', Auth::id())
+        $userId = Auth::id();
+
+        // Auto-sinkronisasi jika reservasi sudah lunas namun status pembayaran belum terupdate
+        $unpaidBookings = Pembayaran::where('user_id', $userId)
+            ->where('status', '!=', 'Dibayar')
+            ->whereNotNull('booking_id')
+            ->with('booking')
+            ->get();
+
+        foreach ($unpaidBookings as $p) {
+            if ($p->booking && in_array($p->booking->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai'])) {
+                $p->status = 'Dibayar';
+                $p->tanggal_pembayaran = $p->tanggal_pembayaran ?: Carbon::now();
+                $p->save();
+
+                Invoice::firstOrCreate(
+                    ['pembayaran_id' => $p->id],
+                    [
+                        'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($p->booking_id, 4, '0', STR_PAD_LEFT),
+                        'user_id' => $userId,
+                        'booking_id' => $p->booking_id,
+                        'subtotal' => $p->jumlah,
+                        'diskon' => 0,
+                        'total' => $p->jumlah,
+                        'status_pembayaran' => 'Lunas',
+                    ]
+                );
+            }
+        }
+
+        $pembayarans = Pembayaran::where('user_id', $userId)
             ->with(['booking.layanan', 'kursus', 'invoice'])
             ->latest()
             ->get();
@@ -157,6 +187,28 @@ class PembayaranController extends Controller
                             ['user_id' => $userId, 'kursus_id' => $kursusId],
                             ['status' => 'aktif', 'progress_persen' => 0]
                         );
+
+                        $pembayaran = Pembayaran::where('user_id', $userId)
+                            ->where('kursus_id', $kursusId)
+                            ->latest()
+                            ->first();
+                        if ($pembayaran) {
+                            $pembayaran->status = 'Dibayar';
+                            $pembayaran->tanggal_pembayaran = Carbon::now();
+                            $pembayaran->save();
+
+                            Invoice::firstOrCreate(
+                                ['pembayaran_id' => $pembayaran->id],
+                                [
+                                    'nomor_invoice' => 'INV-KRS-' . date('Ymd') . '-' . str_pad($pembayaran->id, 4, '0', STR_PAD_LEFT),
+                                    'user_id' => $userId,
+                                    'subtotal' => $pembayaran->jumlah,
+                                    'diskon' => 0,
+                                    'total' => $pembayaran->jumlah,
+                                    'status_pembayaran' => 'Lunas',
+                                ]
+                            );
+                        }
                     }
                     return redirect()->route('student.dashboard')
                         ->with('success', 'Pembayaran kursus berhasil! Selamat belajar di ruang kelas akademi RanggaMotret.');
@@ -173,6 +225,27 @@ class PembayaranController extends Controller
                 if (in_array($transactionStatus, ['settlement', 'capture'])) {
                     $booking->status = 'Dibayar';
                     $booking->save();
+
+                    $pembayaran = Pembayaran::where('booking_id', $booking->id)->latest()->first();
+                    if ($pembayaran) {
+                        $pembayaran->status = 'Dibayar';
+                        $pembayaran->tanggal_pembayaran = Carbon::now();
+                        $pembayaran->save();
+
+                        Invoice::firstOrCreate(
+                            ['pembayaran_id' => $pembayaran->id],
+                            [
+                                'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT),
+                                'user_id' => $booking->user_id,
+                                'booking_id' => $booking->id,
+                                'subtotal' => $pembayaran->jumlah,
+                                'diskon' => 0,
+                                'total' => $pembayaran->jumlah,
+                                'status_pembayaran' => 'Lunas',
+                            ]
+                        );
+                    }
+
                     return redirect()->route('customer.bookings.show', $booking->id)
                         ->with('success', 'Pembayaran berhasil dikonfirmasi! Jadwal sesi pemotretan Anda telah terverifikasi.');
                 } elseif ($transactionStatus === 'pending') {
@@ -185,6 +258,59 @@ class PembayaranController extends Controller
 
         return redirect()->route('customer.bookings.index')
             ->with('success', 'Terima kasih, data pembayaran Anda sedang diproses.');
+    }
+
+    /**
+     * Sinkronkan status pembayaran secara mandiri dari API Midtrans
+     */
+    public function syncStatus($id, MidtransService $midtransService)
+    {
+        $pembayaran = Pembayaran::findOrFail($id);
+        
+        $orderId = $pembayaran->booking ? $pembayaran->booking->nomor_booking : null;
+        if (!$orderId && $pembayaran->kursus_id) {
+            $orderId = 'KRS-' . $pembayaran->kursus_id . '-' . $pembayaran->user_id;
+        }
+
+        // Cek juga jika ada suffix transaksi
+        if ($pembayaran->nomor_transaksi) {
+            $trxClean = str_replace('TRX-', 'BK-', $pembayaran->nomor_transaksi);
+            $result = $midtransService->syncStatusFromMidtrans($trxClean);
+            if ($result && ($result['is_paid'] ?? false)) {
+                return back()->with('success', 'Status pembayaran berhasil disinkronkan: DIBAYAR.');
+            }
+        }
+
+        if ($orderId) {
+            $result = $midtransService->syncStatusFromMidtrans($orderId);
+            if ($result && ($result['is_paid'] ?? false)) {
+                return back()->with('success', 'Status pembayaran berhasil disinkronkan: DIBAYAR.');
+            }
+        }
+
+        // Auto-heal fallback: jika booking sudah dibayar
+        if ($pembayaran->booking && in_array($pembayaran->booking->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai'])) {
+            $pembayaran->status = 'Dibayar';
+            $pembayaran->tanggal_pembayaran = $pembayaran->tanggal_pembayaran ?: Carbon::now();
+            $pembayaran->save();
+
+            Invoice::firstOrCreate(
+                ['pembayaran_id' => $pembayaran->id],
+                [
+                    'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($pembayaran->booking_id, 4, '0', STR_PAD_LEFT),
+                    'user_id' => $pembayaran->user_id,
+                    'booking_id' => $pembayaran->booking_id,
+                    'subtotal' => $pembayaran->jumlah,
+                    'diskon' => 0,
+                    'total' => $pembayaran->jumlah,
+                    'status_pembayaran' => 'Lunas',
+                ]
+            );
+
+            return back()->with('success', 'Pembayaran berhasil diverifikasi lunas!');
+        }
+
+        return back()->with('info', 'Transaksi belum terbayar atau masih menunggu verifikasi.');
     }
 
     /**

@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/payments/create', [PembayaranController::class, 'create'])->name('payments.create');
     Route::post('/payments', [PembayaranController::class, 'store'])->name('payments.store');
     Route::get('/payments/finish', [PembayaranController::class, 'paymentFinish'])->name('payments.finish');
+    Route::get('/payments/{id}/sync', [PembayaranController::class, 'syncStatus'])->name('payments.sync');
     Route::get('/invoices/{id}', [PembayaranController::class, 'showInvoice'])->name('invoices.show');
 });
 

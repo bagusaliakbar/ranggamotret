@@ -323,4 +323,78 @@ class MidtransService
 
         return ['status' => 'ignored', 'message' => 'Order not associated with an active transaction'];
     }
+
+    /**
+     * Query Midtrans Transaction Status directly via API and sync local database.
+     */
+    public function syncStatusFromMidtrans(string $orderId): array
+    {
+        $this->initMidtrans();
+
+        try {
+            $statusObj = \Midtrans\Transaction::status($orderId);
+            $payload = json_decode(json_encode($statusObj), true);
+
+            $transactionStatus = $payload['transaction_status'] ?? null;
+            $fraudStatus = $payload['fraud_status'] ?? null;
+            $grossAmount = $payload['gross_amount'] ?? 0;
+            $paymentType = $payload['payment_type'] ?? 'midtrans';
+
+            $isPaid = false;
+            if ($transactionStatus === 'capture') {
+                $isPaid = ($fraudStatus === 'accept');
+            } elseif ($transactionStatus === 'settlement') {
+                $isPaid = true;
+            }
+
+            $baseBookingNumber = explode('-T', $orderId)[0];
+            $booking = Reservasi::where('nomor_booking', $orderId)
+                ->orWhere('nomor_booking', $baseBookingNumber)
+                ->first();
+
+            if ($booking) {
+                $pembayaran = Pembayaran::firstOrNew(['booking_id' => $booking->id]);
+                $pembayaran->nomor_transaksi = 'TRX-' . str_replace('BK-', '', $orderId);
+                $pembayaran->user_id = $booking->user_id;
+                $pembayaran->jumlah = (float) ($grossAmount ?: $booking->paket->harga);
+                $pembayaran->metode_pembayaran = 'Midtrans (' . strtoupper($paymentType) . ')';
+                $pembayaran->payment_type = $paymentType;
+                $pembayaran->payload_response = $payload;
+
+                if ($isPaid) {
+                    $pembayaran->status = 'Dibayar';
+                    $pembayaran->tanggal_pembayaran = Carbon::now();
+                    $pembayaran->save();
+
+                    $booking->status = 'Dibayar';
+                    $booking->save();
+
+                    Invoice::firstOrCreate(
+                        ['pembayaran_id' => $pembayaran->id],
+                        [
+                            'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT),
+                            'user_id' => $booking->user_id,
+                            'booking_id' => $booking->id,
+                            'subtotal' => $pembayaran->jumlah,
+                            'diskon' => 0,
+                            'total' => $pembayaran->jumlah,
+                            'status_pembayaran' => 'Lunas',
+                        ]
+                    );
+
+                    return ['status' => 'success', 'is_paid' => true, 'message' => 'Status pembayaran berhasil disinkronkan: DIBAYAR'];
+                } else {
+                    $pembayaran->status = ($transactionStatus === 'pending') ? 'Menunggu Verifikasi' : 'Belum Dibayar';
+                    $pembayaran->save();
+                    return ['status' => 'info', 'is_paid' => false, 'message' => 'Status transaksi Midtrans: ' . $transactionStatus];
+                }
+            }
+
+            return ['status' => 'warning', 'is_paid' => false, 'message' => 'Reservasi tidak ditemukan untuk order ID tersebut.'];
+        } catch (\Exception $e) {
+            Log::warning('Midtrans syncStatusFromMidtrans failed: ' . $e->getMessage(), ['order_id' => $orderId]);
+            return ['status' => 'error', 'is_paid' => false, 'message' => 'Gagal menghubungi server Midtrans: ' . $e->getMessage()];
+        }
+    }
 }
+

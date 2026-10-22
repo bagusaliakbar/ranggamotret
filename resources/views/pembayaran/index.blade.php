@@ -50,21 +50,30 @@
                                         default => 'bg-amber-100 text-amber-800 border-amber-300',
                                     };
                                 @endphp
-                                <div class="flex items-center gap-2">
+                                <div class="flex flex-wrap items-center gap-2">
                                     <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase border {{ $payBadgeClass }}">
                                         {{ $p->status }}
                                     </span>
-                                    @if($p->status === 'Belum Dibayar' && $p->booking_id)
-                                        <a href="{{ route('payments.create', ['booking_id' => $p->booking_id]) }}" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-bold hover:bg-slate-800 text-[10px] shadow-sm whitespace-nowrap">
-                                            Bayar Sekarang
+                                    @if($p->status !== 'Dibayar')
+                                        @if($p->booking_id)
+                                            <a href="{{ route('payments.create', ['booking_id' => $p->booking_id]) }}" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-bold hover:bg-slate-800 text-[10px] shadow-sm whitespace-nowrap">
+                                                Bayar Sekarang
+                                            </a>
+                                        @elseif($p->kursus_id)
+                                            <a href="{{ route('payments.create', ['kursus_id' => $p->kursus_id]) }}" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white font-bold hover:bg-slate-800 text-[10px] shadow-sm whitespace-nowrap">
+                                                Bayar Sekarang
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('payments.sync', $p->id) }}" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] shadow-sm whitespace-nowrap inline-flex items-center gap-1" title="Cek & Sinkronkan Status Pembayaran">
+                                            <i class="ph-duotone ph-arrows-clockwise"></i> Cek Status
                                         </a>
                                     @endif
                                 </div>
                             </td>
                             <td class="p-4 text-center">
                                 @if($p->invoice)
-                                    <a href="{{ route('invoices.show', $p->invoice->id) }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold hover:bg-slate-800 text-[11px] inline-block shadow-sm">
-                                        <i class="fa-solid fa-file-invoice mr-1"></i> PDF
+                                    <a href="{{ route('invoices.show', $p->invoice->id) }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white font-bold hover:bg-slate-800 text-[11px] inline-flex items-center gap-1 shadow-sm">
+                                        <i class="ph-duotone ph-receipt"></i> PDF
                                     </a>
                                 @else
                                     <span class="text-slate-400">-</span>
