@@ -49,7 +49,7 @@ class UserController extends Controller
         $totalInstructors = User::where('role', 'instruktur')->count();
         $totalCustomers = User::whereIn('role', ['customer', 'peserta'])->count();
 
-        return view('admin.users.index', compact(
+        return view('users.admin', compact(
             'users',
             'totalUsers',
             'totalAdmins',

@@ -39,7 +39,7 @@ class KatalogController extends Controller
         $layanan = $query->latest()->get();
         $categories = Katalog::where('status', 'aktif')->select('kategori')->distinct()->pluck('kategori');
 
-        return view('public.services', compact('layanan', 'categories', 'kategori', 'category'));
+        return view('katalog.index', compact('layanan', 'categories', 'kategori', 'category'));
     }
 
     /**
@@ -56,7 +56,7 @@ class KatalogController extends Controller
             ->take(3)
             ->get();
 
-        return view('public.service-detail', compact('layanan', 'otherServices'));
+        return view('katalog.detail', compact('layanan', 'otherServices'));
     }
 
     // ==========================================
@@ -102,7 +102,7 @@ class KatalogController extends Controller
         $existingCategories = Katalog::select('kategori')->distinct()->pluck('kategori');
         $categories = $dbCategories->merge($existingCategories)->unique()->filter()->sort()->values();
 
-        return view('admin.katalog.index', compact(
+        return view('katalog.admin', compact(
             'layananList',
             'totalLayanan',
             'layananAktif',
@@ -412,7 +412,7 @@ class KatalogController extends Controller
             'fa-plane' => 'Travel / Wisata',
         ];
 
-        return view('admin.kategori-layanan.index', compact(
+        return view('katalog.kategori', compact(
             'categories',
             'search',
             'status',

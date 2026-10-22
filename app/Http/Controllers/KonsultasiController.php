@@ -30,7 +30,7 @@ class KonsultasiController extends Controller
             ? Konsultasi::where('user_id', Auth::id())->latest()->get()
             : collect([]);
 
-        return view('public.consultation', compact('konsultasiList', 'layananList'));
+        return view('konsultasi.index', compact('konsultasiList', 'layananList'));
     }
 
     /**
@@ -72,7 +72,7 @@ class KonsultasiController extends Controller
     public function adminIndex()
     {
         $consultations = Konsultasi::latest()->paginate(15);
-        return view('admin.konsultasi.index', compact('consultations'));
+        return view('konsultasi.admin', compact('consultations'));
     }
 
     /**

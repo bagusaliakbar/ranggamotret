@@ -60,7 +60,7 @@ class LaporanController extends Controller
         $totalAttempts = QuizAttempt::count();
         $passRate = $totalAttempts > 0 ? round(($passCount / $totalAttempts) * 100, 1) : 0;
 
-        return view('admin.laporan.index', compact(
+        return view('laporan.index', compact(
             'type',
             'totalBookings',
             'totalBookingDone',

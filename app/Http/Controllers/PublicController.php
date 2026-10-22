@@ -38,7 +38,7 @@ class PublicController extends Controller
             $categories = Katalog::where('status', 'aktif')->select('kategori')->distinct()->pluck('kategori');
         }
 
-        return view('public.services', compact('layanan', 'categories', 'category'));
+        return view('katalog.index', compact('layanan', 'categories', 'category'));
     }
 
     public function serviceDetail($id)
@@ -63,7 +63,7 @@ class PublicController extends Controller
                 ->get();
         }
 
-        return view('public.service-detail', compact('layanan', 'otherServices', 'relatedPortofolio'));
+        return view('katalog.detail', compact('layanan', 'otherServices', 'relatedPortofolio'));
     }
 
     public function portfolio(Request $request)
@@ -78,7 +78,7 @@ class PublicController extends Controller
         $portofolio = $query->latest()->get();
         $categories = Portofolio::select('kategori')->distinct()->pluck('kategori');
 
-        return view('public.portfolio', compact('portofolio', 'categories', 'category'));
+        return view('portofolio.index', compact('portofolio', 'categories', 'category'));
     }
 
     public function courses(Request $request)
@@ -92,7 +92,7 @@ class PublicController extends Controller
 
         $kursus = $query->get();
 
-        return view('public.courses', compact('kursus', 'level'));
+        return view('kursus.index', compact('kursus', 'level'));
     }
 
     public function courseDetail($id)
@@ -101,13 +101,13 @@ class PublicController extends Controller
             ->with(['instruktur', 'moduls.materis', 'moduls.tugas', 'moduls.quizs'])
             ->findOrFail($id);
 
-        return view('public.course-detail', compact('kursus'));
+        return view('kursus.detail', compact('kursus'));
     }
 
     public function consultation()
     {
         $layananList = Katalog::where('status', 'aktif')->pluck('nama');
-        return view('public.consultation', compact('layananList'));
+        return view('konsultasi.index', compact('layananList'));
     }
 
     public function storeConsultation(Request $request)

@@ -28,6 +28,6 @@ class PortofolioController extends Controller
         $portofolio = $query->latest()->get();
         $categories = Portofolio::select('kategori')->distinct()->pluck('kategori');
 
-        return view('public.portfolio', compact('portofolio', 'categories', 'category'));
+        return view('portofolio.index', compact('portofolio', 'categories', 'category'));
     }
 }

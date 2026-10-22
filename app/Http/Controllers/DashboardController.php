@@ -62,7 +62,7 @@ class DashboardController extends Controller
         $recentBookings = Reservasi::with(['customer', 'layanan'])->latest()->take(5)->get();
         $recentPayments = Pembayaran::with('user')->where('status', 'Menunggu Verifikasi')->latest()->take(5)->get();
 
-        return view('admin.dashboard', compact(
+        return view('dashboard.admin', compact(
             'totalBooking',
             'bookingPending',
             'totalPendapatan',
@@ -94,7 +94,7 @@ class DashboardController extends Controller
 
         $instructors = User::whereIn('role', ['admin', 'instruktur'])->get();
 
-        return view('admin.kursus.index', compact('courses', 'instructors', 'pendingGrading'));
+        return view('kursus.admin', compact('courses', 'instructors', 'pendingGrading'));
     }
 
     /**
@@ -128,7 +128,7 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
-        return view('customer.dashboard', compact(
+        return view('dashboard.customer', compact(
             'totalBookings',
             'activeBookings',
             'completedBookings',

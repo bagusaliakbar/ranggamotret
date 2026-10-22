@@ -140,7 +140,7 @@ class MateriController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('instructor.assignments.index', compact('submissions'));
+        return view('materi.tugas', compact('submissions'));
     }
 
     /**

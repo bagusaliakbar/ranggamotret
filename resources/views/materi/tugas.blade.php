@@ -29,8 +29,8 @@
                             <td class="p-4 font-bold text-slate-900">{{ $sub->user->name }}</td>
                             <td class="p-4 font-bold text-slate-900">{{ $sub->tugas->judul }}</td>
                             <td class="p-4">
-                                <a href="{{ $sub->file_tugas }}" target="_blank" class="text-slate-900 font-bold hover:underline">
-                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Buka Link Berkas
+                                <a href="{{ $sub->file_tugas }}" target="_blank" class="text-slate-900 font-bold hover:underline inline-flex items-center">
+                                    <i class="ph-duotone ph-arrow-square-out mr-1 text-base"></i> Buka Link Berkas
                                 </a>
                             </td>
                             <td class="p-4 text-slate-500">{{ date('d M Y, H:i', strtotime($sub->submitted_at)) }}</td>

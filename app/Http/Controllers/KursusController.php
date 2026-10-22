@@ -46,7 +46,7 @@ class KursusController extends Controller
         }
 
         $kursus = $query->latest()->get();
-        return view('public.courses', compact('kursus', 'level'));
+        return view('kursus.index', compact('kursus', 'level'));
     }
 
     /**
@@ -57,7 +57,7 @@ class KursusController extends Controller
         $kursus = Kursus::with(['instruktur', 'moduls.materis', 'testimoni.user'])->findOrFail($id);
         $isEnrolled = Auth::check() && Enrollment::where('user_id', Auth::id())->where('kursus_id', $id)->exists();
 
-        return view('public.course-detail', compact('kursus', 'isEnrolled'));
+        return view('kursus.detail', compact('kursus', 'isEnrolled'));
     }
 
     // ==========================================
@@ -76,7 +76,7 @@ class KursusController extends Controller
 
         $certificates = Sertifikat::where('user_id', $user->id)->with('kursus')->get();
 
-        return view('student.dashboard', compact('enrollments', 'certificates'));
+        return view('dashboard.student', compact('enrollments', 'certificates'));
     }
 
     /**
@@ -164,7 +164,7 @@ class KursusController extends Controller
             ->pluck('materi_id')
             ->toArray();
 
-        return view('student.learn', compact(
+        return view('materi.learn', compact(
             'kursus',
             'activeType',
             'activeMateri',
@@ -243,7 +243,7 @@ class KursusController extends Controller
             abort(403);
         }
 
-        return view('student.certificate', compact('sertifikat'));
+        return view('kursus.sertifikat', compact('sertifikat'));
     }
 
     // ==========================================
@@ -264,7 +264,7 @@ class KursusController extends Controller
 
         $instructors = User::whereIn('role', ['admin', 'instruktur'])->get();
 
-        return view('admin.kursus.index', compact('courses', 'instructors'));
+        return view('kursus.admin', compact('courses', 'instructors'));
     }
 
     public function storeCourse(Request $request)
