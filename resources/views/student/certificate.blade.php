@@ -11,6 +11,7 @@
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -68,16 +69,51 @@
         }
     </style>
 </head>
-<body class="py-8 px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center justify-center">
+<body class="py-8 px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center justify-center"
+      x-data="{ 
+        copied: false,
+        verifyUrl: '{{ route('public.certificate.verify') }}?code={{ $sertifikat->nomor_sertifikat }}',
+        copyLink() {
+            navigator.clipboard.writeText(this.verifyUrl);
+            this.copied = true;
+            setTimeout(() => this.copied = false, 2500);
+        }
+      }">
 
     <!-- Top Action Bar -->
-    <div class="max-w-[1100px] w-full mx-auto mb-5 flex justify-between items-center no-print">
+    <div class="max-w-[1100px] w-full mx-auto mb-5 flex flex-wrap justify-between items-center gap-3 no-print">
         <a href="{{ route('student.dashboard') }}" class="text-xs font-bold text-slate-600 hover:text-slate-900 bg-white px-5 py-2.5 rounded-xl border border-slate-200 shadow-sm transition-all flex items-center gap-2 hover:bg-slate-50">
-            <i class="fa-solid fa-arrow-left"></i> Kembali Ke Dashboard Akademi
+            <i class="fa-solid fa-arrow-left"></i> Kembali Ke Dashboard
         </a>
-        <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-2">
-            <i class="fa-solid fa-print"></i> Cetak / Simpan PDF (Landscape A4)
-        </button>
+
+        <div class="flex items-center gap-2 flex-wrap">
+            <!-- Copy Verification Link -->
+            <button type="button" @click="copyLink()" 
+                    class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 px-4 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all flex items-center gap-2">
+                <i class="fa-solid" :class="copied ? 'fa-check text-emerald-600' : 'fa-link'"></i>
+                <span x-text="copied ? 'Tautan Tersalin!' : 'Salin Tautan Verifikasi'"></span>
+            </button>
+
+            <!-- Add to LinkedIn -->
+            @php
+                $linkedInUrl = "https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME"
+                    . "&name=" . urlencode($sertifikat->kursus->nama)
+                    . "&organizationName=" . urlencode("RanggaMotret Academy")
+                    . "&issueYear=" . date('Y', strtotime($sertifikat->tanggal_terbit))
+                    . "&issueMonth=" . date('m', strtotime($sertifikat->tanggal_terbit))
+                    . "&certUrl=" . urlencode(route('public.certificate.verify') . '?code=' . $sertifikat->nomor_sertifikat)
+                    . "&certId=" . urlencode($sertifikat->nomor_sertifikat);
+            @endphp
+            <a href="{{ $linkedInUrl }}" target="_blank" 
+               class="bg-[#0A66C2] hover:bg-[#004182] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-2">
+                <i class="fa-brands fa-linkedin text-sm"></i> Tambahkan ke LinkedIn
+            </a>
+
+            <!-- Print / PDF -->
+            <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-2">
+                <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+            </button>
+        </div>
     </div>
 
     <!-- Authentic Landscape Certificate Document (A4 Ratio ~ 1.414) -->

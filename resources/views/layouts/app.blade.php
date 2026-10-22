@@ -348,6 +348,18 @@
         </div>
     </footer>
 
+    <!-- Floating WhatsApp Speed Dial Button -->
+    <aside aria-label="Bantuan WhatsApp" class="fixed bottom-6 right-6 z-40">
+        <a href="https://wa.me/628123456789?text=Halo%20Studio%20RanggaMotret,%20saya%20ingin%20bertanya%20seputar%20layanan%20foto" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-2xl shadow-emerald-900/40 hover:scale-105 active:scale-95 transition-all group"
+           title="Chat Tim RanggaMotret di WhatsApp">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+            <span class="hidden sm:inline font-bold tracking-wide">Tanya Studio</span>
+        </a>
+    </aside>
+
     @stack('scripts')
 </body>
 </html>

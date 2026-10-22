@@ -39,3 +39,32 @@ test('unified member can access both customer booking dashboard and student lms 
     // Can also access student lms dashboard
     $this->actingAs($user)->get('/student/dashboard')->assertStatus(200);
 });
+
+test('public service detail page renders successfully with luxury UI', function () {
+    $layanan = \App\Models\Layanan::create([
+        'nama' => 'Wedding Luxury Photography',
+        'kategori' => 'Wedding',
+        'deskripsi' => 'Layanan dokumentasi pernikahan eksklusif.',
+        'harga_mulai' => 5000000,
+        'thumbnail' => 'https://images.unsplash.com/photo-1519741497674-611481863552',
+        'status' => 'aktif',
+    ]);
+
+    \App\Models\Paket::create([
+        'layanan_id' => $layanan->id,
+        'nama_paket' => 'Royal Signature',
+        'harga' => 8500000,
+        'durasi' => 'Full Day',
+        'jumlah_fotografer' => 2,
+        'jumlah_foto' => 100,
+        'fasilitas' => 'Album Cetak Eksklusif Box Kayu',
+        'status' => 'aktif',
+    ]);
+
+    $response = $this->get('/services/' . $layanan->id);
+    $response->assertStatus(200);
+    $response->assertSee('Wedding Luxury Photography');
+    $response->assertSee('Royal Signature');
+    $response->assertSee('8.500.000');
+});
+
