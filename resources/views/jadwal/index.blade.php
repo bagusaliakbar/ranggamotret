@@ -60,9 +60,6 @@
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
                 <span>Kelola Jadwal Pemotretan</span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
-                    {{ $totalSesi ?? 0 }} Sesi
-                </span>
             </h1>
             <p class="text-xs text-slate-500 font-medium mt-1">
                 Kalender jadwal sesi pemotretan interaktif. Klik sesi foto untuk mengatur ulang tanggal, jam, atau status reservasi.

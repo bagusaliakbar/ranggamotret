@@ -245,5 +245,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Boundary: Laporan Keuangan & Operasional
     Route::get('/reports', [LaporanController::class, 'index'])->name('reports.index');
+    Route::get('/reports/pendapatan', [LaporanController::class, 'pendapatan'])->name('reports.pendapatan');
+    Route::get('/reports/reservasi', [LaporanController::class, 'reservasi'])->name('reports.reservasi');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
 });

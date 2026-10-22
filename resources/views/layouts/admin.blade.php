@@ -127,23 +127,15 @@
                 @if(Auth::user()->isAdmin())
                     <!-- 1. ADMIN NAVIGATION GROUP -->
                     <div class="space-y-1">
-                        <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Utama</div>
-
-                        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                         <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chart-line-up text-base w-5"></i>
                             <span>Dashboard</span>
                         </a>
 
-                        
-
                         <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-receipt text-base w-5"></i>
-                            <span>Verifikasi Pembayaran</span>
+                            <span>Kelola Pembayaran</span>
                         </a>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Layanan & Akademi</div>
 
                         <a href="{{ route('admin.layanan.index') }}" class="sidebar-link {{ request()->routeIs('admin.layanan.*') && !request()->routeIs('admin.kategori-layanan.*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-camera text-base w-5"></i>
@@ -184,9 +176,7 @@
                             <i class="ph-duotone ph-pencil-simple-line text-base w-5"></i>
                             <span>Penilaian Tugas Siswa</span>
                         </a>
-
-                        
-
+            
                         <a href="{{ route('admin.testimonials.index') }}" class="sidebar-link {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-star text-base w-5"></i>
                             <span>Moderasi Testimoni</span>
@@ -196,24 +186,43 @@
                             <i class="ph-duotone ph-calendar-blank text-base w-5"></i>
                             <span>Kelola Jadwal</span>
                         </a>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Pengguna & Akses</div>
 
                         <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-users text-base w-5"></i>
                             <span>Kelola Pengguna</span>
                         </a>
-                    </div>
 
-                    <div class="space-y-1">
-                        <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Laporan</div>
+                        <!-- Menu Laporan & Submenu -->
+                        <div x-data="{ openReports: {{ request()->routeIs('admin.reports*') || request()->routeIs('laporan.*') ? 'true' : 'false' }} }" class="space-y-1">
+                            <button type="button" 
+                                    @click="openReports = !openReports" 
+                                    class="sidebar-link w-full flex items-center justify-between {{ request()->routeIs('admin.reports*') || request()->routeIs('laporan.*') ? 'active' : '' }}">
+                                <div class="flex items-center gap-3">
+                                    <i class="ph-duotone ph-chart-pie-slice text-base w-5"></i>
+                                    <span>Laporan</span>
+                                </div>
+                                <i class="ph-bold ph-caret-down text-xs transition-transform duration-200" :class="openReports ? 'rotate-180' : ''"></i>
+                            </button>
 
-                        <a href="{{ route('admin.reports.index') }}" class="sidebar-link {{ request()->routeIs('admin.reports*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-chart-pie-slice text-base w-5"></i>
-                            <span>Laporan Keuangan</span>
-                        </a>
+                            <div x-show="openReports" 
+                                 x-cloak
+                                 x-transition:enter="transition ease-out duration-150"
+                                 x-transition:enter-start="opacity-0 -translate-y-1"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 class="pl-7 space-y-1 pt-0.5">
+                                <a href="{{ route('admin.reports.pendapatan') }}" 
+                                   class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-colors {{ request()->routeIs('admin.reports.pendapatan') ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                                    <i class="ph-duotone ph-wallet text-sm {{ request()->routeIs('admin.reports.pendapatan') ? 'text-emerald-400' : 'text-slate-500' }}"></i>
+                                    <span>Laporan Pendapatan</span>
+                                </a>
+
+                                <a href="{{ route('admin.reports.reservasi') }}" 
+                                   class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-colors {{ request()->routeIs('admin.reports.reservasi') ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                                    <i class="ph-duotone ph-calendar-check text-sm {{ request()->routeIs('admin.reports.reservasi') ? 'text-indigo-400' : 'text-slate-500' }}"></i>
+                                    <span>Laporan Reservasi</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                 @else
