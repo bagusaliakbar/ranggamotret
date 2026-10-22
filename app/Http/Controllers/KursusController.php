@@ -71,6 +71,23 @@ class KursusController extends Controller
     public function studentIndex()
     {
         $user = Auth::user();
+
+        // 1. Sinkronisasi Otomatis: Jika ada pembayaran kursus yang sudah 'Dibayar' tapi belum dibuatkan enrollment
+        $paidCoursePayments = Pembayaran::where('user_id', $user->id)
+            ->whereNotNull('kursus_id')
+            ->where('status', 'Dibayar')
+            ->get();
+
+        foreach ($paidCoursePayments as $pay) {
+            Enrollment::firstOrCreate([
+                'user_id' => $user->id,
+                'kursus_id' => $pay->kursus_id,
+            ], [
+                'tanggal_daftar' => $pay->tanggal_pembayaran ?? Carbon::now(),
+                'status' => 'aktif',
+            ]);
+        }
+
         $enrollments = Enrollment::where('user_id', $user->id)
             ->with(['kursus.instruktur', 'kursus.moduls.materis', 'sertifikat'])
             ->latest()
@@ -378,8 +395,35 @@ class KursusController extends Controller
         $newStatus = $request->status;
 
         $pembayaran->status = $newStatus;
-        if ($newStatus === 'Dibayar' && empty($pembayaran->tanggal_pembayaran)) {
-            $pembayaran->tanggal_pembayaran = now();
+        if ($newStatus === 'Dibayar') {
+            if (empty($pembayaran->tanggal_pembayaran)) {
+                $pembayaran->tanggal_pembayaran = now();
+            }
+
+            // 1. Aktivasi Akses Kursus (Buat Enrollment)
+            Enrollment::firstOrCreate([
+                'user_id' => $pembayaran->user_id,
+                'kursus_id' => $pembayaran->kursus_id,
+            ], [
+                'tanggal_daftar' => $pembayaran->tanggal_pembayaran ?? Carbon::now(),
+                'status' => 'aktif',
+            ]);
+
+            // 2. Terbitkan Invoice Resmi LUNAS jika belum ada
+            $invNumber = 'INV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5));
+            \App\Models\Invoice::firstOrCreate(
+                ['pembayaran_id' => $pembayaran->id],
+                [
+                    'nomor_invoice' => $invNumber,
+                    'user_id' => $pembayaran->user_id,
+                    'booking_id' => null,
+                    'kursus_id' => $pembayaran->kursus_id,
+                    'subtotal' => $pembayaran->jumlah,
+                    'diskon' => 0,
+                    'total' => $pembayaran->jumlah,
+                    'status_pembayaran' => 'LUNAS',
+                ]
+            );
         }
         $pembayaran->save();
 
