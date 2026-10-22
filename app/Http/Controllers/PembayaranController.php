@@ -34,7 +34,7 @@ class PembayaranController extends Controller
             ->latest()
             ->get();
 
-        return view('payments.index', compact('pembayarans'));
+        return view('pembayaran.index', compact('pembayarans'));
     }
 
     /**
@@ -70,7 +70,7 @@ class PembayaranController extends Controller
             ? 'https://app.midtrans.com/snap/snap.js'
             : 'https://app.sandbox.midtrans.com/snap/snap.js';
 
-        return view('payments.create', compact('booking', 'kursus', 'snapToken', 'snapError', 'midtransClientKey', 'midtransSnapUrl'));
+        return view('pembayaran.create', compact('booking', 'kursus', 'snapToken', 'snapError', 'midtransClientKey', 'midtransSnapUrl'));
     }
 
     /**
@@ -200,7 +200,7 @@ class PembayaranController extends Controller
         }
 
         $pembayarans = $query->latest()->paginate(15);
-        return view('admin.payments.index', compact('pembayarans', 'status'));
+        return view('admin.pembayaran.index', compact('pembayarans', 'status'));
     }
 
     /**
@@ -257,7 +257,7 @@ class PembayaranController extends Controller
             'user_id' => $pembayaran->user_id,
             'judul' => 'Status Pembayaran ' . $pembayaran->nomor_transaksi,
             'pesan' => 'Status pembayaran Anda kini: ' . $pembayaran->status,
-            'link' => '/payments',
+            'link' => '/pembayaran',
         ]);
 
         return back()->with('success', 'Status pembayaran berhasil diperbarui.');
@@ -274,6 +274,6 @@ class PembayaranController extends Controller
             abort(403);
         }
 
-        return view('payments.invoice', compact('invoice'));
+        return view('pembayaran.invoice', compact('invoice'));
     }
 }

@@ -45,7 +45,7 @@ class ReservasiController extends Controller
             ->latest()
             ->get();
 
-        return view('customer.bookings.index', compact('bookings'));
+        return view('customer.reservasi.index', compact('bookings'));
     }
 
     /**
@@ -61,7 +61,7 @@ class ReservasiController extends Controller
             ->get();
         $selectedPaket = $paketId ? Paket::where('status', 'aktif')->find($paketId) : null;
 
-        return view('customer.bookings.create', compact('layananList', 'layananId', 'selectedPaket'));
+        return view('customer.reservasi.create', compact('layananList', 'layananId', 'selectedPaket'));
     }
 
     /**
@@ -139,7 +139,7 @@ class ReservasiController extends Controller
             ->with(['layanan', 'paket', 'pembayaran.invoice', 'galeriFotos', 'testimoni'])
             ->findOrFail($id);
 
-        return view('customer.bookings.show', compact('booking'));
+        return view('customer.reservasi.show', compact('booking'));
     }
 
     // ==========================================
@@ -161,7 +161,7 @@ class ReservasiController extends Controller
         $bookings = $query->latest()->paginate(15);
         $statuses = ['Menunggu Konfirmasi', 'Disetujui', 'Ditolak', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Selesai', 'Dibatalkan'];
 
-        return view('admin.bookings.index', compact('bookings', 'statuses', 'status'));
+        return view('admin.reservasi.index', compact('bookings', 'statuses', 'status'));
     }
 
     /**
@@ -170,7 +170,7 @@ class ReservasiController extends Controller
     public function adminShow($id)
     {
         $booking = Reservasi::with(['customer', 'layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])->findOrFail($id);
-        return view('admin.bookings.show', compact('booking'));
+        return view('admin.reservasi.show', compact('booking'));
     }
 
     /**
@@ -326,7 +326,7 @@ class ReservasiController extends Controller
     public function adminTestimonialsIndex()
     {
         $testimonis = Testimoni::with(['user', 'booking.layanan', 'kursus'])->latest()->paginate(15);
-        return view('admin.testimonials.index', compact('testimonis'));
+        return view('admin.testimoni.index', compact('testimonis'));
     }
 
     /**

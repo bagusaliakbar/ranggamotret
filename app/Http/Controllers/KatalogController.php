@@ -102,7 +102,7 @@ class KatalogController extends Controller
         $existingCategories = Katalog::select('kategori')->distinct()->pluck('kategori');
         $categories = $dbCategories->merge($existingCategories)->unique()->filter()->sort()->values();
 
-        return view('admin.layanan.index', compact(
+        return view('admin.katalog.index', compact(
             'layananList',
             'totalLayanan',
             'layananAktif',

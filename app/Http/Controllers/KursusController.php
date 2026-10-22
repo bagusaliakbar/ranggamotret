@@ -264,7 +264,7 @@ class KursusController extends Controller
 
         $instructors = User::whereIn('role', ['admin', 'instruktur'])->get();
 
-        return view('admin.courses.index', compact('courses', 'instructors'));
+        return view('admin.kursus.index', compact('courses', 'instructors'));
     }
 
     public function storeCourse(Request $request)

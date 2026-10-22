@@ -45,6 +45,6 @@ class JadwalController extends Controller
             ];
         });
 
-        return view('calendar.index', compact('events'));
+        return view('jadwal.index', compact('events'));
     }
 }

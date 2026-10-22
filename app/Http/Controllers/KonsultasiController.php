@@ -72,7 +72,7 @@ class KonsultasiController extends Controller
     public function adminIndex()
     {
         $consultations = Konsultasi::latest()->paginate(15);
-        return view('admin.consultations.index', compact('consultations'));
+        return view('admin.konsultasi.index', compact('consultations'));
     }
 
     /**

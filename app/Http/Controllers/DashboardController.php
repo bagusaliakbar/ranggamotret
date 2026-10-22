@@ -94,7 +94,7 @@ class DashboardController extends Controller
 
         $instructors = User::whereIn('role', ['admin', 'instruktur'])->get();
 
-        return view('admin.courses.index', compact('courses', 'instructors', 'pendingGrading'));
+        return view('admin.kursus.index', compact('courses', 'instructors', 'pendingGrading'));
     }
 
     /**
