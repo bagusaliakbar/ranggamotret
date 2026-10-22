@@ -84,6 +84,7 @@ Route::middleware(['auth'])->group(function () {
     // Boundary: Jadwal & Kalender Pemotretan
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     Route::get('/calendar', [JadwalController::class, 'index'])->name('calendar');
+    Route::put('/jadwal/{id}', [JadwalController::class, 'updateSchedule'])->name('jadwal.update');
 
     // Notifikasi
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
