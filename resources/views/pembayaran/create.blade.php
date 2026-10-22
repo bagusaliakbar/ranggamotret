@@ -97,21 +97,12 @@
         
         <!-- Left Column: Payment Options (7 Cols) -->
         <div class="lg:col-span-7 space-y-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
-                        <i class="ph-duotone ph-wallet text-emerald-600 text-xl"></i>
-                        <span>Pilih Metode Pembayaran</span>
-                    </h2>
-                    <p class="text-xs text-slate-500 font-medium mt-0.5">Semua transaksi diproses dalam mata uang Rupiah (IDR).</p>
-                </div>
-                
-                @if($isSandbox)
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 shadow-sm">
-                        <i class="ph-duotone ph-test-tube text-amber-600 text-xs"></i>
-                        <span>Sandbox Testing</span>
-                    </span>
-                @endif
+            <div>
+                <h2 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+                    <i class="ph-duotone ph-wallet text-emerald-600 text-xl"></i>
+                    <span>Pilih Metode Pembayaran</span>
+                </h2>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Semua transaksi diproses dalam mata uang Rupiah (IDR).</p>
             </div>
 
             <!-- OPTION 1: MIDTRANS SNAP (OTOMATIS & INSTAN) -->
@@ -169,27 +160,19 @@
                      @click.stop>
                     
                     @if(!empty($snapToken))
-                        <div class="space-y-3">
-                            <button type="button" id="pay-button" @click="payWithSnap()" :disabled="isPaying"
-                                    class="w-full py-4 px-6 rounded-2xl bg-slate-900 hover:bg-black text-white font-extrabold text-sm tracking-wider uppercase shadow-xl shadow-slate-900/15 transition-all duration-200 flex items-center justify-center gap-3 hover:scale-[1.008] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed">
-                                <template x-if="!isPaying">
-                                    <div class="flex items-center gap-2">
-                                        <i class="ph-duotone ph-lock-key text-emerald-400 text-lg"></i>
-                                        <span>Buka Pembayaran Instan (Rp {{ number_format($totalHarga, 0, ',', '.') }})</span>
-                                        <i class="ph-duotone ph-arrow-right text-base text-slate-300"></i>
-                                    </div>
-                                </template>
-                                <template x-if="isPaying">
-                                    <div class="flex items-center gap-2">
-                                        <i class="ph-duotone ph-spinner ph-spin text-lg"></i>
-                                        <span>Menghubungkan ke Midtrans...</span>
-                                    </div>
-                                </template>
-                            </button>
-
-                            <div class="flex items-center justify-center gap-2 text-[11px] text-slate-500 font-medium text-center">
-                                <i class="ph-duotone ph-shield-check text-emerald-600 text-base"></i>
-                                <span>Terenkripsi 256-bit SSL berstandar Bank Indonesia & PCI-DSS Midtrans Gateway.</span>
+                        <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 text-emerald-950 flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shrink-0 mt-0.5">
+                                <i class="ph-duotone ph-shield-check"></i>
+                            </div>
+                            <div class="space-y-0.5 text-xs">
+                                <div class="font-extrabold text-slate-900">Metode Pembayaran Instan Terpilih</div>
+                                <p class="text-emerald-900 text-[11px] font-medium leading-relaxed">
+                                    Silakan klik tombol <strong>Bayar Sekarang (Instan)</strong> pada Ringkasan Tagihan di sebelah kanan untuk membuka jendela pembayaran QRIS, Virtual Account, atau Kartu Kredit.
+                                </p>
+                                <p class="text-[10px] text-slate-500 font-medium pt-1 flex items-center gap-1">
+                                    <i class="ph-duotone ph-lock-key text-emerald-600"></i>
+                                    <span>Terenkripsi 256-bit SSL berstandar Bank Indonesia & PCI-DSS Midtrans Gateway.</span>
+                                </p>
                             </div>
                         </div>
                     @else
@@ -624,10 +607,21 @@
                 <div class="pt-2">
                     <template x-if="paymentMethod === 'midtrans'">
                         @if(!empty($snapToken))
-                            <button type="button" @click="payWithSnap()" :disabled="isPaying"
-                                    class="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-slate-900/10 transition-all flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-95 disabled:opacity-70">
-                                <i class="ph-duotone ph-lightning text-emerald-400 text-base"></i>
-                                <span>Bayar Sekarang (Instan)</span>
+                            <button type="button" id="pay-button" @click="payWithSnap()" :disabled="isPaying"
+                                    class="w-full py-4 px-5 rounded-2xl bg-slate-900 hover:bg-black text-white font-extrabold text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-slate-900/15 transition-all flex items-center justify-center gap-2.5 hover:scale-[1.01] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
+                                <template x-if="!isPaying">
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph-duotone ph-lightning text-emerald-400 text-lg"></i>
+                                        <span>Bayar Sekarang (Instan)</span>
+                                        <i class="ph-duotone ph-arrow-right text-slate-400 text-sm"></i>
+                                    </div>
+                                </template>
+                                <template x-if="isPaying">
+                                    <div class="flex items-center gap-2">
+                                        <i class="ph-duotone ph-spinner ph-spin text-base"></i>
+                                        <span>Menghubungkan ke Gateway...</span>
+                                    </div>
+                                </template>
                             </button>
                         @endif
                     </template>
