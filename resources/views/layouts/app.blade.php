@@ -122,12 +122,14 @@
                 <!-- Actions / Auth User Dropdown -->
                 <div class="hidden md:flex items-center gap-4">
                     @auth
-                        <a href="{{ route('calendar') }}" class="p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-colors" title="Jadwal Kalender">
-                            <i class="fa-regular fa-calendar"></i>
-                        </a>
+                        @if(Auth::user()->isAdmin() || Auth::user()->isInstruktur())
+                            <a href="{{ route('calendar') }}" class="p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-colors" title="Jadwal Kalender">
+                                <i class="ph-duotone ph-calendar-blank text-base"></i>
+                            </a>
+                        @endif
 
                         <a href="{{ route('notifications.index') }}" class="relative p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-colors" title="Notifikasi">
-                            <i class="fa-regular fa-bell"></i>
+                            <i class="ph-duotone ph-bell text-base"></i>
                             @if(Auth::user()->unreadNotificationsCount() > 0)
                                 <span class="absolute -top-1 -right-1 w-4 h-4 bg-slate-900 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
                                     {{ Auth::user()->unreadNotificationsCount() }}
@@ -144,7 +146,7 @@
                                 <div class="text-xs">
                                     <div class="font-bold text-slate-900 truncate max-w-[100px]">{{ Auth::user()->name }}</div>
                                 </div>
-                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-500"></i>
+                                <i class="ph-bold ph-caret-down text-[10px] text-slate-500"></i>
                             </button>
 
                             <div x-show="open" @click.outside="open = false" x-transition class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-xl py-2 z-50 text-xs">
@@ -155,41 +157,41 @@
 
                                 @if(Auth::user()->isAdmin())
                                     <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
-                                        <i class="fa-solid fa-chart-line mr-2 text-slate-700"></i> Admin Dashboard
+                                        <i class="ph-duotone ph-chart-line-up mr-2 text-slate-700 text-sm"></i> Admin Dashboard
                                     </a>
                                 @endif
 
                                 @if(Auth::user()->isMember())
                                     <a href="{{ route('customer.dashboard') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="fa-solid fa-gauge mr-2 text-slate-500"></i> Dashboard Member
+                                        <i class="ph-duotone ph-gauge mr-2 text-slate-500 text-sm"></i> Dashboard Member
                                     </a>
                                     <a href="{{ route('customer.bookings.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="fa-solid fa-camera mr-2 text-slate-500"></i> Pesanan & Sesi Foto
+                                        <i class="ph-duotone ph-camera mr-2 text-slate-500 text-sm"></i> Pesanan & Sesi Foto
                                     </a>
                                     <a href="{{ route('student.dashboard') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="fa-solid fa-graduation-cap mr-2 text-slate-500"></i> Ruang Belajar (Kursus)
+                                        <i class="ph-duotone ph-graduation-cap mr-2 text-slate-500 text-sm"></i> Ruang Belajar (Kursus)
                                     </a>
                                     <a href="{{ route('payments.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="fa-solid fa-receipt mr-2 text-slate-500"></i> Riwayat Pembayaran
+                                        <i class="ph-duotone ph-receipt mr-2 text-slate-500 text-sm"></i> Riwayat Pembayaran
                                     </a>
                                 @endif
 
                                 @if(Auth::user()->isInstruktur())
                                     <a href="{{ route('instructor.dashboard') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="fa-solid fa-chalkboard-user mr-2 text-slate-500"></i> Panel Instruktur
+                                        <i class="ph-duotone ph-chalkboard-teacher mr-2 text-slate-500 text-sm"></i> Panel Instruktur
                                     </a>
                                 @endif
 
                                 <a href="{{ route('profile') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                    <i class="fa-solid fa-user-gear mr-2 text-slate-500"></i> Pengaturan Akun
+                                    <i class="ph-duotone ph-gear mr-2 text-slate-500 text-sm"></i> Pengaturan Akun
                                 </a>
 
                                 <div class="border-t border-slate-100 my-1"></div>
 
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2.5 text-rose-600 hover:bg-rose-50 font-semibold">
-                                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Keluar
+                                    <button type="submit" class="w-full text-left px-4 py-2.5 text-rose-600 hover:bg-rose-50 font-semibold flex items-center gap-2">
+                                        <i class="ph-duotone ph-sign-out text-sm"></i> Keluar
                                     </button>
                                 </form>
                             </div>
@@ -203,7 +205,7 @@
                 <!-- Mobile Menu Button -->
                 <div class="flex md:hidden items-center gap-3" x-data="{ mobileOpen: false }">
                     <button @click="mobileOpen = !mobileOpen" class="p-2.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200">
-                        <i class="fa-solid fa-bars"></i>
+                        <i class="ph-duotone ph-list text-lg"></i>
                     </button>
 
                     <div x-show="mobileOpen" @click.outside="mobileOpen = false" class="absolute top-20 left-0 right-0 bg-white border-b border-slate-200 p-6 flex flex-col gap-4 text-xs font-semibold z-50 shadow-xl">
@@ -242,7 +244,7 @@
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xl flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5 border border-emerald-100">
-                            <i class="fa-solid fa-circle-check text-base"></i>
+                            <i class="ph-duotone ph-check-circle text-lg"></i>
                         </div>
                         <div class="space-y-0.5">
                             <div class="text-xs font-extrabold text-slate-900">Berhasil</div>
@@ -250,7 +252,7 @@
                         </div>
                     </div>
                     <button @click="show = false" class="text-slate-400 hover:text-slate-700 p-1">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                        <i class="ph-bold ph-x text-sm"></i>
                     </button>
                 </div>
             @endif
@@ -259,7 +261,7 @@
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xl flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 border border-rose-100">
-                            <i class="fa-solid fa-circle-exclamation text-base"></i>
+                            <i class="ph-duotone ph-warning-circle text-lg"></i>
                         </div>
                         <div class="space-y-0.5">
                             <div class="text-xs font-extrabold text-slate-900">Pemberitahuan</div>
@@ -267,7 +269,7 @@
                         </div>
                     </div>
                     <button @click="show = false" class="text-slate-400 hover:text-slate-700 p-1">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                        <i class="ph-bold ph-x text-sm"></i>
                     </button>
                 </div>
             @endif
@@ -276,7 +278,7 @@
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xl flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5 border border-blue-100">
-                            <i class="fa-solid fa-circle-info text-base"></i>
+                            <i class="ph-duotone ph-info text-lg"></i>
                         </div>
                         <div class="space-y-0.5">
                             <div class="text-xs font-extrabold text-slate-900">Informasi</div>
@@ -284,7 +286,7 @@
                         </div>
                     </div>
                     <button @click="show = false" class="text-slate-400 hover:text-slate-700 p-1">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                        <i class="ph-bold ph-x text-sm"></i>
                     </button>
                 </div>
             @endif
@@ -309,10 +311,10 @@
                     <p class="text-xs text-slate-400 leading-relaxed">
                         Platform terintegrasi penyedia layanan dokumentasi fotografi profesional dan akademi edukasi fotografi berbasis web.
                     </p>
-                    <div class="flex gap-3 text-slate-400 text-sm">
-                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:text-white transition-colors"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:text-white transition-colors"><i class="fa-brands fa-youtube"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:text-white transition-colors"><i class="fa-brands fa-whatsapp"></i></a>
+                    <div class="flex gap-3 text-slate-400 text-base">
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:text-white transition-colors"><i class="ph-duotone ph-instagram-logo"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:text-white transition-colors"><i class="ph-duotone ph-youtube-logo"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center hover:text-white transition-colors"><i class="ph-duotone ph-whatsapp-logo"></i></a>
                     </div>
                 </div>
 
@@ -338,9 +340,9 @@
 
                 <div class="space-y-3 text-xs text-slate-400">
                     <h4 class="font-bold text-white uppercase tracking-wider text-[11px]">Kontak Studio</h4>
-                    <p><i class="fa-solid fa-location-dot text-slate-300 mr-2"></i> Jl. Studio Fotografi No. 1, Jakarta</p>
-                    <p><i class="fa-solid fa-phone text-slate-300 mr-2"></i> +62 812-3456-7890</p>
-                    <p><i class="fa-solid fa-envelope text-slate-300 mr-2"></i> info@ranggamotret.id</p>
+                    <p class="flex items-center gap-2"><i class="ph-duotone ph-map-pin text-slate-300"></i> Jl. Studio Fotografi No. 1, Jakarta</p>
+                    <p class="flex items-center gap-2"><i class="ph-duotone ph-phone text-slate-300"></i> +62 812-3456-7890</p>
+                    <p class="flex items-center gap-2"><i class="ph-duotone ph-envelope text-slate-300"></i> info@ranggamotret.id</p>
                 </div>
             </div>
 

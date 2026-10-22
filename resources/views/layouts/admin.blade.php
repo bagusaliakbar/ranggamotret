@@ -120,7 +120,7 @@
                     </div>
                 </a>
                 <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-slate-700">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                    <i class="ph-bold ph-x text-lg"></i>
                 </button>
             </div>
 
@@ -132,17 +132,17 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Utama</div>
 
                         <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                            <i class="fa-solid fa-chart-line text-sm w-5"></i>
+                            <i class="ph-duotone ph-chart-line-up text-base w-5"></i>
                             <span>Dashboard</span>
                         </a>
 
                         <a href="{{ route('admin.bookings.index') }}" class="sidebar-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-calendar-check text-sm w-5"></i>
+                            <i class="ph-duotone ph-calendar-check text-base w-5"></i>
                             <span>Kelola Booking</span>
                         </a>
 
                         <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-receipt text-sm w-5"></i>
+                            <i class="ph-duotone ph-receipt text-base w-5"></i>
                             <span>Verifikasi Pembayaran</span>
                         </a>
                     </div>
@@ -151,32 +151,32 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Layanan & Akademi</div>
 
                         <a href="{{ route('admin.layanan.index') }}" class="sidebar-link {{ request()->routeIs('admin.layanan.*') && !request()->routeIs('admin.kategori-layanan.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-camera-retro text-sm w-5"></i>
+                            <i class="ph-duotone ph-camera text-base w-5"></i>
                             <span>Kelola Layanan & Paket</span>
                         </a>
 
                         <a href="{{ route('admin.kategori-layanan.index') }}" class="sidebar-link {{ request()->routeIs('admin.kategori-layanan.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-layer-group text-sm w-5"></i>
+                            <i class="ph-duotone ph-squares-four text-base w-5"></i>
                             <span>Kategori Layanan</span>
                         </a>
 
                         <a href="{{ route('admin.courses.index') }}" class="sidebar-link {{ request()->routeIs('admin.courses*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-graduation-cap text-sm w-5"></i>
+                            <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
                             <span>Kursus & Modul LMS</span>
                         </a>
 
                         <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-comments text-sm w-5"></i>
+                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
                             <span>Konsultasi Klien</span>
                         </a>
 
                         <a href="{{ route('admin.testimonials.index') }}" class="sidebar-link {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-star text-sm w-5"></i>
+                            <i class="ph-duotone ph-star text-base w-5"></i>
                             <span>Moderasi Testimoni</span>
                         </a>
 
                         <a href="{{ route('calendar') }}" class="sidebar-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
-                            <i class="fa-solid fa-calendar-days text-sm w-5"></i>
+                            <i class="ph-duotone ph-calendar-blank text-base w-5"></i>
                             <span>Kalender Sesi Foto</span>
                         </a>
                     </div>
@@ -185,7 +185,7 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Pengguna & Akses</div>
 
                         <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-users-gear text-sm w-5"></i>
+                            <i class="ph-duotone ph-users text-base w-5"></i>
                             <span>Kelola Pengguna</span>
                         </a>
                     </div>
@@ -194,7 +194,7 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Laporan</div>
 
                         <a href="{{ route('admin.reports.index') }}" class="sidebar-link {{ request()->routeIs('admin.reports*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-chart-pie text-sm w-5"></i>
+                            <i class="ph-duotone ph-chart-pie-slice text-base w-5"></i>
                             <span>Laporan Keuangan</span>
                         </a>
                     </div>
@@ -205,17 +205,17 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Instruktur Portal</div>
 
                         <a href="{{ route('instructor.dashboard') }}" class="sidebar-link {{ request()->routeIs('instructor.dashboard') ? 'active' : '' }}">
-                            <i class="fa-solid fa-chalkboard-user text-sm w-5"></i>
+                            <i class="ph-duotone ph-chalkboard-teacher text-base w-5"></i>
                             <span>Panel Kursus Saya</span>
                         </a>
 
                         <a href="{{ route('instructor.assignments.index') }}" class="sidebar-link {{ request()->routeIs('instructor.assignments*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-pen-ruler text-sm w-5"></i>
+                            <i class="ph-duotone ph-pencil-simple-line text-base w-5"></i>
                             <span>Penilaian Tugas Siswa</span>
                         </a>
 
                         <a href="{{ route('calendar') }}" class="sidebar-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
-                            <i class="fa-solid fa-calendar-days text-sm w-5"></i>
+                            <i class="ph-duotone ph-calendar-blank text-base w-5"></i>
                             <span>Jadwal Mengajar</span>
                         </a>
                     </div>
@@ -226,23 +226,18 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Utama</div>
 
                         <a href="{{ route('customer.dashboard') }}" class="sidebar-link {{ request()->routeIs('customer.dashboard') ? 'active' : '' }}">
-                            <i class="fa-solid fa-gauge text-sm w-5"></i>
+                            <i class="ph-duotone ph-gauge text-base w-5"></i>
                             <span>Dashboard Saya</span>
                         </a>
 
                         <a href="{{ route('customer.bookings.index') }}" class="sidebar-link {{ request()->routeIs('customer.bookings.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-calendar-check text-sm w-5"></i>
+                            <i class="ph-duotone ph-camera text-base w-5"></i>
                             <span>Pesanan & Sesi Foto</span>
                         </a>
 
                         <a href="{{ route('payments.index') }}" class="sidebar-link {{ request()->routeIs('payments.*') ? 'active' : '' }}">
-                            <i class="fa-solid fa-receipt text-sm w-5"></i>
+                            <i class="ph-duotone ph-receipt text-base w-5"></i>
                             <span>Riwayat Pembayaran</span>
-                        </a>
-
-                        <a href="{{ route('calendar') }}" class="sidebar-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
-                            <i class="fa-solid fa-calendar-days text-sm w-5"></i>
-                            <span>Kalender Sesi Saya</span>
                         </a>
                     </div>
 
@@ -250,7 +245,7 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Akademi Fotografi</div>
 
                         <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
-                            <i class="fa-solid fa-graduation-cap text-sm w-5"></i>
+                            <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
                             <span>Ruang Belajar (LMS)</span>
                         </a>
                     </div>
@@ -259,17 +254,17 @@
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Eksplor Layanan</div>
 
                         <a href="{{ route('public.services') }}" class="sidebar-link">
-                            <i class="fa-solid fa-camera-retro text-sm w-5"></i>
+                            <i class="ph-duotone ph-camera-plus text-base w-5"></i>
                             <span>Booking Layanan Baru</span>
                         </a>
 
                         <a href="{{ route('public.courses') }}" class="sidebar-link">
-                            <i class="fa-solid fa-book-open-reader text-sm w-5"></i>
+                            <i class="ph-duotone ph-book-open text-base w-5"></i>
                             <span>Katalog Kursus</span>
                         </a>
 
                         <a href="{{ route('public.consultation') }}" class="sidebar-link">
-                            <i class="fa-solid fa-comments text-sm w-5"></i>
+                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
                             <span>Konsultasi Fotografer</span>
                         </a>
                     </div>
@@ -280,7 +275,7 @@
                     <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Akun</div>
 
                     <a href="{{ route('profile') }}" class="sidebar-link {{ request()->routeIs('profile') ? 'active' : '' }}">
-                        <i class="fa-solid fa-user-gear text-sm w-5"></i>
+                        <i class="ph-duotone ph-gear text-base w-5"></i>
                         <span>Pengaturan Akun</span>
                     </a>
                 </div>
@@ -290,7 +285,7 @@
         <!-- Sidebar Footer Back to Main Web -->
         <div class="p-4 border-t border-slate-200 space-y-3">
             <a href="{{ route('home') }}" class="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition-colors">
-                <i class="fa-solid fa-arrow-left text-slate-400"></i>
+                <i class="ph-duotone ph-arrow-left text-base text-slate-400"></i>
                 <span>Kembali ke Website</span>
             </a>
 
@@ -314,7 +309,7 @@
         <header class="bg-white border-b border-slate-200 sticky top-0 z-20 px-4 sm:px-6 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <button @click="sidebarOpen = true" class="md:hidden p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">
-                    <i class="fa-solid fa-bars text-sm"></i>
+                    <i class="ph-duotone ph-list text-base"></i>
                 </button>
                 <div class="hidden sm:block">
                     <span class="text-xs font-bold text-slate-400">Selamat datang,</span>
@@ -324,11 +319,11 @@
 
             <div class="flex items-center gap-3 text-xs font-bold">
                 <a href="{{ route('home') }}" class="relative p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors" title="Lihat Website">
-                    <i class="fa-solid fa-globe"></i>
+                    <i class="ph-duotone ph-globe text-base"></i>
                 </a>
 
                 <a href="{{ route('notifications.index') }}" class="relative p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors" title="Notifikasi">
-                    <i class="fa-regular fa-bell"></i>
+                    <i class="ph-duotone ph-bell text-base"></i>
                     @if(Auth::user()->unreadNotificationsCount() > 0)
                         <span class="absolute -top-1 -right-1 w-4 h-4 bg-slate-900 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
                             {{ Auth::user()->unreadNotificationsCount() }}
@@ -339,7 +334,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 font-bold transition-colors flex items-center gap-1.5">
-                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <i class="ph-duotone ph-sign-out text-base"></i>
                         <span class="hidden sm:inline">Keluar</span>
                     </button>
                 </form>
@@ -365,7 +360,7 @@
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xl flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5 border border-emerald-100">
-                            <i class="fa-solid fa-circle-check text-base"></i>
+                            <i class="ph-duotone ph-check-circle text-lg"></i>
                         </div>
                         <div class="space-y-0.5">
                             <div class="text-xs font-extrabold text-slate-900">Berhasil</div>
@@ -373,7 +368,7 @@
                         </div>
                     </div>
                     <button @click="show = false" class="text-slate-400 hover:text-slate-700 p-1">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                        <i class="ph-bold ph-x text-sm"></i>
                     </button>
                 </div>
             @endif
@@ -382,7 +377,7 @@
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xl flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 border border-rose-100">
-                            <i class="fa-solid fa-circle-exclamation text-base"></i>
+                            <i class="ph-duotone ph-warning-circle text-lg"></i>
                         </div>
                         <div class="space-y-0.5">
                             <div class="text-xs font-extrabold text-slate-900">Pemberitahuan</div>
@@ -390,7 +385,7 @@
                         </div>
                     </div>
                     <button @click="show = false" class="text-slate-400 hover:text-slate-700 p-1">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                        <i class="ph-bold ph-x text-sm"></i>
                     </button>
                 </div>
             @endif
@@ -399,7 +394,7 @@
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xl flex items-start justify-between gap-3">
                     <div class="flex items-start gap-3">
                         <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5 border border-blue-100">
-                            <i class="fa-solid fa-circle-info text-base"></i>
+                            <i class="ph-duotone ph-info text-lg"></i>
                         </div>
                         <div class="space-y-0.5">
                             <div class="text-xs font-extrabold text-slate-900">Informasi</div>
@@ -407,7 +402,7 @@
                         </div>
                     </div>
                     <button @click="show = false" class="text-slate-400 hover:text-slate-700 p-1">
-                        <i class="fa-solid fa-xmark text-sm"></i>
+                        <i class="ph-bold ph-x text-sm"></i>
                     </button>
                 </div>
             @endif

@@ -10,7 +10,7 @@
             <p class="text-xs text-slate-600 font-medium">Kelola jadwal sesi pemotretan, unggah pembayaran, dan akses galeri proofing.</p>
         </div>
         <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-md">
-            <i class="fa-solid fa-plus"></i> Booking Pemotretan Baru
+            <i class="ph-duotone ph-plus"></i> Booking Pemotretan Baru
         </a>
     </div>
 
@@ -24,9 +24,9 @@
                     </div>
 
                     <div class="flex flex-wrap gap-4 text-xs text-slate-600 font-medium">
-                        <span><i class="fa-solid fa-box text-slate-400 mr-1"></i> Paket: {{ $b->paket->nama_paket }} (Rp {{ number_format($b->paket->harga ?? 0, 0, ',', '.') }})</span>
-                        <span><i class="fa-regular fa-calendar text-slate-400 mr-1"></i> {{ date('d M Y', strtotime($b->tanggal)) }} ({{ substr($b->waktu, 0, 5) }} WIB)</span>
-                        <span><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> {{ $b->lokasi }}</span>
+                        <span><i class="ph-duotone ph-package text-slate-400 mr-1"></i> Paket: {{ $b->paket->nama_paket }} (Rp {{ number_format($b->paket->harga ?? 0, 0, ',', '.') }})</span>
+                        <span><i class="ph-duotone ph-calendar-blank text-slate-400 mr-1"></i> {{ date('d M Y', strtotime($b->tanggal)) }} ({{ substr($b->waktu, 0, 5) }} WIB)</span>
+                        <span><i class="ph-duotone ph-map-pin text-slate-400 mr-1"></i> {{ $b->lokasi }}</span>
                     </div>
                 </div>
 
@@ -48,8 +48,8 @@
                             Detail Sesi
                         </a>
                         @if($b->galeriFotos->count() > 0)
-                            <a href="{{ route('customer.proofing.show', $b->id) }}" class="px-4 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 text-xs font-bold block text-center shadow-sm">
-                                <i class="fa-solid fa-images mr-1"></i> Proofing
+                            <a href="{{ route('customer.proofing.show', $b->id) }}" class="px-4 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 text-xs font-bold block text-center shadow-sm flex items-center gap-1.5">
+                                <i class="ph-duotone ph-images"></i> Proofing
                             </a>
                         @endif
                     </div>
@@ -57,7 +57,7 @@
             </div>
         @empty
             <div class="clean-card p-12 text-center rounded-2xl space-y-3">
-                <i class="fa-solid fa-camera text-4xl text-slate-300"></i>
+                <i class="ph-duotone ph-camera text-4xl text-slate-300"></i>
                 <h3 class="text-base font-bold text-slate-900">Belum Ada Riwayat Pemesanan</h3>
                 <p class="text-xs text-slate-500 font-medium">Anda belum memiliki pesanan sesi foto. Klik tombol di atas untuk memulai reservasi.</p>
             </div>

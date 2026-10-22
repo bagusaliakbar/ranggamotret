@@ -21,10 +21,10 @@
 
         <div class="flex items-center gap-3">
             <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all">
-                <i class="fa-solid fa-plus text-emerald-400"></i> Booking Sesi Foto
+                <i class="ph-duotone ph-plus text-emerald-400 text-sm"></i> Booking Sesi Foto
             </a>
             <a href="{{ route('student.dashboard') }}" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 hover:bg-slate-50 text-xs font-bold shadow-sm flex items-center gap-2">
-                <i class="fa-solid fa-graduation-cap text-slate-500"></i> Ruang Belajar
+                <i class="ph-duotone ph-graduation-cap text-slate-500 text-sm"></i> Ruang Belajar
             </a>
         </div>
     </div>
@@ -38,7 +38,7 @@
                 <div class="space-y-2 max-w-2xl">
                     <div class="flex items-center gap-2">
                         <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30">
-                            <i class="fa-solid fa-bolt mr-1"></i> Sesi Pemotretan Terdekat
+                            <i class="ph-duotone ph-lightning mr-1"></i> Sesi Pemotretan Terdekat
                         </span>
                         <span class="font-mono text-slate-400 text-[11px]">{{ $upcomingBooking->nomor_booking }}</span>
                     </div>
@@ -49,15 +49,15 @@
 
                     <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-300 font-medium pt-1">
                         <span class="flex items-center gap-1.5">
-                            <i class="fa-regular fa-calendar text-emerald-400"></i>
+                            <i class="ph-duotone ph-calendar-blank text-emerald-400 text-sm"></i>
                             <span>{{ date('d F Y', strtotime($upcomingBooking->tanggal)) }}</span>
                         </span>
                         <span class="flex items-center gap-1.5">
-                            <i class="fa-regular fa-clock text-emerald-400"></i>
+                            <i class="ph-duotone ph-clock text-emerald-400 text-sm"></i>
                             <span>{{ substr($upcomingBooking->waktu, 0, 5) }} WIB</span>
                         </span>
                         <span class="flex items-center gap-1.5">
-                            <i class="fa-solid fa-location-dot text-rose-400"></i>
+                            <i class="ph-duotone ph-map-pin text-rose-400 text-sm"></i>
                             <span class="truncate max-w-xs">{{ $upcomingBooking->lokasi }}</span>
                         </span>
                     </div>
@@ -69,7 +69,7 @@
                     </a>
                     @if($upcomingBooking->status === 'Menunggu Pembayaran' || !$upcomingBooking->is_paid)
                         <a href="{{ route('payments.create', ['booking_id' => $upcomingBooking->id]) }}" class="px-4 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black shadow-md flex items-center gap-1.5 transition-transform active:scale-95">
-                            <i class="fa-solid fa-receipt"></i> Bayar Sesi
+                            <i class="ph-duotone ph-receipt text-sm"></i> Bayar Sesi
                         </a>
                     @endif
                 </div>
@@ -152,7 +152,7 @@
             <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Total Sesi Foto</span>
                 <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-camera"></i>
+                    <i class="ph-duotone ph-camera text-base"></i>
                 </div>
             </div>
             <div class="text-2xl sm:text-3xl font-black text-slate-900">{{ $totalBookings ?? 0 }}</div>
@@ -164,7 +164,7 @@
             <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Sesi Aktif</span>
                 <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-calendar-check"></i>
+                    <i class="ph-duotone ph-calendar-check text-base"></i>
                 </div>
             </div>
             <div class="text-2xl sm:text-3xl font-black text-emerald-700">{{ $activeBookings ?? 0 }}</div>
@@ -176,7 +176,7 @@
             <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Kursus Akademi</span>
                 <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-graduation-cap"></i>
+                    <i class="ph-duotone ph-graduation-cap text-base"></i>
                 </div>
             </div>
             <div class="text-2xl sm:text-3xl font-black text-blue-700">{{ $enrolledCourses ?? 0 }}</div>
@@ -188,7 +188,7 @@
             <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Tagihan Pending</span>
                 <div class="w-8 h-8 rounded-xl {{ ($pendingPayments ?? 0) > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-400' }} flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-receipt"></i>
+                    <i class="ph-duotone ph-receipt text-base"></i>
                 </div>
             </div>
             <div class="text-2xl sm:text-3xl font-black {{ ($pendingPayments ?? 0) > 0 ? 'text-amber-700' : 'text-slate-900' }}">{{ $pendingPayments ?? 0 }}</div>
@@ -203,7 +203,7 @@
         <div class="lg:col-span-8 space-y-4">
             <div class="flex items-center justify-between">
                 <h2 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-days text-slate-500"></i> Sesi Pemotretan Terbaru
+                    <i class="ph-duotone ph-calendar-blank text-slate-500 text-lg"></i> Sesi Pemotretan Terbaru
                 </h2>
                 <a href="{{ route('customer.bookings.index') }}" class="text-xs font-bold text-slate-600 hover:text-slate-900">
                     Lihat Semua &rarr;
@@ -221,8 +221,8 @@
                                 <h3 class="text-sm font-extrabold text-slate-900 truncate">{{ $b->layanan->nama }}</h3>
                             </div>
                             <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 font-medium">
-                                <span><i class="fa-solid fa-box text-slate-400 mr-1"></i> Paket {{ $b->paket->nama_paket }}</span>
-                                <span><i class="fa-regular fa-calendar text-slate-400 mr-1"></i> {{ date('d M Y', strtotime($b->tanggal)) }} ({{ substr($b->waktu, 0, 5) }} WIB)</span>
+                                <span><i class="ph-duotone ph-package text-slate-400 mr-1"></i> Paket {{ $b->paket->nama_paket }}</span>
+                                <span><i class="ph-duotone ph-calendar-blank text-slate-400 mr-1"></i> {{ date('d M Y', strtotime($b->tanggal)) }} ({{ substr($b->waktu, 0, 5) }} WIB)</span>
                             </div>
                         </div>
 
@@ -245,7 +245,7 @@
                                 </a>
                                 @if($b->galeriFotos->count() > 0)
                                     <a href="{{ route('customer.proofing.show', $b->id) }}" class="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5">
-                                        <i class="fa-solid fa-images text-[11px]"></i> Proofing
+                                        <i class="ph-duotone ph-images text-sm"></i> Proofing
                                     </a>
                                 @endif
                             </div>
@@ -253,11 +253,11 @@
                     </div>
                 @empty
                     <div class="clean-card p-10 text-center rounded-3xl space-y-3 bg-white border border-slate-200">
-                        <i class="fa-solid fa-calendar-plus text-3xl text-slate-300"></i>
+                        <i class="ph-duotone ph-camera-plus text-4xl text-slate-300"></i>
                         <h4 class="text-sm font-bold text-slate-900">Belum Ada Sesi Pemotretan</h4>
                         <p class="text-xs text-slate-500 max-w-sm mx-auto">Anda belum memiliki pesanan jadwal foto. Mulai abadikan momen spesial Anda bersama RanggaMotret.</p>
                         <a href="{{ route('customer.bookings.create') }}" class="btn-dark inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold shadow-md mt-2">
-                            <i class="fa-solid fa-plus"></i> Buat Booking Sekarang
+                            <i class="ph-duotone ph-plus"></i> Buat Booking Sekarang
                         </a>
                     </div>
                 @endforelse
@@ -270,7 +270,7 @@
             <div class="space-y-4">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-extrabold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-slate-500"></i> Kursus Saya
+                        <i class="ph-duotone ph-graduation-cap text-slate-500 text-lg"></i> Kursus Saya
                     </h2>
                     <a href="{{ route('student.dashboard') }}" class="text-xs font-bold text-slate-600 hover:text-slate-900">
                         Ruang Belajar &rarr;
@@ -313,14 +313,14 @@
                                 </a>
                                 @if($enroll->sertifikat)
                                     <a href="{{ route('student.certificate.show', $enroll->sertifikat->id) }}" target="_blank" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] uppercase tracking-wider shrink-0 flex items-center gap-1 shadow-sm" title="Lihat Sertifikat">
-                                        <i class="fa-solid fa-award"></i>
+                                        <i class="ph-duotone ph-certificate text-sm"></i>
                                     </a>
                                 @endif
                             </div>
                         </div>
                     @empty
                         <div class="clean-card p-6 text-center rounded-2xl space-y-2 bg-white border border-slate-200">
-                            <i class="fa-solid fa-book-open text-2xl text-slate-300"></i>
+                            <i class="ph-duotone ph-book-open text-3xl text-slate-300"></i>
                             <p class="text-xs text-slate-500 font-medium">Belum ada kursus aktif.</p>
                             <a href="{{ route('public.courses') }}" class="text-xs font-bold text-slate-900 hover:underline block pt-1">
                                 Eksplor Katalog Kursus &rarr;
@@ -333,7 +333,7 @@
             <!-- Quick Assistance Card -->
             <div class="clean-card p-6 rounded-3xl bg-slate-900 text-white space-y-3 shadow-xl">
                 <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-white text-xs">
-                    <i class="fa-solid fa-headset"></i>
+                    <i class="ph-duotone ph-chats-circle text-base"></i>
                 </div>
                 <div>
                     <h4 class="font-black text-sm text-white">Butuh Konsultasi Konsep?</h4>
