@@ -83,13 +83,22 @@ class KursusController extends Controller
         $inProgressCourses = $enrollments->filter(fn($e) => $e->progress_persen < 100)->count();
         $totalCertificates = $certificates->count();
 
+        // Ambil data transaksi kursus yang pembayarannya belum selesai
+        $pendingCoursePayments = Pembayaran::where('user_id', $user->id)
+            ->whereNotNull('kursus_id')
+            ->whereIn('status', ['Belum Dibayar', 'Menunggu Verifikasi'])
+            ->with(['kursus.instruktur'])
+            ->latest()
+            ->get();
+
         return view('dashboard.student', compact(
             'enrollments', 
             'certificates',
             'totalEnrolled',
             'completedCourses',
             'inProgressCourses',
-            'totalCertificates'
+            'totalCertificates',
+            'pendingCoursePayments'
         ));
     }
 

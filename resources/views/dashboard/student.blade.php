@@ -68,6 +68,107 @@
         </div>
     </div>
 
+    <!-- Pending Unpaid Courses Alert & Cards -->
+    @if(isset($pendingCoursePayments) && $pendingCoursePayments->isNotEmpty())
+        <div class="space-y-4">
+            <div class="p-4 sm:p-5 rounded-3xl bg-amber-50/90 border-2 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                <div class="flex items-start sm:items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-xl shrink-0 shadow-xs">
+                        <i class="ph-duotone ph-warning-circle"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm text-slate-900">Perhatian: Pendaftaran Kursus Belum Selesai</h3>
+                        <p class="text-xs text-amber-900 font-medium mt-0.5 leading-relaxed">
+                            Anda memiliki <strong>{{ $pendingCoursePayments->count() }} kursus</strong> yang pembayarannya belum selesai. Selesaikan pembayaran untuk membuka akses materi video, modul belajar, dan tugas praktik.
+                        </p>
+                    </div>
+                </div>
+                @if($pendingCoursePayments->count() === 1)
+                    <a href="{{ route('payments.create', ['kursus_id' => $pendingCoursePayments->first()->kursus_id]) }}" 
+                       class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
+                        <i class="ph-duotone ph-credit-card text-emerald-400"></i>
+                        <span>Bayar Sekarang (Rp {{ number_format($pendingCoursePayments->first()->jumlah ?? 0, 0, ',', '.') }})</span>
+                    </a>
+                @endif
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($pendingCoursePayments as $pay)
+                    <div class="clean-card rounded-3xl overflow-hidden flex flex-col justify-between group border-2 border-amber-300 ring-4 ring-amber-400/10 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
+                        <div>
+                            <!-- Thumbnail with Unpaid Badge -->
+                            <div class="aspect-[16/10] overflow-hidden relative bg-slate-200">
+                                @if($pay->kursus && $pay->kursus->thumbnail)
+                                    <img src="{{ $pay->kursus->thumbnail }}" alt="{{ $pay->kursus->nama }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full bg-slate-800 flex items-center justify-center text-white">
+                                        <i class="ph-duotone ph-graduation-cap text-3xl text-amber-400"></i>
+                                    </div>
+                                @endif
+                                
+                                <div class="absolute top-3 left-3">
+                                    <span class="px-2.5 py-1 rounded-full bg-slate-900/90 text-white text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-sm shadow-sm">
+                                        {{ $pay->kursus->level ?? 'Semua Tingkat' }}
+                                    </span>
+                                </div>
+
+                                <div class="absolute top-3 right-3">
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm {{ $pay->status === 'Menunggu Verifikasi' ? 'bg-sky-500 text-white' : 'bg-amber-500 text-slate-950' }}">
+                                        {{ $pay->status === 'Menunggu Verifikasi' ? 'Verifikasi Admin' : 'Belum Selesai' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="p-6 space-y-4">
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                                        <span>Kode: {{ $pay->nomor_transaksi }}</span>
+                                        <span class="font-sans font-bold text-slate-900">Rp {{ number_format($pay->jumlah, 0, ',', '.') }}</span>
+                                    </div>
+                                    <h3 class="text-base font-extrabold text-slate-900 leading-snug line-clamp-2">
+                                        {{ $pay->kursus->nama ?? 'Kursus Akademi' }}
+                                    </h3>
+                                </div>
+
+                                <!-- Status Box -->
+                                <div class="p-3.5 rounded-2xl border text-xs {{ $pay->status === 'Menunggu Verifikasi' ? 'bg-sky-50 border-sky-200 text-sky-900' : 'bg-amber-50 border-amber-200 text-amber-900' }}">
+                                    <div class="flex items-start gap-2">
+                                        <i class="ph-duotone {{ $pay->status === 'Menunggu Verifikasi' ? 'ph-clock text-sky-600' : 'ph-warning-circle text-amber-600' }} text-base mt-0.5 shrink-0"></i>
+                                        <div>
+                                            <span class="font-black block text-xs">
+                                                {{ $pay->status === 'Menunggu Verifikasi' ? 'Menunggu Verifikasi Owner' : 'Pembayaran Belum Diselesaikan' }}
+                                            </span>
+                                            <p class="text-[11px] mt-0.5 font-medium leading-relaxed">
+                                                {{ $pay->status === 'Menunggu Verifikasi' 
+                                                    ? 'Struk transfer manual sedang diverifikasi admin. Ruang belajar akan terbuka setelah disetujui.' 
+                                                    : 'Selesaikan transaksi agar kelas dan materi pembelajaran langsung aktif.' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="p-6 pt-0 space-y-2">
+                            @if($pay->status === 'Menunggu Verifikasi')
+                                <a href="{{ route('payments.index') }}" class="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
+                                    <i class="ph-duotone ph-clock text-base"></i>
+                                    <span>Cek Status Verifikasi</span>
+                                </a>
+                            @else
+                                <a href="{{ route('payments.create', ['kursus_id' => $pay->kursus_id]) }}" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
+                                    <i class="ph-duotone ph-credit-card text-base"></i>
+                                    <span>Selesaikan Pembayaran Sekarang</span>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <!-- Enrolled Courses Grid -->
     <div class="space-y-4">
         <div class="flex items-center justify-between">

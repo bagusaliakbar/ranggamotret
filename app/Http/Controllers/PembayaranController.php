@@ -319,14 +319,40 @@ class PembayaranController extends Controller
     public function adminIndex(Request $request)
     {
         $status = $request->query('status');
-        $query = Pembayaran::with(['user', 'booking.layanan', 'kursus']);
+        $metode = $request->query('metode');
+
+        $query = Pembayaran::with(['user', 'booking.layanan', 'booking.paket', 'kursus']);
 
         if ($status) {
             $query->where('status', $status);
         }
 
-        $pembayarans = $query->latest()->paginate(15);
-        return view('pembayaran.admin', compact('pembayarans', 'status'));
+        if ($metode === 'manual') {
+            $query->where(function($q) {
+                $q->where('metode_pembayaran', 'like', '%Transfer%')
+                  ->orWhereNotNull('bukti_pembayaran');
+            });
+        } elseif ($metode === 'gateway') {
+            $query->where('metode_pembayaran', 'like', '%Midtrans%');
+        }
+
+        $pembayarans = $query->latest()->paginate(15)->withQueryString();
+
+        // Hitung statistik untuk badge & filter tab
+        $countManualPending = Pembayaran::where('status', 'Menunggu Verifikasi')->count();
+        $countGateway = Pembayaran::where('metode_pembayaran', 'like', '%Midtrans%')->count();
+        $countLunas = Pembayaran::where('status', 'Dibayar')->count();
+        $countTotal = Pembayaran::count();
+
+        return view('pembayaran.admin', compact(
+            'pembayarans', 
+            'status', 
+            'metode',
+            'countManualPending',
+            'countGateway',
+            'countLunas',
+            'countTotal'
+        ));
     }
 
     /**
