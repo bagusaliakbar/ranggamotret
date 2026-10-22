@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Booking;
+use App\Models\Reservasi;
 use App\Models\Pembayaran;
-use App\Models\Layanan;
+use App\Models\Katalog;
 use App\Models\Kursus;
 use App\Models\Enrollment;
 use App\Models\QuizAttempt;
@@ -29,13 +29,13 @@ class LaporanController extends Controller
         $type = $request->query('type', 'services'); // services, financial, courses
 
         // 1. Laporan Layanan & Reservasi Fotografi
-        $totalBookings = Booking::count();
-        $totalBookingDone = Booking::where('status', 'Selesai')->count();
-        $bookingsByStatus = Booking::select('status', DB::raw('count(*) as count'))
+        $totalBookings = Reservasi::count();
+        $totalBookingDone = Reservasi::where('status', 'Selesai')->count();
+        $bookingsByStatus = Reservasi::select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->pluck('count', 'status');
 
-        $popularServices = Layanan::withCount('bookings')->orderByDesc('bookings_count')->get();
+        $popularServices = Katalog::withCount('bookings')->orderByDesc('bookings_count')->get();
 
         // 2. Laporan Keuangan & Omzet
         $totalPendapatan = Pembayaran::where('status', 'Dibayar')->sum('jumlah');

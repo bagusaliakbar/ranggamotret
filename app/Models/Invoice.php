@@ -32,7 +32,12 @@ class Invoice extends Model
 
     public function booking()
     {
-        return $this->belongsTo(Booking::class, 'booking_id');
+        return $this->belongsTo(Reservasi::class, 'booking_id');
+    }
+
+    public function reservasi()
+    {
+        return $this->belongsTo(Reservasi::class, 'booking_id');
     }
 
     public function kursus()

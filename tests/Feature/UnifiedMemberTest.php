@@ -45,7 +45,7 @@ test('unified member can access both customer booking dashboard and student lms 
 });
 
 test('public service detail page renders successfully with luxury UI', function () {
-    $layanan = \App\Models\Layanan::create([
+    $layanan = \App\Models\Katalog::create([
         'nama' => 'Wedding Luxury Photography',
         'kategori' => 'Wedding',
         'deskripsi' => 'Layanan dokumentasi pernikahan eksklusif.',

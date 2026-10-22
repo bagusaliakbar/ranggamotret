@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Booking;
 use App\Models\Reservasi;
-use App\Models\Layanan;
+use App\Models\Katalog;
 use App\Models\Paket;
 use App\Models\Pembayaran;
 use App\Models\Enrollment;
@@ -41,7 +40,7 @@ class ReservasiController extends Controller
 
     public function customerIndex()
     {
-        $bookings = Booking::where('user_id', Auth::id())
+        $bookings = Reservasi::where('user_id', Auth::id())
             ->with(['layanan', 'paket', 'pembayaran'])
             ->latest()
             ->get();
@@ -57,7 +56,7 @@ class ReservasiController extends Controller
         $layananId = $request->query('layanan_id');
         $paketId = $request->query('paket_id');
 
-        $layananList = Layanan::where('status', 'aktif')
+        $layananList = Katalog::where('status', 'aktif')
             ->with(['pakets' => fn($q) => $q->where('status', 'aktif')])
             ->get();
         $selectedPaket = $paketId ? Paket::where('status', 'aktif')->find($paketId) : null;
@@ -102,7 +101,7 @@ class ReservasiController extends Controller
 
         $bookingNumber = 'BK-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
 
-        $booking = Booking::create([
+        $booking = Reservasi::create([
             'nomor_booking' => $bookingNumber,
             'user_id' => Auth::id(),
             'layanan_id' => $validated['layanan_id'],
@@ -136,7 +135,7 @@ class ReservasiController extends Controller
 
     public function customerShow($id)
     {
-        $booking = Booking::where('user_id', Auth::id())
+        $booking = Reservasi::where('user_id', Auth::id())
             ->with(['layanan', 'paket', 'pembayaran.invoice', 'galeriFotos', 'testimoni'])
             ->findOrFail($id);
 
@@ -153,7 +152,7 @@ class ReservasiController extends Controller
     public function adminIndex(Request $request)
     {
         $status = $request->query('status');
-        $query = Booking::with(['customer', 'layanan', 'paket', 'pembayaran']);
+        $query = Reservasi::with(['customer', 'layanan', 'paket', 'pembayaran']);
 
         if ($status) {
             $query->where('status', $status);
@@ -170,7 +169,7 @@ class ReservasiController extends Controller
      */
     public function adminShow($id)
     {
-        $booking = Booking::with(['customer', 'layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])->findOrFail($id);
+        $booking = Reservasi::with(['customer', 'layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])->findOrFail($id);
         return view('admin.bookings.show', compact('booking'));
     }
 
@@ -183,7 +182,7 @@ class ReservasiController extends Controller
             'status' => 'required|string',
         ]);
 
-        $booking = Booking::findOrFail($id);
+        $booking = Reservasi::findOrFail($id);
         $booking->status = $request->status;
         $booking->save();
 
@@ -206,7 +205,7 @@ class ReservasiController extends Controller
      */
     public function customerProofing($bookingId)
     {
-        $booking = Booking::where('user_id', Auth::id())
+        $booking = Reservasi::where('user_id', Auth::id())
             ->with(['layanan', 'paket', 'galeriFotos'])
             ->findOrFail($bookingId);
 
@@ -244,7 +243,7 @@ class ReservasiController extends Controller
             'fotos.*' => 'required|image|max:10240',
         ]);
 
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Reservasi::findOrFail($bookingId);
 
         if ($request->hasFile('fotos')) {
             foreach ($request->file('fotos') as $file) {

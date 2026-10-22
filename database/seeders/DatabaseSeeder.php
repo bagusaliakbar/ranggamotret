@@ -4,10 +4,11 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use App\Models\Layanan;
+use App\Models\Katalog;
 use App\Models\Paket;
-use App\Models\Booking;
+use App\Models\Reservasi;
 use App\Models\Pembayaran;
 use App\Models\Invoice;
 use App\Models\Kursus;
@@ -22,7 +23,6 @@ use App\Models\Portofolio;
 use App\Models\GaleriFoto;
 use App\Models\Konsultasi;
 use App\Models\Testimoni;
-use App\Models\Promo;
 use App\Models\Notifikasi;
 use Carbon\Carbon;
 
@@ -74,8 +74,8 @@ class DatabaseSeeder extends Seeder
             'address' => 'Dago, Bandung',
         ]);
 
-        // 2. Seed Photography Services (Layanan)
-        $layananWedding = Layanan::create([
+        // 2. Seed Photography Services (Katalog)
+        $layananWedding = Katalog::create([
             'nama' => 'Wedding Photography',
             'kategori' => 'Wedding',
             'deskripsi' => 'Abadikan momen bahagia pernikahan Anda dengan sentuhan sinematik dan timeless dari tim fotografer profesional RanggaMotret.',
@@ -84,7 +84,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        $layananPrewedding = Layanan::create([
+        $layananPrewedding = Katalog::create([
             'nama' => 'Prewedding Photography',
             'kategori' => 'Prewedding',
             'deskripsi' => 'Sesi foto prewedding dengan konsep romantis baik indoor studio maupun outdoor lokasi sesuai tempat impian Anda.',
@@ -93,7 +93,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        $layananGraduation = Layanan::create([
+        $layananGraduation = Katalog::create([
             'nama' => 'Graduation Photography',
             'kategori' => 'Graduation',
             'deskripsi' => 'Dokumentasi wisuda eksklusif individu maupun keluarga untuk merayakan pencapaian akademik berharga.',
@@ -102,7 +102,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        $layananPortrait = Layanan::create([
+        $layananPortrait = Katalog::create([
             'nama' => 'Personal & Studio Portrait',
             'kategori' => 'Portrait',
             'deskripsi' => 'Foto portrait profesional untuk personal branding, model portfolio, maupun headshot studio.',
@@ -111,7 +111,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        $layananProduct = Layanan::create([
+        $layananProduct = Katalog::create([
             'nama' => 'Product Photography',
             'kategori' => 'Product',
             'deskripsi' => 'Foto produk komersial resolusi tinggi untuk e-commerce, katalog marketplace, dan materi iklan sosial media.',
@@ -157,8 +157,8 @@ class DatabaseSeeder extends Seeder
             'status' => 'aktif',
         ]);
 
-        // 4. Seed Booking & Payments & Invoices
-        $booking1 = Booking::create([
+        // 4. Seed Booking & Payments & Invoices (Reservasi)
+        $booking1 = Reservasi::create([
             'nomor_booking' => 'BK-' . date('Ymd') . '-001',
             'user_id' => $customer1->id,
             'layanan_id' => $layananWedding->id,
@@ -374,7 +374,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 8. Seed Promo & Notifications
-        Promo::create([
+        DB::table('promo')->insert([
             'kode_promo' => 'RANGGANEW2026',
             'deskripsi' => 'Diskon 10% untuk pendaftaran kursus fotografi pertama Anda.',
             'diskon_persen' => 10,
@@ -382,6 +382,8 @@ class DatabaseSeeder extends Seeder
             'berlaku_dari' => Carbon::now()->subDays(5),
             'berlaku_sampai' => Carbon::now()->addDays(30),
             'status' => 'aktif',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         Notifikasi::create([

@@ -21,32 +21,33 @@ class KategoriLayanan extends Model
     ];
 
     /**
-     * Relationship to Layanan (by category name).
+     * Relationship to Katalog (by category name).
      */
+    public function katalog()
+    {
+        return $this->hasMany(Katalog::class, 'kategori', 'nama');
+    }
+
     public function layanan()
     {
-        return $this->hasMany(Layanan::class, 'kategori', 'nama');
+        return $this->hasMany(Katalog::class, 'kategori', 'nama');
     }
 
-    /**
-     * Relationship to Active Layanan.
-     */
+    public function activeKatalog()
+    {
+        return $this->hasMany(Katalog::class, 'kategori', 'nama')->where('status', 'aktif');
+    }
+
     public function activeLayanan()
     {
-        return $this->hasMany(Layanan::class, 'kategori', 'nama')->where('status', 'aktif');
+        return $this->hasMany(Katalog::class, 'kategori', 'nama')->where('status', 'aktif');
     }
 
-    /**
-     * Scope for active categories.
-     */
     public function scopeActive($query)
     {
         return $query->where('status', 'aktif');
     }
 
-    /**
-     * Auto-generate slug before saving if not provided.
-     */
     protected static function boot()
     {
         parent::boot();

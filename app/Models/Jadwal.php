@@ -3,12 +3,12 @@
 namespace App\Models;
 
 /**
- * Model Jadwal (Entitas Jadwal Sesi Pemotretan & Mengajar)
+ * Model Jadwal (ICONIX Robustness: Entity Jadwal)
  * 
  * Merepresentasikan Entity Object 'Jadwal' pada Robustness Diagram.
  * Terhubung dengan boundary 'jadwal' melalui JadwalController.
  */
-class Jadwal extends Booking
+class Jadwal extends Reservasi
 {
     protected $table = 'booking';
 

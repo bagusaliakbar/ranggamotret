@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Layanan;
+use App\Models\Katalog;
 use App\Models\Paket;
 use App\Models\Portofolio;
 use App\Models\Kursus;
@@ -15,7 +15,7 @@ class PublicController extends Controller
 {
     public function home()
     {
-        $layanan = Layanan::where('status', 'aktif')->take(6)->get();
+        $layanan = Katalog::where('status', 'aktif')->take(6)->get();
         $portofolio = Portofolio::where('status_publikasi', 'published')->take(6)->get();
         $kursus = Kursus::where('status', 'aktif')->take(3)->get();
         $testimoni = Testimoni::where('status', 'approved')->with('user')->take(6)->get();
@@ -26,7 +26,7 @@ class PublicController extends Controller
     public function services(Request $request)
     {
         $category = $request->query('category');
-        $query = Layanan::where('status', 'aktif')->with(['pakets' => fn($q) => $q->where('status', 'aktif')]);
+        $query = Katalog::where('status', 'aktif')->with(['pakets' => fn($q) => $q->where('status', 'aktif')]);
 
         if ($category) {
             $query->where('kategori', $category);
@@ -35,7 +35,7 @@ class PublicController extends Controller
         $layanan = $query->get();
         $categories = \App\Models\KategoriLayanan::where('status', 'aktif')->pluck('nama');
         if ($categories->isEmpty()) {
-            $categories = Layanan::where('status', 'aktif')->select('kategori')->distinct()->pluck('kategori');
+            $categories = Katalog::where('status', 'aktif')->select('kategori')->distinct()->pluck('kategori');
         }
 
         return view('public.services', compact('layanan', 'categories', 'category'));
@@ -43,11 +43,11 @@ class PublicController extends Controller
 
     public function serviceDetail($id)
     {
-        $layanan = Layanan::where('status', 'aktif')
+        $layanan = Katalog::where('status', 'aktif')
             ->with(['pakets' => fn($q) => $q->where('status', 'aktif')])
             ->findOrFail($id);
 
-        $otherServices = Layanan::where('status', 'aktif')
+        $otherServices = Katalog::where('status', 'aktif')
             ->where('id', '!=', $layanan->id)
             ->take(3)
             ->get();
@@ -106,7 +106,7 @@ class PublicController extends Controller
 
     public function consultation()
     {
-        $layananList = Layanan::where('status', 'aktif')->pluck('nama');
+        $layananList = Katalog::where('status', 'aktif')->pluck('nama');
         return view('public.consultation', compact('layananList'));
     }
 

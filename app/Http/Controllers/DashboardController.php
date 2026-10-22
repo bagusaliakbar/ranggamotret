@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Booking;
+use App\Models\Reservasi;
 use App\Models\Pembayaran;
 use App\Models\Kursus;
 use App\Models\User;
@@ -49,8 +49,8 @@ class DashboardController extends Controller
      */
     protected function adminDashboard(Request $request)
     {
-        $totalBooking = Booking::count();
-        $bookingPending = Booking::where('status', 'Menunggu Konfirmasi')->count();
+        $totalBooking = Reservasi::count();
+        $bookingPending = Reservasi::where('status', 'Menunggu Konfirmasi')->count();
         $totalPendapatan = Pembayaran::where('status', 'Dibayar')->sum('jumlah');
         $pembayaranPending = Pembayaran::where('status', 'Menunggu Verifikasi')->count();
         $totalKursus = Kursus::count();
@@ -59,7 +59,7 @@ class DashboardController extends Controller
         $pendingConsultations = Konsultasi::where('status', 'pending')->count();
         $pendingTestimonials = Testimoni::where('status', 'pending')->count();
 
-        $recentBookings = Booking::with(['customer', 'layanan'])->latest()->take(5)->get();
+        $recentBookings = Reservasi::with(['customer', 'layanan'])->latest()->take(5)->get();
         $recentPayments = Pembayaran::with('user')->where('status', 'Menunggu Verifikasi')->latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
@@ -104,11 +104,11 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $totalBookings = Booking::where('user_id', $user->id)->count();
-        $activeBookings = Booking::where('user_id', $user->id)
+        $totalBookings = Reservasi::where('user_id', $user->id)->count();
+        $activeBookings = Reservasi::where('user_id', $user->id)
             ->whereIn('status', ['Menunggu Konfirmasi', 'Disetujui', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal'])
             ->count();
-        $completedBookings = Booking::where('user_id', $user->id)
+        $completedBookings = Reservasi::where('user_id', $user->id)
             ->where('status', 'Selesai')
             ->count();
         $enrolledCourses = Enrollment::where('user_id', $user->id)->count();
@@ -116,7 +116,7 @@ class DashboardController extends Controller
             ->where('status', 'pending')
             ->count();
 
-        $recentBookings = Booking::where('user_id', $user->id)
+        $recentBookings = Reservasi::where('user_id', $user->id)
             ->with(['layanan', 'paket', 'pembayaran'])
             ->latest()
             ->take(5)

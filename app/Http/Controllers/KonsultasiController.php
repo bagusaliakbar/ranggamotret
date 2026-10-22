@@ -21,7 +21,7 @@ class KonsultasiController extends Controller
      */
     public function index()
     {
-        $layananList = \App\Models\Layanan::where('status', 'aktif')->pluck('nama');
+        $layananList = \App\Models\Katalog::where('status', 'aktif')->pluck('nama');
         if ($layananList->isEmpty()) {
             $layananList = collect(['Wedding & Prewedding', 'Wisuda / Graduation', 'Studio Portrait & Group', 'Event & Gathering', 'Produk & Komersial']);
         }

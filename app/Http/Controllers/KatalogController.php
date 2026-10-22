@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Katalog;
-use App\Models\Layanan;
 use App\Models\Paket;
 use App\Models\KategoriLayanan;
 use Illuminate\Support\Facades\File;
@@ -31,14 +30,14 @@ class KatalogController extends Controller
     {
         $kategori = $request->query('kategori') ?? $request->query('category');
         $category = $kategori;
-        $query = Layanan::with(['pakets' => fn($q) => $q->where('status', 'aktif')])->where('status', 'aktif');
+        $query = Katalog::with(['pakets' => fn($q) => $q->where('status', 'aktif')])->where('status', 'aktif');
 
         if ($kategori) {
             $query->where('kategori', $kategori);
         }
 
         $layanan = $query->latest()->get();
-        $categories = Layanan::where('status', 'aktif')->select('kategori')->distinct()->pluck('kategori');
+        $categories = Katalog::where('status', 'aktif')->select('kategori')->distinct()->pluck('kategori');
 
         return view('public.services', compact('layanan', 'categories', 'kategori', 'category'));
     }
@@ -48,11 +47,11 @@ class KatalogController extends Controller
      */
     public function detail($id)
     {
-        $layanan = Layanan::with(['pakets' => fn($q) => $q->where('status', 'aktif')])
+        $layanan = Katalog::with(['pakets' => fn($q) => $q->where('status', 'aktif')])
             ->where('status', 'aktif')
             ->findOrFail($id);
 
-        $otherServices = Layanan::where('status', 'aktif')
+        $otherServices = Katalog::where('status', 'aktif')
             ->where('id', '!=', $id)
             ->take(3)
             ->get();
@@ -73,7 +72,7 @@ class KatalogController extends Controller
         $kategori = $request->query('kategori');
         $status = $request->query('status');
 
-        $query = Layanan::with(['pakets'])->withCount('bookings');
+        $query = Katalog::with(['pakets'])->withCount('bookings');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -93,14 +92,14 @@ class KatalogController extends Controller
 
         $layananList = $query->latest()->get();
 
-        $totalLayanan = Layanan::count();
-        $layananAktif = Layanan::where('status', 'aktif')->count();
-        $layananNonaktif = Layanan::where('status', 'nonaktif')->count();
+        $totalLayanan = Katalog::count();
+        $layananAktif = Katalog::where('status', 'aktif')->count();
+        $layananNonaktif = Katalog::where('status', 'nonaktif')->count();
         $totalPaket = Paket::count();
         $paketAktif = Paket::where('status', 'aktif')->count();
 
         $dbCategories = KategoriLayanan::orderBy('nama')->pluck('nama');
-        $existingCategories = Layanan::select('kategori')->distinct()->pluck('kategori');
+        $existingCategories = Katalog::select('kategori')->distinct()->pluck('kategori');
         $categories = $dbCategories->merge($existingCategories)->unique()->filter()->sort()->values();
 
         return view('admin.layanan.index', compact(
@@ -163,7 +162,7 @@ class KatalogController extends Controller
             $thumbnailPath = 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80';
         }
 
-        $layanan = Layanan::create([
+        $layanan = Katalog::create([
             'nama' => $validated['nama'],
             'kategori' => $finalKategori,
             'deskripsi' => $validated['deskripsi'] ?? null,
@@ -180,7 +179,7 @@ class KatalogController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $layanan = Layanan::findOrFail($id);
+        $layanan = Katalog::findOrFail($id);
 
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
@@ -245,7 +244,7 @@ class KatalogController extends Controller
      */
     public function destroy($id)
     {
-        $layanan = Layanan::withCount('bookings')->findOrFail($id);
+        $layanan = Katalog::withCount('bookings')->findOrFail($id);
         $nama = $layanan->nama;
         $totalBookings = $layanan->bookings_count;
 
@@ -271,7 +270,7 @@ class KatalogController extends Controller
      */
     public function toggleStatus($id)
     {
-        $layanan = Layanan::findOrFail($id);
+        $layanan = Katalog::findOrFail($id);
         $layanan->status = $layanan->status === 'aktif' ? 'nonaktif' : 'aktif';
         $layanan->save();
 
@@ -285,7 +284,7 @@ class KatalogController extends Controller
 
     public function storePaket(Request $request, $layananId)
     {
-        $layanan = Layanan::findOrFail($layananId);
+        $layanan = Katalog::findOrFail($layananId);
 
         $validated = $request->validate([
             'nama_paket' => 'required|string|max:255',
@@ -392,7 +391,7 @@ class KatalogController extends Controller
 
         $totalKategori = KategoriLayanan::count();
         $kategoriAktif = KategoriLayanan::where('status', 'aktif')->count();
-        $totalLayananConnected = Layanan::count();
+        $totalLayananConnected = Katalog::count();
 
         $iconPresets = [
             'fa-ring' => 'Cincin / Wedding',
@@ -486,7 +485,7 @@ class KatalogController extends Controller
         ]);
 
         if ($oldName !== $newName) {
-            Layanan::where('kategori', $oldName)->update(['kategori' => $newName]);
+            Katalog::where('kategori', $oldName)->update(['kategori' => $newName]);
         }
 
         return redirect()->route('admin.kategori-layanan.index')

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Pembayaran;
-use App\Models\Booking;
+use App\Models\Reservasi;
 use App\Models\Kursus;
 use App\Models\Invoice;
 use App\Models\Enrollment;
@@ -45,7 +45,7 @@ class PembayaranController extends Controller
         $bookingId = $request->query('booking_id');
         $kursusId = $request->query('kursus_id');
 
-        $booking = $bookingId ? Booking::with(['layanan', 'paket', 'customer'])->where('user_id', Auth::id())->find($bookingId) : null;
+        $booking = $bookingId ? Reservasi::with(['layanan', 'paket', 'customer'])->where('user_id', Auth::id())->find($bookingId) : null;
         $kursus = $kursusId ? Kursus::find($kursusId) : null;
 
         $snapToken = null;
@@ -111,7 +111,7 @@ class PembayaranController extends Controller
         ]);
 
         if (!empty($validated['booking_id'])) {
-            $booking = Booking::find($validated['booking_id']);
+            $booking = Reservasi::find($validated['booking_id']);
             $booking->status = 'Menunggu Pembayaran';
             $booking->save();
         }
@@ -166,7 +166,7 @@ class PembayaranController extends Controller
             }
 
             $baseBookingNumber = explode('-T', $orderId)[0];
-            $booking = Booking::where('nomor_booking', $orderId)
+            $booking = Reservasi::where('nomor_booking', $orderId)
                 ->orWhere('nomor_booking', $baseBookingNumber)
                 ->first();
             if ($booking) {
@@ -237,7 +237,7 @@ class PembayaranController extends Controller
             );
 
             if ($pembayaran->booking_id) {
-                $booking = Booking::find($pembayaran->booking_id);
+                $booking = Reservasi::find($pembayaran->booking_id);
                 $booking->status = 'Dibayar';
                 $booking->save();
             }

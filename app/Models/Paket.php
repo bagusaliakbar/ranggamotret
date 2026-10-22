@@ -22,6 +22,11 @@ class Paket extends Model
 
     public function layanan()
     {
-        return $this->belongsTo(Layanan::class, 'layanan_id');
+        return $this->belongsTo(Katalog::class, 'layanan_id');
+    }
+
+    public function katalog()
+    {
+        return $this->belongsTo(Katalog::class, 'layanan_id');
     }
 }

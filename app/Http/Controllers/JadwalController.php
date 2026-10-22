@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Jadwal;
-use App\Models\Booking;
+use App\Models\Reservasi;
 
 /**
- * Controller Pengelolaan Jadwal & Kalender Pemotretan
+ * Controller Pengelolaan Jadwal & Kalender Pemotretan (ICONIX Robustness: JadwalController)
  * 
  * Merepresentasikan Control Object 'JadwalController' pada Robustness Diagram.
  * Terhubung dengan boundary 'jadwal' dan entity 'Jadwal' serta 'Reservasi'.
@@ -22,9 +22,9 @@ class JadwalController extends Controller
     {
         $user = Auth::user();
         if ($user->isAdmin()) {
-            $bookings = Booking::with(['customer', 'layanan'])->get();
+            $bookings = Jadwal::with(['customer', 'layanan'])->get();
         } else {
-            $bookings = Booking::where('user_id', $user->id)->with('layanan')->get();
+            $bookings = Jadwal::where('user_id', $user->id)->with('layanan')->get();
         }
 
         $events = $bookings->map(function ($b) {

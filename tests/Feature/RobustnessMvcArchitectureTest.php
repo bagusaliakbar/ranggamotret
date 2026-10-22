@@ -37,3 +37,24 @@ test('controllers and routes corresponding to robustness boundaries respond with
     $this->actingAs($user)->get('/pembayaran')->assertStatus(200);
     $this->actingAs($user)->get('/jadwal')->assertStatus(200);
 });
+
+test('nine robustness diagram entity models are properly registered and functional', function () {
+    $robustnessEntities = [
+        \App\Models\User::class,
+        \App\Models\Katalog::class,
+        \App\Models\Kursus::class,
+        \App\Models\Materi::class,
+        \App\Models\Jadwal::class,
+        \App\Models\Reservasi::class,
+        \App\Models\Konsultasi::class,
+        \App\Models\Portofolio::class,
+        \App\Models\Pembayaran::class,
+    ];
+
+    foreach ($robustnessEntities as $entityClass) {
+        $this->assertTrue(class_exists($entityClass), "Entity {$entityClass} must exist.");
+        $instance = new $entityClass();
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Model::class, $instance);
+    }
+});
+

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Booking;
+use App\Models\Reservasi;
 use App\Models\Kursus;
 use App\Models\Pembayaran;
 use App\Models\Invoice;
@@ -39,7 +39,7 @@ class MidtransService
     /**
      * Generate Midtrans Snap Token for a Booking session.
      */
-    public function getSnapTokenForBooking(Booking $booking): string
+    public function getSnapTokenForBooking(Reservasi $booking): string
     {
         $this->initMidtrans();
 
@@ -196,7 +196,7 @@ class MidtransService
 
         // Find associated Booking (strip potential retry timestamp suffix)
         $baseBookingNumber = explode('-T', $orderId)[0];
-        $booking = Booking::where('nomor_booking', $orderId)
+        $booking = Reservasi::where('nomor_booking', $orderId)
             ->orWhere('nomor_booking', $baseBookingNumber)
             ->first();
         if ($booking) {
