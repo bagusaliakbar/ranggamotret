@@ -162,7 +162,7 @@
 
                         <a href="{{ route('admin.courses.index') }}" class="sidebar-link {{ request()->routeIs('admin.courses*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
-                            <span>Kursus & Modul LMS</span>
+                            <span>Kelola Kursus</span>
                         </a>
 
                         <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
