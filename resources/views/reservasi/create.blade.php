@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
-@section('title', 'Buat Booking Pemotretan — RanggaMotret.id')
+@section('title', 'Formulir Reservasi Fotografi — RanggaMotret.id')
 
 @section('content')
 @php
@@ -30,7 +30,7 @@
     });
 @endphp
 
-<div class="space-y-8" 
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8" 
      x-data="{ 
         layananData: @js($layananJson),
         selectedLayanan: '{{ $initialLayananId }}',
@@ -109,11 +109,11 @@
     <div class="border-b border-slate-200 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
-                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <a href="{{ route('home') }}" class="hover:text-slate-700 transition-colors">Beranda</a>
                 <span>/</span>
-                <a href="{{ route('customer.bookings.index') }}" class="hover:text-slate-700 transition-colors">Riwayat Booking</a>
+                <a href="{{ route('public.services') }}" class="hover:text-slate-700 transition-colors">Fotografi</a>
                 <span>/</span>
-                <span class="text-slate-700">Form Booking Baru</span>
+                <span class="text-slate-700">Formulir Reservasi</span>
             </div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-extrabold uppercase tracking-wider mb-2">
                 <i class="ph-duotone ph-camera text-slate-700"></i> Reservasi Fotografi
@@ -122,9 +122,16 @@
             <p class="text-xs text-slate-500 font-medium mt-1">Konfigurasikan paket dokumentasi, jadwal pemotretan, dan lokasi venue yang Anda kehendaki.</p>
         </div>
 
-        <a href="{{ route('customer.bookings.index') }}" class="btn-outline px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto">
-            <i class="ph-duotone ph-arrow-left"></i> Riwayat Booking
-        </a>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('public.services') }}" class="btn-outline px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto">
+                <i class="ph-duotone ph-arrow-left"></i> Kembali ke Katalog
+            </a>
+            @auth
+                <a href="{{ route('customer.bookings.index') }}" class="btn-dark px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 self-start sm:self-auto shadow-sm">
+                    <i class="ph-duotone ph-clock-counter-clockwise"></i> Riwayat Booking
+                </a>
+            @endauth
+        </div>
     </div>
 
     <!-- 2 Columns Responsive Grid -->
@@ -159,7 +166,7 @@
                                     <div class="flex items-center justify-between">
                                         <span class="text-[10px] text-slate-500 uppercase font-bold">{{ $l->kategori }}</span>
                                         <span x-show="selectedLayanan == '{{ $l->id }}'" class="text-emerald-600 text-xs font-bold">
-                                            <i class="fa-solid fa-circle-check"></i>
+                                            <i class="ph-duotone ph-check-circle"></i>
                                         </span>
                                     </div>
                                     <div class="font-extrabold text-slate-900 text-sm">{{ $l->nama }}</div>
@@ -198,9 +205,9 @@
                                             <div class="font-extrabold text-slate-900 text-sm">{{ $p->nama_paket }}</div>
                                             <div class="text-slate-900 font-black text-base mt-0.5">Rp {{ number_format($p->harga, 0, ',', '.') }}</div>
                                             <div class="flex items-center gap-2 text-[10px] font-bold text-slate-500 mt-1">
-                                                <span><i class="fa-regular fa-clock text-slate-400"></i> {{ $p->durasi }}</span>
+                                                <span><i class="ph-duotone ph-clock text-slate-400"></i> {{ $p->durasi }}</span>
                                                 <span>•</span>
-                                                <span><i class="fa-solid fa-user-tie text-slate-400"></i> {{ $p->jumlah_fotografer }} Fotografer</span>
+                                                <span><i class="ph-duotone ph-user text-slate-400"></i> {{ $p->jumlah_fotografer }} Fotografer</span>
                                             </div>
                                         </div>
                                     </div>
@@ -225,13 +232,13 @@
                             </div>
                         </div>
                         <span class="text-[11px] text-slate-500 font-medium hidden sm:inline-block">
-                            <i class="fa-solid fa-clock text-slate-400 mr-1"></i> Waktu lokal: <strong class="text-slate-800" x-text="getCurrentTime()"></strong> WIB
+                            <i class="ph-duotone ph-clock text-slate-400 mr-1"></i> Waktu lokal: <strong class="text-slate-800" x-text="getCurrentTime()"></strong> WIB
                         </span>
                     </div>
 
                     @if(isset($errors) && $errors->any())
                         <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium space-y-1">
-                            <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-exclamation text-rose-600"></i> Mohon periksa kembali jadwal pemotretan:</div>
+                            <div class="font-bold flex items-center gap-1.5"><i class="ph-duotone ph-warning-circle text-rose-600"></i> Mohon periksa kembali jadwal pemotretan:</div>
                             <ul class="list-disc list-inside text-[11px] text-rose-700 pl-1">
                                 @foreach($errors->all() as $err)
                                     <li>{{ $err }}</li>
@@ -250,7 +257,7 @@
                                 min="{{ date('Y-m-d') }}"
                                 class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-medium focus:border-slate-900 focus:bg-white focus:outline-none transition-colors">
                             <p class="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1">
-                                <i class="fa-solid fa-calendar-check text-slate-500"></i> Tanggal lampau otomatis dinonaktifkan.
+                                <i class="ph-duotone ph-calendar-check text-slate-500"></i> Tanggal lampau otomatis dinonaktifkan.
                             </p>
                         </div>
 
@@ -265,7 +272,7 @@
                             
                             <!-- Real-time warning if past time is chosen for today -->
                             <div x-show="isPastTime(waktu)" x-cloak class="mt-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-medium flex items-center gap-1.5">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                                <i class="ph-duotone ph-warning-circle text-rose-600"></i>
                                 <span>Jam sesi sudah terlewat untuk hari ini. Silakan pilih jam setelah <strong x-text="getCurrentTime()"></strong>.</span>
                             </div>
                         </div>
@@ -273,7 +280,7 @@
                         <!-- Quick Slot Selector Pills -->
                         <div class="md:col-span-2 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2.5">
                             <div class="flex items-center justify-between text-[11px] flex-wrap gap-1">
-                                <span class="font-extrabold text-slate-800"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Pilihan Cepat Jam Sesi Populer:</span>
+                                <span class="font-extrabold text-slate-800"><i class="ph-duotone ph-lightning text-amber-500 mr-1"></i> Pilihan Cepat Jam Sesi Populer:</span>
                                 <span class="text-[10px] text-slate-400" x-show="tanggal === todayStr">Slot lampau otomatis dinonaktifkan</span>
                             </div>
                             <div class="flex flex-wrap gap-2">
@@ -337,15 +344,15 @@
                         <!-- Schedule Mini Chip -->
                         <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1 text-xs font-semibold text-slate-700">
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="text-slate-500"><i class="fa-regular fa-calendar mr-1"></i> Jadwal:</span>
+                                <span class="text-slate-500"><i class="ph-duotone ph-calendar-blank mr-1"></i> Jadwal:</span>
                                 <span class="font-bold text-slate-900" x-text="tanggal"></span>
                             </div>
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="text-slate-500"><i class="fa-regular fa-clock mr-1"></i> Jam:</span>
+                                <span class="text-slate-500"><i class="ph-duotone ph-clock mr-1"></i> Jam:</span>
                                 <span class="font-bold text-slate-900" x-text="waktu ? waktu + ' WIB' : 'Belum dipilih'"></span>
                             </div>
                             <div class="flex items-center justify-between text-[11px]">
-                                <span class="text-slate-500"><i class="fa-solid fa-user-group mr-1"></i> Kru Foto:</span>
+                                <span class="text-slate-500"><i class="ph-duotone ph-users mr-1"></i> Kru Foto:</span>
                                 <span class="font-bold text-slate-900" x-text="(getCurrentPaket()?.jumlah_fotografer || 1) + ' Fotografer'"></span>
                             </div>
                         </div>
@@ -365,22 +372,22 @@
                         :disabled="isPastTime(waktu)"
                         class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2"
                         :class="isPastTime(waktu) ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none' : 'btn-dark shadow-slate-900/20 hover:scale-[1.02] active:scale-95'">
-                        <i class="fa-solid fa-lock" x-show="!isPastTime(waktu)"></i>
+                        <i class="ph-duotone ph-lock-key" x-show="!isPastTime(waktu)"></i>
                         <span x-text="isPastTime(waktu) ? 'Pilih Jam Sesi yang Belum Terlewat' : 'Kirim Booking Pemotretan &rarr;'"></span>
                     </button>
 
                     <!-- Trust Guarantees -->
                     <div class="space-y-2 text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-100">
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <i class="ph-duotone ph-check-circle text-emerald-600"></i>
                             <span>Konfirmasi Cepat Admin 1x24 Jam</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                            <i class="ph-duotone ph-check-circle text-emerald-600"></i>
                             <span>Bebas Reschedule Jadwal (Maks. H-7)</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-shield-halved text-slate-700"></i>
+                            <i class="ph-duotone ph-shield-check text-slate-700"></i>
                             <span>Enkripsi Transaksi Midtrans Resmi</span>
                         </div>
                     </div>

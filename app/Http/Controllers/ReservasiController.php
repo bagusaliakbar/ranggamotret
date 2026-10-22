@@ -121,8 +121,8 @@ class ReservasiController extends Controller
             'link' => '/admin/bookings/' . $booking->id,
         ]);
 
-        return redirect()->route('customer.bookings.show', $booking->id)
-            ->with('success', 'Booking berhasil dikirim! Menunggu konfirmasi dari tim RanggaMotret.');
+        return redirect()->route('payments.create', ['booking_id' => $booking->id])
+            ->with('success', 'Reservasi sesi foto ' . $bookingNumber . ' berhasil dibuat! Silakan selesaikan pembayaran untuk mengunci jadwal pemotretan Anda.');
     }
 
     /**

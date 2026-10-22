@@ -164,7 +164,7 @@
 
                                 @if(Auth::user()->isMember())
                                     <a href="{{ route('customer.bookings.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="ph-duotone ph-camera mr-2 text-slate-500 text-sm"></i> Pesanan & Sesi Foto
+                                        <i class="ph-duotone ph-camera mr-2 text-slate-500 text-sm"></i> Fotografi
                                     </a>
                                     <a href="{{ route('customer.consultations.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
                                         <i class="ph-duotone ph-chats-circle mr-2 text-slate-500 text-sm"></i> Riwayat Konsultasi

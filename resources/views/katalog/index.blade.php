@@ -55,7 +55,7 @@
                                     <p class="text-[11px] text-slate-600 mt-2 leading-relaxed">{{ $p->fasilitas }}</p>
                                 </div>
                                 <a href="{{ route('customer.bookings.create', ['layanan_id' => $l->id, 'paket_id' => $p->id]) }}" class="btn-dark py-2.5 rounded-xl text-center text-xs font-bold block">
-                                    Pilih & Reservasi
+                                   Buat Reservasi Fotografi
                                 </a>
                                 @guest
                                     <div class="text-[9px] text-slate-400 text-center flex items-center justify-center gap-1">
