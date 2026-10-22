@@ -211,7 +211,7 @@
                 
                 @auth
                     <a href="{{ route('payments.create', ['kursus_id' => $kursus->id]) }}" class="btn-dark w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl shadow-slate-900/15 block text-center transition-all hover:scale-[1.02] active:scale-95">
-                        <i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i> Daftar & Bayar Akses Sekarang
+                        <i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i> Daftar Kursus
                     </a>
                 @else
                     <a href="{{ route('login') }}" class="btn-dark w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl shadow-slate-900/15 block text-center transition-all hover:scale-[1.02] active:scale-95">

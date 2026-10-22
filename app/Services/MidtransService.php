@@ -80,19 +80,9 @@ class MidtransService
             }
         }
 
-        // Record or update pending pembayaran entry
-        Pembayaran::updateOrCreate(
-            ['booking_id' => $booking->id],
-            [
-                'nomor_transaksi' => 'TRX-' . str_replace('BK-', '', $orderId),
-                'user_id' => $booking->user_id,
-                'jumlah' => $grossAmount,
-                'metode_pembayaran' => 'Midtrans Payment Gateway (Snap)',
-                'snap_token' => $snapToken,
-                'status' => 'Belum Dibayar',
-            ]
-        );
-
+        // Catatan: Record transaksi lokal 'Pembayaran' HANYA dibuat saat pembayaran diselesaikan
+        // (melalui Webhook / paymentFinish) atau saat formulir transfer manual dikirim.
+        // Token Snap di sini semata-mata disiapkan agar modal pembayaran instan dapat dibuka jika dipilih.
         return $snapToken;
     }
 
@@ -129,33 +119,7 @@ class MidtransService
         try {
             $snapToken = \Midtrans\Snap::getSnapToken($params);
 
-            // Periksa apakah sudah ada transaksi kursus yang berstatus 'Belum Dibayar' untuk user ini
-            // Jika ada, lakukan update agar tidak membuat baris duplikat berulang kali saat refresh halaman
-            $pendingPembayaran = Pembayaran::where('user_id', $user->id)
-                ->where('kursus_id', $kursus->id)
-                ->where('status', 'Belum Dibayar')
-                ->latest()
-                ->first();
-
-            if ($pendingPembayaran) {
-                $pendingPembayaran->update([
-                    'nomor_transaksi' => 'TRX-' . $orderId,
-                    'jumlah' => $grossAmount,
-                    'metode_pembayaran' => 'Midtrans Payment Gateway (Snap)',
-                    'snap_token' => $snapToken,
-                ]);
-            } else {
-                Pembayaran::create([
-                    'nomor_transaksi' => 'TRX-' . $orderId,
-                    'user_id' => $user->id,
-                    'kursus_id' => $kursus->id,
-                    'jumlah' => $grossAmount,
-                    'metode_pembayaran' => 'Midtrans Payment Gateway (Snap)',
-                    'snap_token' => $snapToken,
-                    'status' => 'Belum Dibayar',
-                ]);
-            }
-
+            // Token Snap disiapkan untuk checkout tanpa membuat record transaksi liar di database
             return $snapToken;
         } catch (\Exception $e) {
             Log::error('Midtrans Snap Kursus Error: ' . $e->getMessage());

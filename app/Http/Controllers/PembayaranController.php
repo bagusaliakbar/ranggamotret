@@ -188,33 +188,56 @@ class PembayaranController extends Controller
                             ['status' => 'aktif', 'progress_persen' => 0]
                         );
 
-                        $pembayaran = Pembayaran::where('user_id', $userId)
-                            ->where('kursus_id', $kursusId)
-                            ->latest()
-                            ->first();
-                        if ($pembayaran) {
-                            $pembayaran->status = 'Dibayar';
-                            $pembayaran->tanggal_pembayaran = Carbon::now();
-                            $pembayaran->save();
+                        $kursusItem = Kursus::find($kursusId);
+                        $pembayaran = Pembayaran::firstOrCreate(
+                            ['nomor_transaksi' => 'TRX-' . $orderId],
+                            [
+                                'user_id' => $userId,
+                                'kursus_id' => $kursusId,
+                                'jumlah' => $kursusItem->harga ?? 0,
+                                'metode_pembayaran' => 'Midtrans Snap (Gateway)',
+                                'status' => 'Dibayar',
+                                'tanggal_pembayaran' => Carbon::now(),
+                            ]
+                        );
 
-                            Invoice::firstOrCreate(
-                                ['pembayaran_id' => $pembayaran->id],
-                                [
-                                    'nomor_invoice' => 'INV-KRS-' . date('Ymd') . '-' . str_pad($pembayaran->id, 4, '0', STR_PAD_LEFT),
-                                    'user_id' => $userId,
-                                    'subtotal' => $pembayaran->jumlah,
-                                    'diskon' => 0,
-                                    'total' => $pembayaran->jumlah,
-                                    'status_pembayaran' => 'Lunas',
-                                ]
-                            );
-                        }
+                        $pembayaran->status = 'Dibayar';
+                        $pembayaran->tanggal_pembayaran = Carbon::now();
+                        $pembayaran->save();
+
+                        Invoice::firstOrCreate(
+                            ['pembayaran_id' => $pembayaran->id],
+                            [
+                                'nomor_invoice' => 'INV-KRS-' . date('Ymd') . '-' . str_pad($pembayaran->id, 4, '0', STR_PAD_LEFT),
+                                'user_id' => $userId,
+                                'kursus_id' => $kursusId,
+                                'subtotal' => $pembayaran->jumlah,
+                                'diskon' => 0,
+                                'total' => $pembayaran->jumlah,
+                                'status_pembayaran' => 'Lunas',
+                            ]
+                        );
                     }
                     return redirect()->route('student.dashboard')
                         ->with('success', 'Pembayaran kursus berhasil! Selamat belajar di ruang kelas akademi RanggaMotret.');
+                } elseif ($transactionStatus === 'pending') {
+                    if ($kursusId && $userId) {
+                        $kursusItem = Kursus::find($kursusId);
+                        Pembayaran::firstOrCreate(
+                            ['nomor_transaksi' => 'TRX-' . $orderId],
+                            [
+                                'user_id' => $userId,
+                                'kursus_id' => $kursusId,
+                                'jumlah' => $kursusItem->harga ?? 0,
+                                'metode_pembayaran' => 'Midtrans Snap (Gateway)',
+                                'status' => 'Menunggu Verifikasi',
+                                'tanggal_pembayaran' => Carbon::now(),
+                            ]
+                        );
+                    }
+                    return redirect()->route('student.dashboard')
+                        ->with('info', 'Status transaksi kursus Anda sedang diproses.');
                 }
-                return redirect()->route('student.dashboard')
-                    ->with('info', 'Status transaksi kursus Anda sedang diproses.');
             }
 
             $baseBookingNumber = explode('-T', $orderId)[0];
@@ -226,29 +249,51 @@ class PembayaranController extends Controller
                     $booking->status = 'Dibayar';
                     $booking->save();
 
-                    $pembayaran = Pembayaran::where('booking_id', $booking->id)->latest()->first();
-                    if ($pembayaran) {
-                        $pembayaran->status = 'Dibayar';
-                        $pembayaran->tanggal_pembayaran = Carbon::now();
-                        $pembayaran->save();
+                    $pembayaran = Pembayaran::firstOrCreate(
+                        ['booking_id' => $booking->id],
+                        [
+                            'nomor_transaksi' => 'TRX-' . str_replace('BK-', '', $orderId),
+                            'user_id' => $booking->user_id,
+                            'booking_id' => $booking->id,
+                            'jumlah' => $booking->paket->harga ?? 0,
+                            'metode_pembayaran' => 'Midtrans Snap (Gateway)',
+                            'status' => 'Dibayar',
+                            'tanggal_pembayaran' => Carbon::now(),
+                        ]
+                    );
 
-                        Invoice::firstOrCreate(
-                            ['pembayaran_id' => $pembayaran->id],
-                            [
-                                'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT),
-                                'user_id' => $booking->user_id,
-                                'booking_id' => $booking->id,
-                                'subtotal' => $pembayaran->jumlah,
-                                'diskon' => 0,
-                                'total' => $pembayaran->jumlah,
-                                'status_pembayaran' => 'Lunas',
-                            ]
-                        );
-                    }
+                    $pembayaran->status = 'Dibayar';
+                    $pembayaran->tanggal_pembayaran = Carbon::now();
+                    $pembayaran->save();
+
+                    Invoice::firstOrCreate(
+                        ['pembayaran_id' => $pembayaran->id],
+                        [
+                            'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT),
+                            'user_id' => $booking->user_id,
+                            'booking_id' => $booking->id,
+                            'subtotal' => $pembayaran->jumlah,
+                            'diskon' => 0,
+                            'total' => $pembayaran->jumlah,
+                            'status_pembayaran' => 'Lunas',
+                        ]
+                    );
 
                     return redirect()->route('customer.bookings.show', $booking->id)
                         ->with('success', 'Pembayaran berhasil dikonfirmasi! Jadwal sesi pemotretan Anda telah terverifikasi.');
                 } elseif ($transactionStatus === 'pending') {
+                    Pembayaran::firstOrCreate(
+                        ['booking_id' => $booking->id],
+                        [
+                            'nomor_transaksi' => 'TRX-' . str_replace('BK-', '', $orderId),
+                            'user_id' => $booking->user_id,
+                            'booking_id' => $booking->id,
+                            'jumlah' => $booking->paket->harga ?? 0,
+                            'metode_pembayaran' => 'Midtrans Snap (Gateway)',
+                            'status' => 'Menunggu Verifikasi',
+                            'tanggal_pembayaran' => Carbon::now(),
+                        ]
+                    );
                     return redirect()->route('customer.bookings.show', $booking->id)
                         ->with('info', 'Pembayaran Anda sedang menunggu penyelesaian.');
                 }
