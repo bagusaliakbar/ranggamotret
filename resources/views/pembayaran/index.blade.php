@@ -78,9 +78,7 @@
                         <th class="p-4">Total Tagihan</th>
                         <th class="p-4">Metode Bayar</th>
                         <th class="p-4">Tanggal Transaksi</th>
-                        <th class="p-4 text-center">Status</th>
-                        <th class="p-4 text-center">Aksi / Tindakan</th>
-                        <th class="p-4 text-center">Invoice</th>
+                        <th class="p-4 text-center">Status & Tindakan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium">
@@ -156,100 +154,93 @@
                                 {{ date('d M Y, H:i', strtotime($p->tanggal_pembayaran ?? $p->created_at)) }}
                             </td>
 
-                            <!-- 6. Status Transaksi -->
+                            <!-- 6. Status & Tindakan (Terpadu) -->
                             <td class="p-4 text-center whitespace-nowrap">
-                                @php
-                                    $payBadgeClass = match($p->status) {
-                                        'Dibayar' => 'bg-emerald-50 text-emerald-800 border-emerald-200',
-                                        'Ditolak', 'Dikembalikan' => 'bg-rose-50 text-rose-800 border-rose-200',
-                                        'Belum Dibayar' => 'bg-amber-100 text-amber-900 border-amber-300 font-black',
-                                        default => 'bg-sky-50 text-sky-800 border-sky-200',
-                                    };
-                                @endphp
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $payBadgeClass }}">
-                                    {{ $p->status }}
-                                </span>
-                            </td>
-
-                            <!-- 7. Aksi / Tindakan -->
-                            <td class="p-4 text-center whitespace-nowrap">
-                                @if($p->status === 'Menunggu Verifikasi')
-                                    <div class="inline-flex items-center gap-1.5">
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 text-xs font-bold shadow-2xs">
-                                            <i class="ph-duotone ph-clock text-sky-600 animate-pulse"></i>
-                                            <span>Menunggu Verifikasi Owner</span>
+                                <div class="flex items-center justify-center gap-2">
+                                    @if($p->status === 'Dibayar')
+                                        <!-- Badge Status Lunas -->
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-emerald-50 text-emerald-800 border-emerald-200 inline-flex items-center gap-1">
+                                            <i class="ph-duotone ph-check-circle text-xs text-emerald-600"></i>
+                                            <span>Dibayar</span>
                                         </span>
-                                        @if($p->bukti_pembayaran)
-                                            <a href="{{ asset($p->bukti_pembayaran) }}" target="_blank" 
-                                               class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-2xs inline-flex items-center gap-1 transition-all"
-                                               title="Buka Foto Bukti Transfer yang Diunggah">
-                                                <i class="ph-duotone ph-image text-xs text-indigo-600"></i>
-                                                <span>Lihat Bukti</span>
+
+                                        <!-- Aksi Invoice PDF jika lunas -->
+                                        @if($p->invoice)
+                                            <a href="{{ route('invoices.show', $p->invoice->id) }}" target="_blank" 
+                                               class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-[10px] inline-flex items-center gap-1 transition-all shadow-2xs hover:scale-105 active:scale-95"
+                                               title="Unduh / Cetak Bukti Invoice Resmi">
+                                                <i class="ph-duotone ph-receipt text-xs text-emerald-400"></i>
+                                                <span>Invoice PDF</span>
                                             </a>
                                         @endif
-                                    </div>
-                                @elseif($p->status === 'Belum Dibayar')
-                                    <div class="inline-flex items-center gap-1.5">
+
+                                    @elseif($p->status === 'Menunggu Verifikasi')
+                                        <!-- Badge Status Menunggu Verifikasi -->
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-sky-50 text-sky-800 border-sky-200 inline-flex items-center gap-1">
+                                            <i class="ph-duotone ph-clock text-xs text-sky-600 animate-pulse"></i>
+                                            <span>Menunggu Verifikasi</span>
+                                        </span>
+
+                                        <!-- Aksi Lihat Bukti Transfer -->
+                                        @if($p->bukti_pembayaran)
+                                            <a href="{{ asset($p->bukti_pembayaran) }}" target="_blank" 
+                                               class="px-2.5 py-1 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-2xs inline-flex items-center gap-1 transition-all hover:border-slate-300"
+                                               title="Buka Foto Bukti Transfer yang Diunggah">
+                                                <i class="ph-duotone ph-image text-xs text-indigo-600"></i>
+                                                <span>Bukti Struk</span>
+                                            </a>
+                                        @endif
+
+                                    @elseif($p->status === 'Belum Dibayar')
+                                        <!-- Badge Status Belum Dibayar -->
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-amber-100 text-amber-900 border-amber-300 inline-flex items-center gap-1">
+                                            <i class="ph-duotone ph-warning-circle text-xs text-amber-700"></i>
+                                            <span>Belum Dibayar</span>
+                                        </span>
+
+                                        <!-- Aksi Bayar Sekarang -->
                                         @if(!empty($p->snap_token))
-                                            <!-- Bayar Langsung di Halaman Ini (Modal Midtrans Snap) -->
                                             <button type="button" 
                                                     onclick="payWithSnapDirect('{{ $p->snap_token }}', '{{ $p->nomor_transaksi }}')"
-                                                    class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] shadow-sm inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
-                                                <i class="ph-duotone ph-lightning text-amber-400"></i>
-                                                <span>Bayar Sekarang (Instan)</span>
+                                                    class="px-3 py-1 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[10px] shadow-xs inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
+                                                <i class="ph-duotone ph-lightning text-amber-400 text-xs"></i>
+                                                <span>Bayar Sekarang</span>
                                             </button>
                                         @elseif($p->booking_id)
                                             <a href="{{ route('payments.create', ['booking_id' => $p->booking_id]) }}" 
-                                               class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] shadow-sm inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
-                                                <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                                                <span>Pilih Metode Bayar</span>
+                                               class="px-3 py-1 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[10px] shadow-xs inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
+                                                <i class="ph-duotone ph-credit-card text-emerald-400 text-xs"></i>
+                                                <span>Bayar Sekarang</span>
                                             </a>
                                         @elseif($p->kursus_id)
                                             <a href="{{ route('payments.create', ['kursus_id' => $p->kursus_id]) }}" 
-                                               class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] shadow-sm inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
-                                                <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                                                <span>Pilih Metode Bayar</span>
+                                               class="px-3 py-1 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[10px] shadow-xs inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
+                                                <i class="ph-duotone ph-credit-card text-emerald-400 text-xs"></i>
+                                                <span>Bayar Sekarang</span>
                                             </a>
                                         @endif
 
                                         @if($isGateway)
                                             <a href="{{ route('payments.sync', $p->id) }}" 
-                                               class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-xs inline-flex items-center gap-1 transition-all" 
-                                               title="Cek Status Pembayaran ke Gateway">
+                                               class="px-2 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-2xs inline-flex items-center gap-1 transition-all" 
+                                               title="Sinkronisasi Status Gateway">
                                                 <i class="ph-duotone ph-arrows-clockwise text-xs"></i>
-                                                <span>Cek Gateway</span>
+                                                <span>Sync</span>
                                             </a>
                                         @endif
-                                    </div>
-                                @elseif($p->status === 'Dibayar')
-                                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
-                                        <i class="ph-duotone ph-check-circle text-base"></i>
-                                        <span>Lunas</span>
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600">
-                                        <i class="ph-duotone ph-x-circle text-base"></i>
-                                        <span>{{ $p->status }}</span>
-                                    </span>
-                                @endif
-                            </td>
 
-                            <!-- 8. Invoice PDF -->
-                            <td class="p-4 text-center whitespace-nowrap">
-                                @if($p->invoice)
-                                    <a href="{{ route('invoices.show', $p->invoice->id) }}" target="_blank" 
-                                       class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-800 font-extrabold text-[11px] inline-flex items-center gap-1.5 border border-slate-200 transition-all shadow-xs">
-                                        <i class="ph-duotone ph-receipt text-emerald-600"></i>
-                                        <span>PDF</span>
-                                    </a>
-                                @else
-                                    <span class="text-slate-400 font-mono">-</span>
-                                @endif
+                                    @else
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-rose-50 text-rose-800 border-rose-200 inline-flex items-center gap-1">
+                                            <i class="ph-duotone ph-x-circle text-xs text-rose-600"></i>
+                                            <span>{{ $p->status }}</span>
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="p-12 text-center text-slate-500 space-y-2">
+                            <td colspan="6" class="p-12 text-center text-slate-500 space-y-2">
                                 <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center text-2xl mx-auto">
                                     <i class="ph-duotone ph-receipt"></i>
                                 </div>
