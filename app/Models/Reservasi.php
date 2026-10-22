@@ -77,3 +77,112 @@ class Reservasi extends Model
         ]);
     }
 }
+
+/**
+ * Sub-entity GaleriFoto: foto hasil sesi dan client photo proofing
+ */
+class GaleriFoto extends Model
+{
+    protected $table = 'galeri_foto';
+
+    protected $fillable = [
+        'booking_id',
+        'foto_path',
+        'is_selected',
+        'catatan',
+    ];
+
+    public function booking()
+    {
+        return $this->belongsTo(Reservasi::class, 'booking_id');
+    }
+
+    public function reservasi()
+    {
+        return $this->belongsTo(Reservasi::class, 'booking_id');
+    }
+}
+
+/**
+ * Sub-entity Testimoni: review dan rating kepuasan pelanggan
+ */
+class Testimoni extends Model
+{
+    protected $table = 'testimoni';
+
+    protected $fillable = [
+        'user_id',
+        'booking_id',
+        'kursus_id',
+        'rating',
+        'komentar',
+        'foto',
+        'status',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function booking()
+    {
+        return $this->belongsTo(Reservasi::class, 'booking_id');
+    }
+
+    public function reservasi()
+    {
+        return $this->belongsTo(Reservasi::class, 'booking_id');
+    }
+
+    public function kursus()
+    {
+        return $this->belongsTo(Kursus::class, 'kursus_id');
+    }
+}
+
+/**
+ * Sub-entity Invoice: faktur tagihan resmi dari pembayaran reservasi/kursus
+ */
+class Invoice extends Model
+{
+    protected $table = 'invoice';
+
+    protected $fillable = [
+        'nomor_invoice',
+        'pembayaran_id',
+        'user_id',
+        'booking_id',
+        'kursus_id',
+        'subtotal',
+        'diskon',
+        'total',
+        'status_pembayaran',
+    ];
+
+    public function pembayaran()
+    {
+        return $this->belongsTo(Pembayaran::class, 'pembayaran_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function booking()
+    {
+        return $this->belongsTo(Reservasi::class, 'booking_id');
+    }
+
+    public function reservasi()
+    {
+        return $this->belongsTo(Reservasi::class, 'booking_id');
+    }
+
+    public function kursus()
+    {
+        return $this->belongsTo(Kursus::class, 'kursus_id');
+    }
+}
+

@@ -94,3 +94,40 @@ class User extends Authenticatable
         return $this->notifikasis()->where('is_read', false)->count();
     }
 }
+
+/**
+ * Sub-entity Customer: profil tambahan pelanggan (telepon, alamat, bio)
+ */
+class Customer extends \Illuminate\Database\Eloquent\Model
+{
+    protected $table = 'customers';
+
+    protected $fillable = ['user_id', 'phone', 'address', 'bio'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+
+/**
+ * Sub-entity Notifikasi: notifikasi transaksi, jadwal, dan sistem
+ */
+class Notifikasi extends \Illuminate\Database\Eloquent\Model
+{
+    protected $table = 'notifikasi';
+
+    protected $fillable = [
+        'user_id',
+        'judul',
+        'pesan',
+        'link',
+        'is_read',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+}
+
