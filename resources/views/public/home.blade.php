@@ -207,7 +207,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($portofolio as $foto)
                 <div class="clean-card rounded-2xl overflow-hidden group relative h-80 shadow-sm hover:shadow-xl transition-all">
-                    <img src="{{ $foto->foto }}" alt="{{ $foto->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <img src="{{ $foto->foto_url }}" alt="{{ $foto->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/25 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-6 flex flex-col justify-end text-white">
                         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ $foto->kategori }}</span>
                         <h4 class="text-lg font-bold text-white mt-0.5">{{ $foto->judul }}</h4>

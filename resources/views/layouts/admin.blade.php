@@ -158,6 +158,11 @@
                             <span>Kategori Layanan</span>
                         </a>
 
+                        <a href="{{ route('admin.portofolio.index') }}" class="sidebar-link {{ request()->routeIs('admin.portofolio.*') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-images text-base w-5"></i>
+                            <span>Kelola Portofolio</span>
+                        </a>
+
                         <a href="{{ route('admin.courses.index') }}" class="sidebar-link {{ request()->routeIs('admin.courses*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
                             <span>Kelola Kursus & Materi Kursus</span>

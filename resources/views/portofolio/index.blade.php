@@ -13,7 +13,7 @@
                 id: {{ $p->id }},
                 judul: @js($p->judul),
                 kategori: @js($p->kategori),
-                foto: @js($p->foto),
+                foto: @js($p->foto_url),
                 deskripsi: @js($p->deskripsi),
                 tanggal: @js(date('d M Y', strtotime($p->tanggal)))
             },
@@ -77,7 +77,7 @@
     @if($portofolio->isEmpty())
         <div class="clean-card p-16 text-center rounded-3xl space-y-4 max-w-lg mx-auto">
             <div class="w-16 h-16 rounded-2xl bg-slate-100 text-slate-400 text-2xl flex items-center justify-center mx-auto">
-                <i class="fa-regular fa-images"></i>
+                <i class="ph-duotone ph-images"></i>
             </div>
             <h3 class="text-base font-bold text-slate-900">Belum Ada Karya dalam Kategori Ini</h3>
             <p class="text-xs text-slate-500 font-medium">Silakan pilih kategori lainnya atau kembali ke seluruh katalog karya.</p>
@@ -92,7 +92,7 @@
                 <div class="clean-card rounded-2xl overflow-hidden group relative h-96 cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-300"
                      @click="openLightbox({{ $index }})">
                     
-                    <img src="{{ $p->foto }}" alt="{{ $p->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <img src="{{ $p->foto_url }}" alt="{{ $p->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     
                     <!-- Top Category Chip -->
                     <div class="absolute top-4 left-4 z-10">

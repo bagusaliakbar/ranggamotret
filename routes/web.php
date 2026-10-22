@@ -226,6 +226,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/testimonials', [ReservasiController::class, 'adminTestimonialsIndex'])->name('testimonials.index');
     Route::post('/testimonials/{id}/status', [ReservasiController::class, 'adminUpdateTestimonialStatus'])->name('testimonials.update-status');
 
+    // Kelola Portofolio (Owner / Admin)
+    Route::get('/portofolio', [PortofolioController::class, 'adminIndex'])->name('portofolio.index');
+    Route::post('/portofolio', [PortofolioController::class, 'store'])->name('portofolio.store');
+    Route::put('/portofolio/{id}', [PortofolioController::class, 'update'])->name('portofolio.update');
+    Route::delete('/portofolio/{id}', [PortofolioController::class, 'destroy'])->name('portofolio.destroy');
+    Route::post('/portofolio/{id}/toggle-status', [PortofolioController::class, 'toggleStatus'])->name('portofolio.toggle-status');
+
     // Manajemen Pengguna
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');

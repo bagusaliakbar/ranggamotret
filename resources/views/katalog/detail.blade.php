@@ -391,7 +391,7 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                 @foreach($relatedPortofolio as $port)
                     <div class="group relative rounded-2xl overflow-hidden aspect-[3/4] clean-card shadow-sm hover:shadow-xl transition-all">
-                        <img src="{{ $port->foto }}" alt="{{ $port->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ $port->foto_url }}" alt="{{ $port->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-end text-white">
                             <span class="text-[10px] uppercase font-bold text-amber-300">{{ $port->kategori }}</span>
                             <div class="text-xs font-bold truncate">{{ $port->judul }}</div>
