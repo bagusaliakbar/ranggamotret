@@ -139,9 +139,13 @@
                         <!-- Profile Menu -->
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" class="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-left hover:bg-slate-200 transition-colors">
-                                <div class="w-7 h-7 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-xs">
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                                </div>
+                                @if(Auth::user()->avatar)
+                                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-lg object-cover ring-1 ring-slate-300">
+                                @else
+                                    <div class="w-7 h-7 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-xs">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </div>
+                                @endif
                                 <div class="text-xs">
                                     <div class="font-bold text-slate-900 truncate max-w-[100px]">{{ Auth::user()->name }}</div>
                                 </div>

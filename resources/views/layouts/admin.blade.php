@@ -283,23 +283,11 @@
         </div>
 
         <!-- Sidebar Footer Back to Main Web -->
-        <div class="p-4 border-t border-slate-200 space-y-3">
+        <div class="p-4 border-t border-slate-200">
             <a href="{{ route('home') }}" class="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition-colors">
                 <i class="ph-duotone ph-arrow-left text-base text-slate-400"></i>
                 <span>Kembali ke Website</span>
             </a>
-
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-100 border border-slate-200">
-                <div class="flex items-center gap-2.5 truncate">
-                    <div class="w-8 h-8 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-xs shrink-0">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                    </div>
-                    <div class="truncate text-xs">
-                        <div class="font-bold text-slate-900 truncate">{{ Auth::user()->name }}</div>
-                        <div class="text-[10px] text-slate-500 capitalize">{{ Auth::user()->role }}</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </aside>
 
@@ -331,13 +319,69 @@
                     @endif
                 </a>
 
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 font-bold transition-colors flex items-center gap-1.5">
-                        <i class="ph-duotone ph-sign-out text-base"></i>
-                        <span class="hidden sm:inline">Keluar</span>
+                <!-- Profile Dropdown Menu with Logout -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" 
+                            class="flex items-center gap-2.5 p-1 sm:pl-2 sm:pr-3 sm:py-1 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-left transition-all group focus:outline-none focus:ring-2 focus:ring-slate-400">
+                        @if(Auth::user()->avatar)
+                            <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" class="w-8 h-8 rounded-lg object-cover ring-1 ring-slate-300">
+                        @else
+                            <div class="w-8 h-8 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                        @endif
+                        <div class="hidden sm:block text-left leading-tight">
+                            <div class="text-xs font-bold text-slate-900 truncate max-w-[120px]">{{ Auth::user()->name }}</div>
+                            <div class="text-[10px] text-slate-500 font-semibold capitalize">{{ Auth::user()->role }}</div>
+                        </div>
+                        <i class="ph-bold ph-caret-down text-[10px] text-slate-400 group-hover:text-slate-700 transition-transform duration-200 ml-0.5" :class="{ 'rotate-180': open }"></i>
                     </button>
-                </form>
+
+                    <!-- Dropdown Content -->
+                    <div x-show="open" 
+                         @click.outside="open = false" 
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                         class="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl py-2 z-50 text-xs font-medium"
+                         style="display: none;">
+                        
+                        <!-- User Header Info -->
+                        <div class="px-4 py-2.5 border-b border-slate-100">
+                            <p class="font-extrabold text-slate-900 truncate">{{ Auth::user()->name }}</p>
+                            <p class="text-slate-500 text-[11px] truncate">{{ Auth::user()->email }}</p>
+                            <span class="inline-block mt-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[9px] font-bold uppercase tracking-wider">
+                                {{ Auth::user()->role }}
+                            </span>
+                        </div>
+
+                        <!-- Menu Items -->
+                        <div class="py-1">
+                            <a href="{{ route('profile') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors">
+                                <i class="ph-duotone ph-user-circle text-base text-slate-500"></i>
+                                <span>Profil Saya</span>
+                            </a>
+                            <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors">
+                                <i class="ph-duotone ph-gauge text-base text-slate-500"></i>
+                                <span>Dashboard Terpadu</span>
+                            </a>
+                        </div>
+
+                        <div class="border-t border-slate-100 my-1"></div>
+
+                        <!-- Logout Action -->
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 text-rose-600 hover:bg-rose-50 font-bold flex items-center gap-2.5 transition-colors">
+                                <i class="ph-duotone ph-sign-out text-base"></i>
+                                <span>Keluar</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </header>
 
