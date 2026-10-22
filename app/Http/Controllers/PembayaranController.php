@@ -326,7 +326,7 @@ class PembayaranController extends Controller
         }
 
         $pembayarans = $query->latest()->paginate(15);
-        return view('admin.pembayaran.index', compact('pembayarans', 'status'));
+        return view('pembayaran.admin', compact('pembayarans', 'status'));
     }
 
     /**
