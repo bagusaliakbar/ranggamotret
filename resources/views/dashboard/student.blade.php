@@ -70,27 +70,52 @@
 
     <!-- Pending Unpaid Courses Alert & Cards -->
     @if(isset($pendingCoursePayments) && $pendingCoursePayments->isNotEmpty())
+        @php
+            $trulyUnpaidCourses = $pendingCoursePayments->where('status', 'Belum Dibayar');
+            $verifyingCourses = $pendingCoursePayments->where('status', 'Menunggu Verifikasi');
+        @endphp
         <div class="space-y-4">
-            <div class="p-4 sm:p-5 rounded-3xl bg-amber-50/90 border-2 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                <div class="flex items-start sm:items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-xl shrink-0 shadow-xs">
-                        <i class="ph-duotone ph-warning-circle"></i>
+            @if($trulyUnpaidCourses->isNotEmpty())
+                <div class="p-4 sm:p-5 rounded-3xl bg-amber-50/90 border-2 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-start sm:items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-xl shrink-0 shadow-xs">
+                            <i class="ph-duotone ph-warning-circle"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">Perhatian: Pendaftaran Kursus Belum Selesai</h3>
+                            <p class="text-xs text-amber-900 font-medium mt-0.5 leading-relaxed">
+                                Anda memiliki <strong>{{ $trulyUnpaidCourses->count() }} kursus</strong> yang pembayarannya belum selesai. Selesaikan pembayaran untuk membuka akses materi video, modul belajar, dan tugas praktik.
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h3 class="font-black text-sm text-slate-900">Perhatian: Pendaftaran Kursus Belum Selesai</h3>
-                        <p class="text-xs text-amber-900 font-medium mt-0.5 leading-relaxed">
-                            Anda memiliki <strong>{{ $pendingCoursePayments->count() }} kursus</strong> yang pembayarannya belum selesai. Selesaikan pembayaran untuk membuka akses materi video, modul belajar, dan tugas praktik.
-                        </p>
-                    </div>
+                    @if($trulyUnpaidCourses->count() === 1)
+                        <a href="{{ route('payments.create', ['kursus_id' => $trulyUnpaidCourses->first()->kursus_id]) }}" 
+                           class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
+                            <i class="ph-duotone ph-credit-card text-emerald-400"></i>
+                            <span>Bayar Sekarang (Rp {{ number_format($trulyUnpaidCourses->first()->jumlah ?? 0, 0, ',', '.') }})</span>
+                        </a>
+                    @endif
                 </div>
-                @if($pendingCoursePayments->count() === 1)
-                    <a href="{{ route('payments.create', ['kursus_id' => $pendingCoursePayments->first()->kursus_id]) }}" 
-                       class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
-                        <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                        <span>Bayar Sekarang (Rp {{ number_format($pendingCoursePayments->first()->jumlah ?? 0, 0, ',', '.') }})</span>
+            @elseif($verifyingCourses->isNotEmpty())
+                <div class="p-4 sm:p-5 rounded-3xl bg-sky-50/90 border-2 border-sky-300 text-sky-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                    <div class="flex items-start sm:items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">
+                            <i class="ph-duotone ph-hourglass-medium"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-sm text-slate-900">Bukti Transfer Kursus Sedang Diverifikasi Owner</h3>
+                            <p class="text-xs text-sky-900 font-medium mt-0.5 leading-relaxed">
+                                Anda memiliki <strong>{{ $verifyingCourses->count() }} pendaftaran kursus</strong> yang bukti transfernya sedang ditinjau. Akses materi belajar akan aktif otomatis setelah disetujui.
+                            </p>
+                        </div>
+                    </div>
+                    <a href="{{ route('payments.index') }}" 
+                       class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
+                        <i class="ph-duotone ph-clock"></i>
+                        <span>Cek Riwayat Pembayaran</span>
                     </a>
-                @endif
-            </div>
+                </div>
+            @endif
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($pendingCoursePayments as $pay)

@@ -64,7 +64,12 @@ class PembayaranController extends Controller
             ->latest()
             ->get();
 
-        return view('pembayaran.index', compact('pembayarans'));
+        $midtransClientKey = config('midtrans.client_key');
+        $midtransSnapUrl = config('midtrans.is_production')
+            ? 'https://app.midtrans.com/snap/snap.js'
+            : 'https://app.sandbox.midtrans.com/snap/snap.js';
+
+        return view('pembayaran.index', compact('pembayarans', 'midtransClientKey', 'midtransSnapUrl'));
     }
 
     /**

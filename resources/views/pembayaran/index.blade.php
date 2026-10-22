@@ -30,25 +30,40 @@
 
     <!-- Helpful Order Info Notice -->
     @php
-        $pendingCount = $pembayarans->whereIn('status', ['Belum Dibayar', 'Menunggu Verifikasi'])->count();
+        $unpaidCount = $pembayarans->where('status', 'Belum Dibayar')->count();
+        $verifyingCount = $pembayarans->where('status', 'Menunggu Verifikasi')->count();
     @endphp
-    @if($pendingCount > 0)
+    @if($unpaidCount > 0)
         <div class="p-4 sm:p-5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
             <div class="flex items-start sm:items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-lg shrink-0 shadow-xs">
-                    <i class="ph-duotone ph-info"></i>
+                    <i class="ph-duotone ph-warning-circle"></i>
                 </div>
                 <div class="text-xs">
-                    <h4 class="font-black text-slate-900">Ada {{ $pendingCount }} Transaksi Menunggu Penyelesaian</h4>
+                    <h4 class="font-black text-slate-900">Ada {{ $unpaidCount }} Transaksi Belum Diselesaikan</h4>
                     <p class="text-amber-900 font-medium mt-0.5 leading-relaxed">
-                        Anda dapat melanjutkan pembayaran dengan menekan tombol <strong>Bayar Sekarang</strong>. Anda juga <strong>tetap bisa melakukan pemesanan sesi foto atau kursus baru</strong> lainnya kapan saja.
+                        Silakan selesaikan pembayaran agar jadwal sesi foto terkunci atau akses materi kursus terbuka otomatis.
                     </p>
                 </div>
             </div>
             <a href="{{ route('payments.create') }}" class="btn-dark px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shrink-0 shadow-xs self-start sm:self-auto">
-                <i class="ph-duotone ph-upload-simple"></i>
-                <span>Unggah Bukti Manual</span>
+                <i class="ph-duotone ph-credit-card"></i>
+                <span>Selesaikan Pembayaran</span>
             </a>
+        </div>
+    @elseif($verifyingCount > 0)
+        <div class="p-4 sm:p-5 rounded-2xl bg-sky-50/90 border border-sky-200 text-sky-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+            <div class="flex items-start sm:items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-sky-500 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
+                    <i class="ph-duotone ph-hourglass-medium"></i>
+                </div>
+                <div class="text-xs">
+                    <h4 class="font-black text-slate-900">Ada {{ $verifyingCount }} Transaksi Sedang Diverifikasi Owner</h4>
+                    <p class="text-sky-900 font-medium mt-0.5 leading-relaxed">
+                        Bukti pembayaran transfer manual Anda telah berhasil diterima. Owner studio sedang memverifikasi pembayaran Anda. Anda akan menerima notifikasi otomatis begitu disetujui.
+                    </p>
+                </div>
+            </div>
         </div>
     @endif
 
@@ -158,33 +173,63 @@
 
                             <!-- 7. Aksi / Tindakan -->
                             <td class="p-4 text-center whitespace-nowrap">
-                                @if($p->status !== 'Dibayar')
+                                @if($p->status === 'Menunggu Verifikasi')
                                     <div class="inline-flex items-center gap-1.5">
-                                        @if($p->booking_id)
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 text-xs font-bold shadow-2xs">
+                                            <i class="ph-duotone ph-clock text-sky-600 animate-pulse"></i>
+                                            <span>Menunggu Verifikasi Owner</span>
+                                        </span>
+                                        @if($p->bukti_pembayaran)
+                                            <a href="{{ asset($p->bukti_pembayaran) }}" target="_blank" 
+                                               class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-2xs inline-flex items-center gap-1 transition-all"
+                                               title="Buka Foto Bukti Transfer yang Diunggah">
+                                                <i class="ph-duotone ph-image text-xs text-indigo-600"></i>
+                                                <span>Lihat Bukti</span>
+                                            </a>
+                                        @endif
+                                    </div>
+                                @elseif($p->status === 'Belum Dibayar')
+                                    <div class="inline-flex items-center gap-1.5">
+                                        @if(!empty($p->snap_token))
+                                            <!-- Bayar Langsung di Halaman Ini (Modal Midtrans Snap) -->
+                                            <button type="button" 
+                                                    onclick="payWithSnapDirect('{{ $p->snap_token }}', '{{ $p->nomor_transaksi }}')"
+                                                    class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] shadow-sm inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
+                                                <i class="ph-duotone ph-lightning text-amber-400"></i>
+                                                <span>Bayar Sekarang (Instan)</span>
+                                            </button>
+                                        @elseif($p->booking_id)
                                             <a href="{{ route('payments.create', ['booking_id' => $p->booking_id]) }}" 
                                                class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] shadow-sm inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
                                                 <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                                                <span>Bayar Sekarang</span>
+                                                <span>Pilih Metode Bayar</span>
                                             </a>
                                         @elseif($p->kursus_id)
                                             <a href="{{ route('payments.create', ['kursus_id' => $p->kursus_id]) }}" 
                                                class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-[11px] shadow-sm inline-flex items-center gap-1 hover:scale-105 active:scale-95 transition-all">
                                                 <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                                                <span>Bayar Sekarang</span>
+                                                <span>Pilih Metode Bayar</span>
                                             </a>
                                         @endif
 
-                                        <a href="{{ route('payments.sync', $p->id) }}" 
-                                           class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-xs inline-flex items-center gap-1 transition-all" 
-                                           title="Cek Status Pembayaran ke Gateway">
-                                            <i class="ph-duotone ph-arrows-clockwise text-xs"></i>
-                                            <span>Cek Status</span>
-                                        </a>
+                                        @if($isGateway)
+                                            <a href="{{ route('payments.sync', $p->id) }}" 
+                                               class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-xs inline-flex items-center gap-1 transition-all" 
+                                               title="Cek Status Pembayaran ke Gateway">
+                                                <i class="ph-duotone ph-arrows-clockwise text-xs"></i>
+                                                <span>Cek Gateway</span>
+                                            </a>
+                                        @endif
                                     </div>
-                                @else
+                                @elseif($p->status === 'Dibayar')
                                     <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
                                         <i class="ph-duotone ph-check-circle text-base"></i>
                                         <span>Lunas</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600">
+                                        <i class="ph-duotone ph-x-circle text-base"></i>
+                                        <span>{{ $p->status }}</span>
                                     </span>
                                 @endif
                             </td>
@@ -218,4 +263,36 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+@if(!empty($midtransSnapUrl))
+<script src="{{ $midtransSnapUrl }}" data-client-key="{{ $midtransClientKey ?? '' }}"></script>
+<script>
+    function payWithSnapDirect(snapToken, trxNumber) {
+        if (typeof window.snap === 'undefined') {
+            alert('SDK Pembayaran Midtrans sedang dimuat. Mohon tunggu beberapa saat.');
+            return;
+        }
+
+        window.snap.pay(snapToken, {
+            onSuccess: function(result) {
+                console.log('Payment Success:', result);
+                window.location.href = "{{ route('payments.finish') }}?order_id=" + (result.order_id || trxNumber) + "&transaction_status=settlement";
+            },
+            onPending: function(result) {
+                console.log('Payment Pending:', result);
+                window.location.href = "{{ route('payments.finish') }}?order_id=" + (result.order_id || trxNumber) + "&transaction_status=pending";
+            },
+            onError: function(result) {
+                console.error('Payment Error:', result);
+                alert('Pembayaran gagal atau dibatalkan.');
+            },
+            onClose: function() {
+                console.log('Customer closed the payment popup');
+            }
+        });
+    }
+</script>
+@endif
+@endpush
 @endsection
