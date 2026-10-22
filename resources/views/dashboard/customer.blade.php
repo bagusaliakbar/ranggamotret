@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard Member — RanggaMotret.id')
+@section('title', 'Dashboard Pelanggan — RanggaMotret.id')
 
 @section('content')
 @php
@@ -15,10 +15,10 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
                 <span>Dashboard</span>
                 <span>/</span>
-                <span class="text-slate-700">Member Portal</span>
+                <span class="text-slate-700">Portal Pelanggan</span>
             </div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-extrabold uppercase tracking-wider mb-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Member Hub Terpadu
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Portal Pelanggan Terpadu
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Halo, {{ Auth::user()->name }}! 👋</h1>
             <p class="text-xs text-slate-500 font-medium mt-0.5">Kelola jadwal pemotretan, kurasi galeri proofing foto, dan ruang belajar akademi fotografi Anda.</p>

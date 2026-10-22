@@ -2,7 +2,7 @@
 
 use App\Models\User;
 
-test('new user can register without choosing role and becomes unified member', function () {
+test('new user can register without choosing role and becomes unified customer', function () {
     $response = $this->post('/register', [
         'name' => 'Budi Santoso',
         'email' => 'budi@example.com',
@@ -23,7 +23,7 @@ test('new user can register without choosing role and becomes unified member', f
     ]);
 });
 
-test('unified member can access both customer booking dashboard and student lms dashboard', function () {
+test('unified customer can access both customer booking dashboard and student lms dashboard', function () {
     $user = User::create([
         'name' => 'Siti Nurhaliza',
         'email' => 'siti@example.com',

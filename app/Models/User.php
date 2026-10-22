@@ -54,11 +54,6 @@ class User extends Authenticatable
         return in_array($this->role, ['customer', 'peserta']);
     }
 
-    public function isMember(): bool
-    {
-        return in_array($this->role, ['customer', 'peserta']);
-    }
-
     public function bookings()
     {
         return $this->hasMany(Reservasi::class, 'user_id');

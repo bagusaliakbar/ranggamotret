@@ -114,7 +114,7 @@
                             @elseif(Auth::user()->isInstruktur())
                                 Instructor Portal
                             @else
-                                Member Portal
+                                Customer Portal
                             @endif
                         </span>
                     </div>
@@ -221,7 +221,7 @@
                     </div>
 
                 @else
-                    <!-- 3. CUSTOMER / MEMBER NAVIGATION GROUP -->
+                    <!-- 3. CUSTOMER NAVIGATION GROUP -->
                     <div class="space-y-1">
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Utama</div>
 

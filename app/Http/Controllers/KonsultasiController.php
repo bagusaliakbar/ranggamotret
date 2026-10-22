@@ -13,7 +13,7 @@ use App\Models\User;
  * Controller Layanan Konsultasi Konsep Fotografi (ICONIX Robustness: KonsultasiController)
  * 
  * Bertanggung jawab atas:
- * - Pengajuan konsultasi konsep foto oleh calon klien/member
+ * - Pengajuan konsultasi konsep foto oleh calon klien/pelanggan
  * - Manajemen dan pemberian tanggapan resmi oleh fotografer/Admin
  */
 class KonsultasiController extends Controller
@@ -131,7 +131,7 @@ class KonsultasiController extends Controller
     }
 
     /**
-     * Tampilan Riwayat Konsultasi untuk Pelanggan / Member di Dashboard Portal
+     * Tampilan Riwayat Konsultasi untuk Pelanggan di Dashboard Portal
      */
     public function customerIndex()
     {

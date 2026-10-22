@@ -162,7 +162,7 @@
                                     <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard Terpadu
                                 </a>
 
-                                @if(Auth::user()->isMember())
+                                @if(Auth::user()->isCustomer())
                                     <a href="{{ route('customer.bookings.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
                                         <i class="ph-duotone ph-camera mr-2 text-slate-500 text-sm"></i> Fotografi
                                     </a>

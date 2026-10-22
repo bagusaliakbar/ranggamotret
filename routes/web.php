@@ -106,7 +106,7 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/payments/midtrans-callback', [PembayaranController::class, 'handleCallback'])->name('payments.midtrans-callback');
 
 // ==========================================
-// 4. CUSTOMER / MEMBER ROUTES (Boundary: Reservasi Foto & Proofing)
+// 4. CUSTOMER ROUTES (Boundary: Reservasi Foto & Proofing)
 // ==========================================
 Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::get('/customer/bookings', [ReservasiController::class, 'customerIndex'])->name('customer.bookings.index');

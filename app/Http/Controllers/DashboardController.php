@@ -41,7 +41,7 @@ class DashboardController extends Controller
             return $this->instructorDashboard($request);
         }
 
-        return $this->memberDashboard($request);
+        return $this->customerDashboard($request);
     }
 
     /**
@@ -98,9 +98,9 @@ class DashboardController extends Controller
     }
 
     /**
-     * Tampilan Dasbor Peran Pelanggan / Member / Peserta
+     * Tampilan Dasbor Peran Pelanggan / Peserta
      */
-    protected function memberDashboard(Request $request)
+    protected function customerDashboard(Request $request)
     {
         $user = Auth::user();
 

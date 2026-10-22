@@ -323,7 +323,7 @@
 
                             @guest
                                 <p class="text-[10px] text-slate-400 text-center mt-2.5 flex items-center justify-center gap-1">
-                                    <i class="fa-solid fa-lock text-[9px]"></i> Reservasi aman dengan akun member
+                                    <i class="fa-solid fa-lock text-[9px]"></i> Reservasi aman dengan akun terdaftar
                                 </p>
                             @endguest
                         </div>

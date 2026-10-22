@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Riwayat Konsultasi — Member Portal RanggaMotret.id')
+@section('title', 'Riwayat Konsultasi — RanggaMotret.id')
 
 @section('content')
 <div class="space-y-8" x-data="{ openModal: false, selectedBudget: '' }">
