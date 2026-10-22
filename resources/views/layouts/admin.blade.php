@@ -248,19 +248,6 @@
                             <span>Riwayat Pembayaran</span>
                         </a>
                     </div>
-                    <div class="space-y-1">
-                        <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Eksplor Layanan</div>
-
-                        <a href="{{ route('public.services') }}" class="sidebar-link">
-                            <i class="ph-duotone ph-camera-plus text-base w-5"></i>
-                            <span>Reservasi Layanan Baru</span>
-                        </a>
-
-                        <a href="{{ route('public.courses') }}" class="sidebar-link">
-                            <i class="ph-duotone ph-book-open text-base w-5"></i>
-                            <span>Katalog Kursus</span>
-                        </a>
-                    </div>
                 @endif
             </nav>
         </div>
