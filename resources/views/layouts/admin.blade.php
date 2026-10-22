@@ -212,9 +212,16 @@
                             <span>Dashboard</span>
                         </a>
 
-                        <a href="{{ route('customer.bookings.index') }}" class="sidebar-link {{ request()->routeIs('customer.bookings.*') ? 'active' : '' }}">
+                        <!-- 1. Menu Fotografi (Layanan yang Sudah Dipesan) -->
+                        <a href="{{ route('customer.fotografi.index') }}" class="sidebar-link {{ request()->routeIs('customer.fotografi.*') || request()->routeIs('fotografi.saya') ? 'active' : '' }}">
                             <i class="ph-duotone ph-camera text-base w-5"></i>
-                            <span>Pesanan & Sesi Foto</span>
+                            <span>Fotografi</span>
+                        </a>
+
+                        <!-- 2. Menu Riwayat Reservasi Fotografi (Riwayat Pemesanan) -->
+                        <a href="{{ route('customer.bookings.index') }}" class="sidebar-link {{ request()->routeIs('customer.bookings.*') || request()->routeIs('reservasi.index') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-calendar-check text-base w-5"></i>
+                            <span>Riwayat Reservasi Fotografi</span>
                         </a>
 
                         <a href="{{ route('customer.consultations.index') }}" class="sidebar-link {{ request()->routeIs('customer.consultations.*') || request()->routeIs('konsultasi.riwayat') ? 'active' : '' }}">

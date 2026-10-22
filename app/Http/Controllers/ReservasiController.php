@@ -41,11 +41,35 @@ class ReservasiController extends Controller
     public function customerIndex()
     {
         $bookings = Reservasi::where('user_id', Auth::id())
-            ->with(['layanan', 'paket', 'pembayaran'])
+            ->with(['layanan', 'paket', 'pembayaran', 'galeriFotos'])
             ->latest()
             ->get();
 
         return view('reservasi.index', compact('bookings'));
+    }
+
+    /**
+     * Menampilkan daftar layanan fotografi yang telah dipesan oleh pelanggan
+     */
+    public function customerFotografi(Request $request)
+    {
+        $userId = Auth::id();
+        
+        $bookings = Reservasi::where('user_id', $userId)
+            ->with(['layanan', 'paket', 'pembayaran', 'galeriFotos'])
+            ->latest()
+            ->get();
+
+        $activeBookings = $bookings->filter(fn($b) => in_array($b->status, ['Menunggu Konfirmasi', 'Disetujui', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal']));
+        $completedBookings = $bookings->filter(fn($b) => $b->status === 'Selesai');
+        $totalPhotosAvailable = $bookings->sum(fn($b) => $b->galeriFotos->count());
+
+        return view('reservasi.fotografi', compact(
+            'bookings',
+            'activeBookings',
+            'completedBookings',
+            'totalPhotosAvailable'
+        ));
     }
 
     /**

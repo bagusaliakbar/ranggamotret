@@ -34,6 +34,7 @@ test('controllers and routes corresponding to robustness boundaries respond with
     $this->actingAs($user)->get('/dashboard')->assertStatus(200);
     $this->actingAs($user)->get('/profile')->assertStatus(200);
     $this->actingAs($user)->get('/reservasi')->assertStatus(200);
+    $this->actingAs($user)->get('/customer/fotografi')->assertStatus(200)->assertSee('Layanan Fotografi Saya');
     $this->actingAs($user)->get('/pembayaran')->assertStatus(200);
     $this->actingAs($user)->get('/jadwal')->assertStatus(200);
     $this->actingAs($user)->get('/customer/consultations')->assertStatus(200);
