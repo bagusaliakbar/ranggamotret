@@ -33,7 +33,7 @@ class UserController extends Controller
             });
         }
 
-        if ($role && in_array($role, ['admin', 'instruktur', 'customer', 'peserta'])) {
+        if ($role && in_array($role, ['admin', 'customer', 'peserta'])) {
             $query->where('role', $role);
         }
 
@@ -46,14 +46,12 @@ class UserController extends Controller
         // Statistics
         $totalUsers = User::count();
         $totalAdmins = User::where('role', 'admin')->count();
-        $totalInstructors = User::where('role', 'instruktur')->count();
         $totalCustomers = User::whereIn('role', ['customer', 'peserta'])->count();
 
         return view('users.admin', compact(
             'users',
             'totalUsers',
             'totalAdmins',
-            'totalInstructors',
             'totalCustomers',
             'search',
             'role',
@@ -67,7 +65,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,instruktur,customer,peserta',
+            'role' => 'required|in:admin,customer,peserta',
             'status' => 'required|in:active,inactive',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
@@ -108,7 +106,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8',
-            'role' => 'required|in:admin,instruktur,customer,peserta',
+            'role' => 'required|in:admin,customer,peserta',
             'status' => 'required|in:active,inactive',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',

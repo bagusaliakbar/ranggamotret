@@ -82,8 +82,8 @@
                                         <span>&bull; <strong>{{ $c->enrollments->count() }}</strong> Siswa</span>
                                     </div>
                                     <div class="text-[11px] text-slate-400">
-                                        Instruktur: <span
-                                            class="text-slate-600 font-bold">{{ $c->instruktur->name ?? 'Admin' }}</span>
+                                        Pengampu (Owner): <span
+                                            class="text-slate-600 font-bold">{{ $c->instruktur->name ?? 'Owner' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -328,14 +328,12 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-slate-700 font-bold mb-1">Instruktur Pengampu <span
-                                class="text-rose-500">*</span></label>
-                        <select name="instruktur_id" required
-                            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
-                            @foreach($instructors as $inst)
-                                <option value="{{ $inst->id }}">{{ $inst->name }} ({{ ucfirst($inst->role) }})</option>
-                            @endforeach
-                        </select>
+                        <label class="block text-slate-700 font-bold mb-1">Pengampu Kursus</label>
+                        <div class="px-4 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-between">
+                            <span>Owner Studio (RanggaMotret)</span>
+                            <span class="text-[10px] uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-extrabold">Otomatis</span>
+                        </div>
+                        <input type="hidden" name="instruktur_id" value="{{ Auth::id() }}">
                     </div>
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">URL Thumbnail Gambar</label>
@@ -410,14 +408,12 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-slate-700 font-bold mb-1">Instruktur Pengampu <span
-                                class="text-rose-500">*</span></label>
-                        <select name="instruktur_id" x-model="editCourseData.instruktur_id" required
-                            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
-                            @foreach($instructors as $inst)
-                                <option value="{{ $inst->id }}">{{ $inst->name }} ({{ ucfirst($inst->role) }})</option>
-                            @endforeach
-                        </select>
+                        <label class="block text-slate-700 font-bold mb-1">Pengampu Kursus</label>
+                        <div class="px-4 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold flex items-center justify-between">
+                            <span>Owner Studio (RanggaMotret)</span>
+                            <span class="text-[10px] uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-extrabold">Otomatis</span>
+                        </div>
+                        <input type="hidden" name="instruktur_id" :value="editCourseData.instruktur_id || '{{ Auth::id() }}'">
                     </div>
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">URL Thumbnail Gambar</label>

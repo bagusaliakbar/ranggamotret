@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Panel Penilaian Tugas — Instruktur RanggaMotret.id')
+@section('title', 'Panel Penilaian Tugas — Owner RanggaMotret.id')
 
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">

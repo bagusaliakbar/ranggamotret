@@ -74,16 +74,16 @@
                 </div>
             </div>
 
-            <!-- Instructor Profile Card -->
+            <!-- Pengampu Kursus (Owner) -->
             <div class="clean-card p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 <div class="w-20 h-20 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black text-2xl shrink-0 shadow-md">
                     {{ strtoupper(substr($kursus->instruktur->name ?? 'R', 0, 1)) }}
                 </div>
                 <div class="space-y-1.5 flex-1">
-                    <span class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest">Instruktur Utama</span>
-                    <h3 class="text-xl font-black text-slate-900">{{ $kursus->instruktur->name ?? 'Tim RanggaMotret' }}</h3>
+                    <span class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest">Pengampu (Owner)</span>
+                    <h3 class="text-xl font-black text-slate-900">{{ $kursus->instruktur->name ?? 'Owner RanggaMotret' }}</h3>
                     <p class="text-xs text-slate-600 font-medium leading-relaxed">
-                        Praktisi fotografi profesional berpengalaman lebih dari 8 tahun dalam penanganan wedding komersial, portraiture, dan teknik pencahayaan studio terapan.
+                        Praktisi fotografi profesional sekaligus Founder & Owner RanggaMotret berpengalaman lebih dari 8 tahun dalam wedding komersial, portraiture, dan lighting studio terapan.
                     </p>
                 </div>
             </div>
@@ -184,7 +184,7 @@
                         </div>
                     @empty
                         <div class="p-12 text-center clean-card rounded-3xl text-slate-500 text-xs font-medium">
-                            Silabus modul pembelajaran untuk kursus ini sedang disusun oleh instruktur.
+                            Silabus modul pembelajaran untuk kursus ini sedang disusun oleh Owner.
                         </div>
                     @endforelse
                 </div>
@@ -228,7 +228,7 @@
                     </div>
                     <div class="flex items-center gap-2.5">
                         <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                        <span>Tugas praktik dievaluasi instruktur</span>
+                        <span>Tugas praktik dievaluasi oleh Owner</span>
                     </div>
                     <div class="flex items-center gap-2.5">
                         <i class="fa-solid fa-circle-check text-emerald-600"></i>

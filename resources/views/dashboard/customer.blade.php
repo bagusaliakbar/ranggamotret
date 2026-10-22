@@ -299,7 +299,7 @@
                                         </span>
                                     @endif
                                 </div>
-                                <p class="text-[11px] text-slate-500 font-medium">Instruktur: {{ $enroll->kursus->instruktur->name ?? 'Tim RanggaMotret' }}</p>
+                                <p class="text-[11px] text-slate-500 font-medium">Pengampu: {{ $enroll->kursus->instruktur->name ?? 'Owner RanggaMotret' }}</p>
                             </div>
 
                             <div class="space-y-1">

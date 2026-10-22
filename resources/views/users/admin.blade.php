@@ -14,7 +14,7 @@
                 <span class="text-slate-700">Kelola Pengguna</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Kelola Pengguna</h1>
-            <p class="text-xs text-slate-500 font-medium mt-1">Kelola data akun administrator, instruktur akademi, dan pelanggan (customer/peserta).</p>
+            <p class="text-xs text-slate-500 font-medium mt-1">Kelola data akun Owner (Administrator) dan Pelanggan (Customer / Peserta Kursus).</p>
         </div>
 
         <button @click="openCreateModal()" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-2">
@@ -22,50 +22,38 @@
         </button>
     </div>
 
-    <!-- 4 Stats Cards Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <!-- 3 Stats Cards Grid (Owner & Pelanggan) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <!-- 1. Total Pengguna -->
         <div class="clean-card p-5 rounded-2xl space-y-1">
             <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Total Pengguna</span>
-                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-users"></i>
+                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-users"></i>
                 </div>
             </div>
             <div class="text-2xl font-black text-slate-900">{{ $totalUsers ?? 0 }}</div>
             <div class="text-[11px] text-slate-500 font-medium">Semua akun terdaftar</div>
         </div>
 
-        <!-- 2. Administrator -->
+        <!-- 2. Owner / Administrator -->
         <div class="clean-card p-5 rounded-2xl space-y-1">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Administrator</span>
-                <div class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-shield-halved"></i>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Owner / Admin</span>
+                <div class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-shield-check"></i>
                 </div>
             </div>
             <div class="text-2xl font-black text-slate-900">{{ $totalAdmins ?? 0 }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Pengelola sistem</div>
+            <div class="text-[11px] text-slate-500 font-medium">Pengelola studio & kursus</div>
         </div>
 
-        <!-- 3. Instruktur -->
+        <!-- 3. Customer / Peserta Kursus -->
         <div class="clean-card p-5 rounded-2xl space-y-1">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Instruktur</span>
-                <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-chalkboard-user"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-blue-700">{{ $totalInstructors ?? 0 }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Pengajar kursus</div>
-        </div>
-
-        <!-- 4. Customer / Peserta -->
-        <div class="clean-card p-5 rounded-2xl space-y-1">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Customer & Siswa</span>
-                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-user-check"></i>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Pelanggan & Siswa</span>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-user-circle-check"></i>
                 </div>
             </div>
             <div class="text-2xl font-black text-emerald-700">{{ $totalCustomers ?? 0 }}</div>
@@ -77,7 +65,7 @@
     <div class="clean-card p-4 sm:p-5 rounded-2xl">
         <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs">
             <div class="sm:col-span-5 relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
                 <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, email, atau no. telp..."
                     class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
             </div>
@@ -85,9 +73,8 @@
             <div class="sm:col-span-3">
                 <select name="role" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
                     <option value="">Semua Hak Akses (Role)</option>
-                    <option value="admin" {{ ($role ?? '') === 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="instruktur" {{ ($role ?? '') === 'instruktur' ? 'selected' : '' }}>Instruktur</option>
-                    <option value="customer" {{ ($role ?? '') === 'customer' ? 'selected' : '' }}>Customer</option>
+                    <option value="admin" {{ ($role ?? '') === 'admin' ? 'selected' : '' }}>Owner / Admin</option>
+                    <option value="customer" {{ ($role ?? '') === 'customer' ? 'selected' : '' }}>Customer (Pelanggan)</option>
                     <option value="peserta" {{ ($role ?? '') === 'peserta' ? 'selected' : '' }}>Peserta Kursus</option>
                 </select>
             </div>
@@ -261,7 +248,7 @@
                     </div>
                     <div>
                         <h3 class="font-extrabold text-base text-slate-900">Tambah Pengguna Baru</h3>
-                        <p class="text-xs text-slate-500 font-medium">Buat akun untuk admin, instruktur, atau klien.</p>
+                        <p class="text-xs text-slate-500 font-medium">Buat akun untuk Owner (Administrator) atau Pelanggan.</p>
                     </div>
                 </div>
                 <button @click="createModalOpen = false" class="text-slate-400 hover:text-slate-600">
@@ -297,8 +284,7 @@
                         <select name="role" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
                             <option value="customer">Customer (Pelanggan)</option>
                             <option value="peserta">Peserta (Siswa LMS)</option>
-                            <option value="instruktur">Instruktur (Pengajar)</option>
-                            <option value="admin">Administrator</option>
+                            <option value="admin">Owner (Administrator)</option>
                         </select>
                     </div>
                     <div>
@@ -390,8 +376,7 @@
                         <select name="role" x-model="selectedUser.role" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
                             <option value="customer">Customer (Pelanggan)</option>
                             <option value="peserta">Peserta (Siswa LMS)</option>
-                            <option value="instruktur">Instruktur (Pengajar)</option>
-                            <option value="admin">Administrator</option>
+                            <option value="admin">Owner (Administrator)</option>
                         </select>
                     </div>
                     <div>

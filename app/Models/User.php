@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // admin, instruktur, customer, peserta
+        'role', // admin (owner), customer (pelanggan)
         'status', // active, inactive
         'phone',
         'address',
@@ -39,9 +39,9 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
-    public function isInstruktur(): bool
+    public function isOwner(): bool
     {
-        return $this->role === 'instruktur';
+        return $this->isAdmin();
     }
 
     public function isCustomer(): bool

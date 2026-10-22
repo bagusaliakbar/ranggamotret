@@ -37,10 +37,6 @@ class DashboardController extends Controller
             return $this->adminDashboard($request);
         }
 
-        if ($user->isInstruktur()) {
-            return $this->instructorDashboard($request);
-        }
-
         return $this->customerDashboard($request);
     }
 
@@ -77,25 +73,6 @@ class DashboardController extends Controller
         ));
     }
 
-    /**
-     * Tampilan Dasbor Peran Instruktur
-     */
-    protected function instructorDashboard(Request $request)
-    {
-        $user = Auth::user();
-        $courses = Kursus::where('instruktur_id', $user->id)
-            ->with(['instruktur', 'moduls.materis', 'enrollments'])
-            ->latest()
-            ->get();
-
-        $pendingGrading = TugasSubmission::whereHas('tugas.modul.kursus', function ($q) use ($user) {
-            $q->where('instruktur_id', $user->id);
-        })->whereNull('nilai')->count();
-
-        $instructors = User::whereIn('role', ['admin', 'instruktur'])->get();
-
-        return view('kursus.admin', compact('courses', 'instructors', 'pendingGrading'));
-    }
 
     /**
      * Tampilan Dasbor Peran Pelanggan / Peserta

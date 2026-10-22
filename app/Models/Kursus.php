@@ -24,6 +24,11 @@ class Kursus extends Model
         return $this->belongsTo(User::class, 'instruktur_id');
     }
 
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'instruktur_id');
+    }
+
     public function moduls()
     {
         return $this->hasMany(Modul::class, 'kursus_id')->orderBy('urutan');

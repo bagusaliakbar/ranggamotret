@@ -256,13 +256,8 @@ class KursusController extends Controller
     public function adminIndex()
     {
         $user = Auth::user();
-        if ($user->isInstruktur()) {
-            $courses = Kursus::where('instruktur_id', $user->id)->with(['instruktur', 'moduls.materis', 'enrollments'])->latest()->get();
-        } else {
-            $courses = Kursus::with(['instruktur', 'moduls.materis', 'enrollments'])->latest()->get();
-        }
-
-        $instructors = User::whereIn('role', ['admin', 'instruktur'])->get();
+        $courses = Kursus::with(['instruktur', 'moduls.materis', 'enrollments'])->latest()->get();
+        $instructors = User::where('role', 'admin')->get();
 
         return view('kursus.admin', compact('courses', 'instructors'));
     }
@@ -275,11 +270,12 @@ class KursusController extends Controller
             'harga' => 'required|numeric',
             'durasi' => 'required|string',
             'level' => 'required|in:Pemula,Menengah,Mahir',
-            'instruktur_id' => 'required|exists:users,id',
+            'instruktur_id' => 'nullable|exists:users,id',
             'thumbnail' => 'nullable|string',
             'status' => 'nullable|in:aktif,draft',
         ]);
 
+        $validated['instruktur_id'] = $validated['instruktur_id'] ?? Auth::id();
         $validated['status'] = $validated['status'] ?? 'aktif';
 
         Kursus::create($validated);
@@ -294,10 +290,12 @@ class KursusController extends Controller
             'harga' => 'required|numeric',
             'durasi' => 'required|string',
             'level' => 'required|in:Pemula,Menengah,Mahir',
-            'instruktur_id' => 'required|exists:users,id',
+            'instruktur_id' => 'nullable|exists:users,id',
             'thumbnail' => 'nullable|string',
             'status' => 'required|in:aktif,draft',
         ]);
+
+        $validated['instruktur_id'] = $validated['instruktur_id'] ?? Auth::id();
 
         $kursus = Kursus::findOrFail($id);
         $kursus->update($validated);

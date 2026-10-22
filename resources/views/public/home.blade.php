@@ -253,8 +253,8 @@
                         </div>
                         <div class="p-6 space-y-3">
                             <div class="flex items-center justify-between text-xs text-slate-500 font-medium">
-                                <span><i class="fa-regular fa-clock mr-1 text-slate-700"></i> {{ $c->durasi }}</span>
-                                <span><i class="fa-solid fa-user-tie mr-1 text-slate-700"></i> {{ $c->instruktur->name }}</span>
+                                <span><i class="ph-duotone ph-clock mr-1 text-slate-700"></i> {{ $c->durasi }}</span>
+                                <span><i class="ph-duotone ph-user mr-1 text-slate-700"></i> Owner: {{ $c->instruktur->name ?? 'RanggaMotret' }}</span>
                             </div>
                             <h3 class="text-xl font-bold text-slate-900 group-hover:text-slate-700 transition-colors">{{ $c->nama }}</h3>
                             <p class="text-xs text-slate-600 leading-relaxed line-clamp-2 font-medium">{{ $c->deskripsi }}</p>

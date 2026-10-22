@@ -145,9 +145,9 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
 });
 
 // ==========================================
-// 6. INSTRUKTUR ROUTES (Penilaian Tugas Siswa)
+// 6. OWNER EVALUATION ROUTES (Penilaian Tugas Siswa oleh Owner)
 // ==========================================
-Route::middleware(['auth', 'role:instruktur,admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/instructor/assignments', [MateriController::class, 'instructorAssignmentsIndex'])->name('instructor.assignments.index');
     Route::post('/instructor/assignments/{id}/grade', [MateriController::class, 'gradeAssignment'])->name('instructor.assignments.grade');
 });

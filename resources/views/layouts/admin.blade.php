@@ -110,9 +110,7 @@
                         <span class="font-extrabold text-base tracking-tight text-slate-900">RANGGA<span class="text-slate-500">MOTRET</span></span>
                         <span class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest -mt-1">
                             @if(Auth::user()->isAdmin())
-                                Admin Portal
-                            @elseif(Auth::user()->isInstruktur())
-                                Instructor Portal
+                                Owner Portal
                             @else
                                 Customer Portal
                             @endif
@@ -165,6 +163,11 @@
                             <span>Kelola Kursus & Materi Kursus</span>
                         </a>
 
+                        <a href="{{ route('instructor.assignments.index') }}" class="sidebar-link {{ request()->routeIs('instructor.assignments*') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-pencil-simple-line text-base w-5"></i>
+                            <span>Penilaian Tugas Siswa</span>
+                        </a>
+
                         <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chats-circle text-base w-5"></i>
                             <span>Kelola Konsultasi</span>
@@ -196,27 +199,6 @@
                         <a href="{{ route('admin.reports.index') }}" class="sidebar-link {{ request()->routeIs('admin.reports*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chart-pie-slice text-base w-5"></i>
                             <span>Laporan Keuangan</span>
-                        </a>
-                    </div>
-
-                @elseif(Auth::user()->isInstruktur())
-                    <!-- 2. INSTRUCTOR NAVIGATION GROUP -->
-                    <div class="space-y-1">
-                        <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Instruktur Portal</div>
-
-                        <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('instructor.dashboard') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-chalkboard-teacher text-base w-5"></i>
-                            <span>Panel Kursus Saya</span>
-                        </a>
-
-                        <a href="{{ route('instructor.assignments.index') }}" class="sidebar-link {{ request()->routeIs('instructor.assignments*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-pencil-simple-line text-base w-5"></i>
-                            <span>Penilaian Tugas Siswa</span>
-                        </a>
-
-                        <a href="{{ route('calendar') }}" class="sidebar-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-calendar-blank text-base w-5"></i>
-                            <span>Jadwal Mengajar</span>
                         </a>
                     </div>
 

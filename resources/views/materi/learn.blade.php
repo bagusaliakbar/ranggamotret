@@ -72,7 +72,7 @@
                 </div>
                 <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{{ $kursus->nama }}</h1>
                 <p class="text-xs text-slate-500 font-medium">
-                    Instruktur: <strong class="text-slate-800">{{ $kursus->instruktur->name ?? 'Tim RanggaMotret' }}</strong>
+                    Pengampu (Owner): <strong class="text-slate-800">{{ $kursus->instruktur->name ?? 'Owner RanggaMotret' }}</strong>
                 </p>
             </div>
 
@@ -258,7 +258,7 @@
 
                                 @if($tugasSubmission->nilai !== null)
                                     <div class="p-3 bg-white rounded-xl border border-emerald-200 flex items-center justify-between">
-                                        <span class="text-xs font-bold text-slate-700">Nilai Instruktur:</span>
+                                        <span class="text-xs font-bold text-slate-700">Nilai Evaluasi Owner:</span>
                                         <span class="text-base font-black text-emerald-700">{{ $tugasSubmission->nilai }} / 100</span>
                                     </div>
                                     @if($tugasSubmission->feedback)
@@ -266,7 +266,7 @@
                                     @endif
                                 @else
                                     <p class="text-xs text-emerald-800 font-medium">
-                                        Tugas Anda sedang dalam antrean evaluasi dan review oleh instruktur.
+                                        Tugas Anda sedang dalam antrean evaluasi dan review oleh Owner.
                                     </p>
                                 @endif
                             </div>

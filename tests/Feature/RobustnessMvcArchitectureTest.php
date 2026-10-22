@@ -115,9 +115,9 @@ test('authenticated user consultation links user_id and appears in consultation 
 });
 
 test('course detail page with eager loaded relationships returns HTTP 200', function () {
-    $instruktur = User::firstOrCreate(
-        ['email' => 'instructor@test.com'],
-        ['name' => 'Instruktur Test', 'password' => bcrypt('password123'), 'role' => 'instructor', 'status' => 'active']
+    $owner = User::firstOrCreate(
+        ['email' => 'owner@test.com'],
+        ['name' => 'Owner Studio Test', 'password' => bcrypt('password123'), 'role' => 'admin', 'status' => 'active']
     );
 
     $kursus = Kursus::create([
@@ -126,7 +126,7 @@ test('course detail page with eager loaded relationships returns HTTP 200', func
         'harga' => 350000,
         'durasi' => '4 Minggu',
         'level' => 'Pemula',
-        'instruktur_id' => $instruktur->id,
+        'instruktur_id' => $owner->id,
         'status' => 'published',
     ]);
 

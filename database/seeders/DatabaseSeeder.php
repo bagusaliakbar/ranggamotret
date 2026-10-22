@@ -33,25 +33,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Seed Accounts for each Role
+        // 1. Seed Accounts for each Role (Owner & Pelanggan)
         $admin = User::create([
-            'name' => 'Rangga Super Admin',
+            'name' => 'Rangga Super Admin (Owner)',
             'email' => 'admin@ranggamotret.id',
             'password' => Hash::make('password'),
             'role' => 'admin',
             'status' => 'active',
             'phone' => '081234567890',
             'address' => 'Jl. Studio Fotografi No. 1, Jakarta South',
-        ]);
-
-        $instruktur1 = User::create([
-            'name' => 'Bagus Ali Akbar (Master Photograhper)',
-            'email' => 'instruktur@ranggamotret.id',
-            'password' => Hash::make('password'),
-            'role' => 'instruktur',
-            'status' => 'active',
-            'phone' => '081298765432',
-            'address' => 'Jl. Visual Art Studio No. 88, Bandung',
         ]);
 
         $customer1 = User::create([
@@ -207,14 +197,14 @@ class DatabaseSeeder extends Seeder
             'catatan' => null,
         ]);
 
-        // 5. Seed Courses (Kursus)
+        // 5. Seed Courses (Kursus - Diampu langsung oleh Owner)
         $kursusDasar = Kursus::create([
             'nama' => 'Mastery Fotografi Dasar & Teknik Segitiga Exposure',
             'deskripsi' => 'Pelajari dasar-dasar ilmu fotografi dari nol. Menguasai ISO, Aperture, Shutter Speed, White Balance, dan komposisi visual terbaik.',
             'harga' => 750000,
             'durasi' => '4 Minggu',
             'level' => 'Pemula',
-            'instruktur_id' => $instruktur1->id,
+            'instruktur_id' => $admin->id,
             'thumbnail' => 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
             'status' => 'aktif',
         ]);
@@ -225,7 +215,7 @@ class DatabaseSeeder extends Seeder
             'harga' => 1250000,
             'durasi' => '6 Minggu',
             'level' => 'Menengah',
-            'instruktur_id' => $instruktur1->id,
+            'instruktur_id' => $admin->id,
             'thumbnail' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
             'status' => 'aktif',
         ]);

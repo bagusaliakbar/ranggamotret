@@ -198,7 +198,7 @@
                     </span>
                     <div class="pt-2">
                         <p class="font-extrabold text-slate-900 text-xs">{{ $sertifikat->kursus->instruktur->name ?? 'Bagus Ali Akbar' }}</p>
-                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Master Instructor RanggaMotret</p>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Founder & Owner RanggaMotret</p>
                     </div>
                 </div>
             </div>
