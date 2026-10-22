@@ -4,6 +4,12 @@
 
 @section('content')
 <div class="space-y-8">
+    <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+        <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+        <span>/</span>
+        <span class="text-slate-700">Profil & Pengaturan Akun</span>
+    </div>
+
     <div class="clean-card p-8 rounded-2xl space-y-6">
         <div class="flex items-center gap-4 border-b border-slate-100 pb-6">
             <div class="w-16 h-16 rounded-2xl bg-slate-900 text-white font-bold flex items-center justify-center text-2xl shadow-md">

@@ -5,6 +5,11 @@
 @section('content')
 <div class="space-y-8">
     <div class="border-b border-slate-200 pb-6">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+            <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+            <span>/</span>
+            <span class="text-slate-700">Notifikasi</span>
+        </div>
         <h1 class="text-3xl font-extrabold text-slate-900">Notifikasi Akun</h1>
         <p class="text-xs text-slate-600 font-medium">Pesan pembaruan status booking, verifikasi pembayaran, dan perkembangan kursus.</p>
     </div>
@@ -15,7 +20,7 @@
                 <div class="space-y-1">
                     <div class="font-bold text-sm text-slate-900">{{ $n->judul }}</div>
                     <p class="text-xs text-slate-600 leading-relaxed font-medium">{{ $n->pesan }}</p>
-                    <div class="text-[10px] text-slate-400 font-medium pt-1"><i class="fa-regular fa-clock mr-1"></i> {{ $n->created_at->diffForHumans() }}</div>
+                    <div class="text-[10px] text-slate-400 font-medium pt-1"><i class="ph-duotone ph-clock mr-1"></i> {{ $n->created_at->diffForHumans() }}</div>
                 </div>
 
                 @if(!$n->is_read)

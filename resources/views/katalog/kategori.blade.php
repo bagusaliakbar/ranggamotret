@@ -74,10 +74,12 @@
     <!-- Page Header & Action Button -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-6">
         <div>
-            <div class="flex items-center gap-2 text-xs text-slate-500 font-medium mb-1">
-                <a href="{{ route('admin.layanan.index') }}" class="hover:text-slate-900 transition-colors">Layanan</a>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <span class="text-slate-900 font-bold">Kategori Layanan</span>
+                <a href="{{ route('admin.layanan.index') }}" class="hover:text-slate-700 transition-colors">Layanan</a>
+                <span>/</span>
+                <span class="text-slate-700">Kategori Layanan</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Kelola Kategori Layanan</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Kelola master segmentasi kategori fotografi, ikon visual, dan status ketersediaan.</p>

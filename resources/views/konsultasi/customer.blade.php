@@ -20,7 +20,7 @@
         <div class="shrink-0">
             <button @click="openModal = true" class="btn-dark px-5 py-3 rounded-xl text-xs font-bold flex items-center gap-2 shadow-md hover:scale-[1.02] active:scale-95 transition-all">
                 <i class="ph-duotone ph-plus-circle text-base text-emerald-400"></i>
-                <span>Ajukan Konsultasi Baru</span>
+                <span>Ajukan Konsultasi</span>
             </button>
         </div>
     </div>

@@ -5,8 +5,13 @@
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
     <div class="border-b border-slate-200 pb-6">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+            <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+            <span>/</span>
+            <span class="text-slate-700">Kelola Testimoni</span>
+        </div>
         <h1 class="text-3xl font-extrabold text-slate-900">Kelola Ulasan Testimoni</h1>
-        <p class="text-xs text-slate-600 font-medium">Moderaasi testimoni pelanggan sebelum ditampilkan secara publik.</p>
+        <p class="text-xs text-slate-600 font-medium">Moderasi testimoni pelanggan sebelum ditampilkan secara publik.</p>
     </div>
 
     <div class="clean-card rounded-2xl overflow-hidden shadow-sm">
@@ -26,7 +31,7 @@
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="p-4 font-bold text-slate-900">{{ $t->user->name }}</td>
                             <td class="p-4 text-amber-500 font-bold">
-                                {{ $t->rating }} / 5 <i class="fa-solid fa-star text-[10px]"></i>
+                                {{ $t->rating }} / 5 <i class="ph-fill ph-star text-xs"></i>
                             </td>
                             <td class="p-4 text-slate-700 max-w-sm">"{{ $t->komentar }}"</td>
                             <td class="p-4">

@@ -5,7 +5,12 @@
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
     <div class="border-b border-slate-200 pb-6">
-        <h1 class="text-3xl font-extrabold text-slate-900">Manajemen Permintaan Konsultasi Pre-Booking</h1>
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+            <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+            <span>/</span>
+            <span class="text-slate-700">Kelola Konsultasi</span>
+        </div>
+        <h1 class="text-3xl font-extrabold text-slate-900">Kelola Permintaan Konsultasi Pre-Booking</h1>
         <p class="text-xs text-slate-500 font-medium mt-1">Tanggapi pertanyaan calon client seputar konsep foto, jadwal, dan rekomendasi paket.</p>
     </div>
 
@@ -46,7 +51,7 @@
                             </td>
                             <td class="p-4 text-center">
                                 <button @click="openReply = true" class="bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors shadow-sm">
-                                    <i class="fa-solid fa-reply mr-1"></i> Tanggapi
+                                    <i class="fa-solid fa-reply mr-1"></i> Respon Konsultasi
                                 </button>
 
                                 <div x-show="openReply" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">

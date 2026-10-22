@@ -23,12 +23,17 @@
     <!-- Top Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-6">
         <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <span class="text-slate-700">Manajemen Kursus LMS</span>
+            </div>
             <h1 class="text-3xl font-extrabold text-slate-900">Pengelolaan Akademi Kursus & Modul LMS</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Buat kursus baru, kelola silabus modul, serta atur materi bacaan dan video pembelajaran.</p>
         </div>
 
         <button @click="openAddCourse = true" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
-            <i class="fa-solid fa-plus"></i> Tambah Kursus Baru
+            <i class="ph-duotone ph-plus"></i> Tambah Kursus Baru
         </button>
     </div>
 

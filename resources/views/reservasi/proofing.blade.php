@@ -26,6 +26,15 @@
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-6">
         <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <a href="{{ route('customer.bookings.index') }}" class="hover:text-slate-700 transition-colors">Riwayat Booking</a>
+                <span>/</span>
+                <a href="{{ route('customer.bookings.show', $booking->id) }}" class="hover:text-slate-700 transition-colors">{{ $booking->nomor_booking }}</a>
+                <span>/</span>
+                <span class="text-slate-700">Studio Proofing</span>
+            </div>
             <div class="flex items-center gap-2 flex-wrap">
                 <span class="text-[10px] font-mono font-black text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
                     {{ $booking->nomor_booking }}
@@ -40,7 +49,7 @@
 
         <div class="flex items-center gap-3">
             <a href="{{ route('customer.bookings.show', $booking->id) }}" class="btn-outline px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                <i class="fa-solid fa-arrow-left"></i> Detail Booking
+                <i class="ph-duotone ph-arrow-left"></i> Detail Booking
             </a>
             
             <div class="clean-card px-4 py-2.5 rounded-xl border border-slate-200 flex items-center gap-3 text-xs font-bold shadow-sm bg-white">

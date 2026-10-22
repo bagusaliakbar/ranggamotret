@@ -8,12 +8,17 @@
     <!-- Top Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <span class="text-slate-700">Kelola Pengguna</span>
+            </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Kelola Pengguna</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Kelola data akun administrator, instruktur akademi, dan pelanggan (customer/peserta).</p>
         </div>
 
         <button @click="openCreateModal()" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-2">
-            <i class="fa-solid fa-user-plus"></i> Tambah Pengguna Baru
+            <i class="ph-duotone ph-user-plus"></i> Tambah Pengguna Baru
         </button>
     </div>
 

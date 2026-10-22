@@ -5,6 +5,11 @@
 @section('content')
 <div class="space-y-8">
     <div class="border-b border-slate-200 pb-6">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+            <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+            <span>/</span>
+            <span class="text-slate-700">Ruang Belajar Akademi</span>
+        </div>
         <h1 class="text-3xl font-extrabold text-slate-900">Dashboard Ruang Belajar</h1>
         <p class="text-xs text-slate-600 font-medium">Akses kelas kursus terdaftar, pantau progress pembelajaran, dan unduh sertifikat.</p>
     </div>

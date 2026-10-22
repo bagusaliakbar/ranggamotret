@@ -167,7 +167,7 @@
 
                         <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chats-circle text-base w-5"></i>
-                            <span>Konsultasi Klien</span>
+                            <span>Kelola Konsultasi</span>
                         </a>
 
                         <a href="{{ route('admin.testimonials.index') }}" class="sidebar-link {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">

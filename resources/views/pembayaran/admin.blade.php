@@ -5,6 +5,11 @@
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
     <div class="border-b border-slate-200 pb-6">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+            <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+            <span>/</span>
+            <span class="text-slate-700">Verifikasi Pembayaran</span>
+        </div>
         <h1 class="text-3xl font-extrabold text-slate-900">Verifikasi Pembayaran</h1>
         <p class="text-xs text-slate-600 font-medium">Tinjau bukti pembayaran transfer bank/QRIS dan perbarui status transaksi.</p>
     </div>
@@ -30,8 +35,8 @@
                             <td class="p-4 font-extrabold text-slate-900">Rp {{ number_format($p->jumlah, 0, ',', '.') }}</td>
                             <td class="p-4">
                                 @if($p->bukti_pembayaran)
-                                    <a href="{{ asset($p->bukti_pembayaran) }}" target="_blank" class="text-slate-900 font-bold hover:underline">
-                                        <i class="fa-solid fa-image mr-1"></i> Lihat Gambar
+                                    <a href="{{ asset($p->bukti_pembayaran) }}" target="_blank" class="text-slate-900 font-bold hover:underline inline-flex items-center gap-1">
+                                        <i class="ph-duotone ph-image"></i> Lihat Gambar
                                     </a>
                                 @else
                                     <span class="text-slate-400">-</span>

@@ -6,7 +6,13 @@
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-6">
         <div>
-            <span class="text-[10px] text-slate-500 font-extrabold uppercase tracking-widest">Detail Pesanan Admin</span>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <a href="{{ route('admin.bookings.index') }}" class="hover:text-slate-700 transition-colors">Kelola Booking</a>
+                <span>/</span>
+                <span class="text-slate-700">{{ $booking->nomor_booking }}</span>
+            </div>
             <h1 class="text-3xl font-extrabold text-slate-900 mt-1">{{ $booking->nomor_booking }}</h1>
         </div>
         

@@ -6,6 +6,11 @@
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
     <div class="border-b border-slate-200 pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <span>Dashboard</span>
+                <span>/</span>
+                <span class="text-slate-700">Ringkasan Admin</span>
+            </div>
             <h1 class="text-3xl font-extrabold text-slate-900">Panel Ringkasan Admin</h1>
             <p class="text-xs text-slate-600 font-medium">Metrik statistik operasional studio layanan dan akademi kursus.</p>
         </div>

@@ -12,6 +12,11 @@
     <!-- Top Welcome Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <span>Dashboard</span>
+                <span>/</span>
+                <span class="text-slate-700">Member Portal</span>
+            </div>
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-extrabold uppercase tracking-wider mb-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Member Hub Terpadu
             </div>

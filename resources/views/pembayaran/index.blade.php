@@ -6,11 +6,16 @@
 <div class="space-y-8">
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <span class="text-slate-700">Riwayat Pembayaran</span>
+            </div>
             <h1 class="text-3xl font-extrabold text-slate-900">Riwayat Transaksi Pembayaran</h1>
             <p class="text-xs text-slate-600 font-medium">Daftar konfirmasi pembayaran transfer bank dan QRIS pesanan Anda.</p>
         </div>
         <a href="{{ route('payments.create') }}" class="btn-dark px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-md">
-            <i class="fa-solid fa-upload"></i> Unggah Bukti Pembayaran
+            <i class="ph-duotone ph-upload-simple"></i> Unggah Bukti Pembayaran
         </a>
     </div>
 
