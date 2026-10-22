@@ -100,8 +100,8 @@
 
     <!-- Sidebar Layout Navigation -->
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
-           class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 fixed md:sticky top-0 h-screen z-40 transition-transform duration-300 ease-in-out">
-        <div class="p-6 space-y-6 overflow-y-auto">
+           class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0 fixed md:sticky top-0 h-screen z-40 transition-transform duration-300 ease-in-out">
+        <div class="p-6 space-y-6 overflow-y-auto grow">
             <!-- Brand Logo -->
             <div class="flex items-center justify-between">
                 <a href="{{ route('home') }}" class="flex items-center gap-3 group">
@@ -269,25 +269,7 @@
                         </a>
                     </div>
                 @endif
-
-                <!-- Shared Account Settings Group -->
-                <div class="space-y-1">
-                    <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Akun</div>
-
-                    <a href="{{ route('profile') }}" class="sidebar-link {{ request()->routeIs('profile') ? 'active' : '' }}">
-                        <i class="ph-duotone ph-gear text-base w-5"></i>
-                        <span>Pengaturan Akun</span>
-                    </a>
-                </div>
             </nav>
-        </div>
-
-        <!-- Sidebar Footer Back to Main Web -->
-        <div class="p-4 border-t border-slate-200">
-            <a href="{{ route('home') }}" class="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition-colors">
-                <i class="ph-duotone ph-arrow-left text-base text-slate-400"></i>
-                <span>Kembali ke Website</span>
-            </a>
         </div>
     </aside>
 
