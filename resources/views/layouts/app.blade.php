@@ -116,7 +116,6 @@
                     <a href="{{ route('public.portfolio') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.portfolio') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Portofolio</a>
                     <a href="{{ route('public.courses') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.courses*') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Kursus</a>
                     <a href="{{ route('public.consultation') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.consultation') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Konsultasi</a>
-                    <a href="{{ route('public.faq') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.faq') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">FAQ</a>
                 </nav>
 
                 <!-- Actions / Auth User Dropdown -->
@@ -209,7 +208,6 @@
                         <a href="{{ route('public.portfolio') }}" class="text-slate-800">Portofolio</a>
                         <a href="{{ route('public.courses') }}" class="text-slate-800">Kursus Fotografi</a>
                         <a href="{{ route('public.consultation') }}" class="text-slate-800">Konsultasi</a>
-                        <a href="{{ route('public.faq') }}" class="text-slate-800">FAQ</a>
                         @auth
                             <a href="{{ route('profile') }}" class="text-slate-900 font-bold">Profil Saya</a>
                         @else
@@ -329,7 +327,7 @@
                         <li><a href="{{ route('public.courses') }}" class="hover:text-white">Fotografi Dasar & Exposure</a></li>
                         <li><a href="{{ route('public.courses') }}" class="hover:text-white">Studio Lighting Masterclass</a></li>
                         <li><a href="{{ route('public.courses') }}" class="hover:text-white">Editing Lightroom & Retouching</a></li>
-                        <li><a href="{{ route('public.faq') }}" class="hover:text-white">Verifikasi Sertifikat</a></li>
+                        <li><a href="{{ route('public.verify-certificate') }}" class="hover:text-white">Verifikasi Sertifikat</a></li>
                     </ul>
                 </div>
 
@@ -344,7 +342,6 @@
             <div class="border-t border-slate-800 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 gap-4">
                 <div>&copy; {{ date('Y') }} RanggaMotret.id. Hak Cipta Dilindungi Undang-Undang.</div>
                 <div class="flex gap-6">
-                    <a href="{{ route('public.faq') }}" class="hover:text-white">FAQ</a>
                     <a href="{{ route('public.consultation') }}" class="hover:text-white">Konsultasi</a>
                 </div>
             </div>

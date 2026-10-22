@@ -133,17 +133,17 @@ class PublicController extends Controller
         return back()->with('success', 'Permintaan konsultasi Anda berhasil dikirim! Tim RanggaMotret akan segera menghubungi Anda.');
     }
 
-    public function faq()
+    public function verifyCertificate($code = null)
     {
-        return view('public.faq');
-    }
+        $code = request('code', $code);
+        $sertifikat = null;
 
-    public function verifyCertificate($code)
-    {
-        $sertifikat = Sertifikat::where('kode_verifikasi', $code)
-            ->orWhere('nomor_sertifikat', $code)
-            ->with(['user', 'kursus.instruktur'])
-            ->first();
+        if ($code) {
+            $sertifikat = Sertifikat::where('kode_verifikasi', $code)
+                ->orWhere('nomor_sertifikat', $code)
+                ->with(['user', 'kursus.instruktur'])
+                ->first();
+        }
 
         return view('public.verify-certificate', compact('sertifikat', 'code'));
     }
