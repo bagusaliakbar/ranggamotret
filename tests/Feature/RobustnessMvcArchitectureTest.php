@@ -37,6 +37,7 @@ test('controllers and routes corresponding to robustness boundaries respond with
     $this->actingAs($user)->get('/pembayaran')->assertStatus(200);
     $this->actingAs($user)->get('/jadwal')->assertStatus(200);
     $this->actingAs($user)->get('/customer/consultations')->assertStatus(200);
+    $this->actingAs($user)->get('/student/dashboard')->assertStatus(200)->assertSee('Kursus Akademi Saya');
 });
 
 test('nine robustness diagram entity models are properly registered and functional', function () {

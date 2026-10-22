@@ -65,18 +65,31 @@ class KursusController extends Controller
     // ==========================================
 
     /**
-     * Menampilkan daftar kursus yang diikuti siswa
+     * Menampilkan daftar kursus yang diikuti siswa / pelanggan
      */
     public function studentIndex()
     {
         $user = Auth::user();
         $enrollments = Enrollment::where('user_id', $user->id)
-            ->with(['kursus.instruktur', 'kursus.moduls.materis'])
+            ->with(['kursus.instruktur', 'kursus.moduls.materis', 'sertifikat'])
+            ->latest()
             ->get();
 
-        $certificates = Sertifikat::where('user_id', $user->id)->with('kursus')->get();
+        $certificates = Sertifikat::where('user_id', $user->id)->with('kursus')->latest()->get();
 
-        return view('dashboard.student', compact('enrollments', 'certificates'));
+        $totalEnrolled = $enrollments->count();
+        $completedCourses = $enrollments->filter(fn($e) => $e->progress_persen >= 100)->count();
+        $inProgressCourses = $enrollments->filter(fn($e) => $e->progress_persen < 100)->count();
+        $totalCertificates = $certificates->count();
+
+        return view('dashboard.student', compact(
+            'enrollments', 
+            'certificates',
+            'totalEnrolled',
+            'completedCourses',
+            'inProgressCourses',
+            'totalCertificates'
+        ));
     }
 
     /**

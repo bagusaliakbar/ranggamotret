@@ -227,7 +227,7 @@
                             <span>Riwayat Pembayaran</span>
                         </a>
 
-                        <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
+                        <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') || request()->routeIs('student.courses') || request()->routeIs('customer.courses.*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
                             <span>Kursus</span>
                         </a>

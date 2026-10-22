@@ -76,7 +76,6 @@ Route::middleware(['auth'])->group(function () {
     // Backward-compatible alias dashboard routes
     Route::get('/customer/dashboard', [DashboardController::class, 'index'])->name('customer.dashboard');
     Route::get('/instructor/dashboard', [DashboardController::class, 'index'])->name('instructor.dashboard');
-    Route::get('/student/dashboard', [DashboardController::class, 'index'])->name('student.dashboard');
 
     // Boundary: Profile Pengguna
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
@@ -134,6 +133,11 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
 // 5. STUDENT LMS ROUTES (Boundary: Materi & Kursus Siswa)
 // ==========================================
 Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
+    // Ruang Kursus & Pembelajaran Siswa (Tampilan Khusus Kursus Pelanggan)
+    Route::get('/student/dashboard', [KursusController::class, 'studentIndex'])->name('student.dashboard');
+    Route::get('/student/courses', [KursusController::class, 'studentIndex'])->name('student.courses');
+    Route::get('/customer/courses', [KursusController::class, 'studentIndex'])->name('customer.courses.index');
+
     Route::get('/student/courses/{kursusId}/learn', [KursusController::class, 'learn'])->name('student.learn');
     Route::post('/student/materi/{materiId}/complete', [MateriController::class, 'complete'])->name('student.materi.complete');
     Route::post('/student/courses/{kursusId}/issue-certificate', [KursusController::class, 'issueCertificate'])->name('student.certificate.issue');
