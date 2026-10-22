@@ -246,6 +246,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Boundary: Laporan Keuangan & Operasional
     Route::get('/reports', [LaporanController::class, 'index'])->name('reports.index');
     Route::get('/reports/pendapatan', [LaporanController::class, 'pendapatan'])->name('reports.pendapatan');
+    Route::get('/reports/pendapatan/pdf', [LaporanController::class, 'pendapatanPdf'])->name('reports.pendapatan.pdf');
+    Route::get('/reports/pendapatan/excel', [LaporanController::class, 'pendapatanExcel'])->name('reports.pendapatan.excel');
+
     Route::get('/reports/reservasi', [LaporanController::class, 'reservasi'])->name('reports.reservasi');
+    Route::get('/reports/reservasi/pdf', [LaporanController::class, 'reservasiPdf'])->name('reports.reservasi.pdf');
+    Route::get('/reports/reservasi/excel', [LaporanController::class, 'reservasiExcel'])->name('reports.reservasi.excel');
+
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
 });

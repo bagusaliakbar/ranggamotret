@@ -138,3 +138,53 @@ test('course detail page with eager loaded relationships returns HTTP 200', func
         ->assertSee('Mastering Portrait Photography');
 });
 
+test('admin can access reports and export pdf and excel with active filters', function () {
+    $admin = User::firstOrCreate(
+        ['email' => 'admin_report_test@example.com'],
+        [
+            'name' => 'Owner Admin Tester',
+            'password' => bcrypt('password123'),
+            'role' => 'admin',
+            'status' => 'active',
+        ]
+    );
+
+    // 1. Laporan Pendapatan Web View
+    $this->actingAs($admin)->get('/admin/reports/pendapatan')
+        ->assertStatus(200)
+        ->assertSee('Laporan Pendapatan');
+
+    // 2. Laporan Pendapatan PDF Export
+    $resPendapatanPdf = $this->actingAs($admin)->get('/admin/reports/pendapatan/pdf?start_date=2026-01-01&end_date=2026-12-31');
+    $resPendapatanPdf->assertStatus(200);
+    $this->assertStringContainsString('application/pdf', $resPendapatanPdf->headers->get('content-type'));
+
+    // 3. Laporan Pendapatan Excel Export
+    $resPendapatanExcel = $this->actingAs($admin)->get('/admin/reports/pendapatan/excel?start_date=2026-01-01&end_date=2026-12-31');
+    $resPendapatanExcel->assertStatus(200);
+    $this->assertStringContainsString('spreadsheetml.sheet', $resPendapatanExcel->headers->get('content-type'));
+
+    // 4. Laporan Reservasi Web View
+    $this->actingAs($admin)->get('/admin/reports/reservasi')
+        ->assertStatus(200)
+        ->assertSee('Laporan Reservasi');
+
+    // 5. Laporan Reservasi PDF Export
+    $resReservasiPdf = $this->actingAs($admin)->get('/admin/reports/reservasi/pdf?start_date=2026-01-01&end_date=2026-12-31&tipe=semua');
+    $resReservasiPdf->assertStatus(200);
+    $this->assertStringContainsString('application/pdf', $resReservasiPdf->headers->get('content-type'));
+
+    // 6. Laporan Reservasi Excel Export
+    $resReservasiExcel = $this->actingAs($admin)->get('/admin/reports/reservasi/excel?start_date=2026-01-01&end_date=2026-12-31&tipe=semua');
+    $resReservasiExcel->assertStatus(200);
+    $this->assertStringContainsString('spreadsheetml.sheet', $resReservasiExcel->headers->get('content-type'));
+
+    // 7. Laporan Pendapatan PDF with Category & Method Filters
+    $resFilteredPdf = $this->actingAs($admin)->get('/admin/reports/pendapatan/pdf?start_date=2026-01-01&end_date=2026-12-31&kategori=foto&metode=manual');
+    $resFilteredPdf->assertStatus(200);
+
+    // 8. Laporan Reservasi Excel with Tipe & Status Filters
+    $resFilteredExcel = $this->actingAs($admin)->get('/admin/reports/reservasi/excel?start_date=2026-01-01&end_date=2026-12-31&tipe=kursus&status=Dibayar');
+    $resFilteredExcel->assertStatus(200);
+});
+

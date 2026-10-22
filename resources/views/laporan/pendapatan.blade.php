@@ -23,16 +23,36 @@
             </p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Tombol Cetak PDF -->
+            <a href="{{ route('admin.reports.pendapatan.pdf', request()->query()) }}" target="_blank"
+               class="px-4 py-2.5 rounded-xl border border-rose-200 bg-rose-50/70 hover:bg-rose-100 text-rose-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs hover:scale-105 active:scale-95"
+               title="Cetak & Unduh Dokumen PDF Resmi">
+                <i class="ph-duotone ph-file-pdf text-base text-rose-600"></i>
+                <span>Cetak PDF</span>
+            </a>
+
+            <!-- Tombol Export Excel -->
+            <a href="{{ route('admin.reports.pendapatan.excel', request()->query()) }}"
+               class="px-4 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/70 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs hover:scale-105 active:scale-95"
+               title="Ekspor Rekapitulasi ke Microsoft Excel (.xlsx)">
+                <i class="ph-duotone ph-file-xls text-base text-emerald-600"></i>
+                <span>Export Excel</span>
+            </a>
+
+            <!-- Print Browser -->
             <button onclick="window.print()" 
-                    class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs">
-                <i class="ph-duotone ph-printer text-base text-slate-600"></i>
-                <span>Cetak Laporan</span>
+                    class="hidden sm:inline-flex px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all items-center gap-1.5 shadow-2xs"
+                    title="Cetak Cepat via Browser">
+                <i class="ph-duotone ph-printer text-base text-slate-500"></i>
+                <span>Print</span>
             </button>
+
+            <!-- Link ke Laporan Reservasi -->
             <a href="{{ route('admin.reports.reservasi') }}" 
-               class="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
+               class="bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
                 <i class="ph-duotone ph-calendar-check text-base text-indigo-400"></i>
-                <span>Lihat Laporan Reservasi</span>
+                <span>Laporan Reservasi</span>
             </a>
         </div>
     </div>
