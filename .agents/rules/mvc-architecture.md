@@ -35,14 +35,13 @@ Dokumen arsitektur ini mendefinisikan standar pemetaan **Model-View-Controller (
 | `pembayaran` | `PembayaranController` | `Pembayaran`, `Invoice` | `pembayarans`, `invoices` | Checkout Midtrans Snap, transfer manual, & verifikasi |
 | `laporan` | `LaporanController` | `Reservasi`, `Pembayaran`, `User` | `booking`, `pembayarans` | Laporan keuangan, sesi foto, & progres akademi |
 
-## 3. Konsolidasi & Jembatan Kompatibilitas (Bridge Controllers)
+## 3. Penghapusan Berkas Controller Usang (Clean Codebase)
 
-Untuk menjaga kebersihan arsitektur MVC sekaligus memastikan kode lama/referensi tidak mengalami *breaking change*:
-- **Primary Canonical Controllers (Mandatori untuk Pengembangan Baru):**
-  - Seluruh logika bisnis inti diimplementasikan 100% pada Controller Utama: `AuthController`, `ProfileController`, `DashboardController`, `KatalogController`, `KursusController`, `MateriController`, `JadwalController`, `ReservasiController`, `KonsultasiController`, `PortofolioController`, `PembayaranController`, `LaporanController`, dan `UserController`.
-- **Bridge Controllers (Inheritance Wrappers):**
-  - Berkas lama seperti `BookingController`, `CourseController`, `PaymentController`, `ReportController`, `ConsultationController`, `AdminDashboardController`, `AssignmentController`, `QuizController`, `LayananController`, `KategoriLayananController`, `ProofingController`, dan `TestimonialController` mewarisi (*extends*) Controller Utama dengan anotasi `@deprecated`.
-  - Hal ini menjamin bahwa setiap dependensi lama tetap berfungsi secara mulus sementara semua route di `routes/web.php` diarahkan langsung ke Controller Utama.
+Untuk menjaga kebersihan repositori dan keselarasan 100% dengan dokumen analisis perancangan:
+- **Penghapusan Total Berkas Redundan:**
+  - Seluruh berkas controller lama yang redundan (`AdminDashboardController`, `BookingController`, `CourseController`, `PaymentController`, `ReportController`, `ConsultationController`, `AssignmentController`, `QuizController`, `LayananController`, `KategoriLayananController`, `ProofingController`, `TestimonialController`, serta direktori `Admin/UserController`) telah **dihapus secara permanen**.
+- **Struktur Direktori Bersih:**
+  - Direktori `app/Http/Controllers/` kini hanya berisi Controller Kanonikal yang selaras 1-to-1 dengan Robustness Diagram, tanpa ada duplikasi maupun kelas wrapper yang membingungkan.
 
 ---
 
