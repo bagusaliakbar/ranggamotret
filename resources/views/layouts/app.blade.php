@@ -112,7 +112,7 @@
                 <!-- Desktop Nav -->
                 <nav class="hidden md:flex items-center gap-8 text-xs font-bold tracking-wider uppercase">
                     <a href="{{ route('home') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('home') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Beranda</a>
-                    <a href="{{ route('public.services') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.services*') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Layanan</a>
+                    <a href="{{ route('public.services') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.services*') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Fotografi</a>
                     <a href="{{ route('public.portfolio') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.portfolio') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Portofolio</a>
                     <a href="{{ route('public.courses') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.courses*') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Kursus</a>
                     <a href="{{ route('public.consultation') }}" class="transition-colors hover:text-slate-900 {{ request()->routeIs('public.consultation') ? 'text-slate-900 border-b-2 border-slate-900 pb-1' : 'text-slate-600' }}">Konsultasi</a>
@@ -211,7 +211,7 @@
 
                     <div x-show="mobileOpen" @click.outside="mobileOpen = false" class="absolute top-20 left-0 right-0 bg-white border-b border-slate-200 p-6 flex flex-col gap-4 text-xs font-semibold z-50 shadow-xl">
                         <a href="{{ route('home') }}" class="text-slate-800">Beranda</a>
-                        <a href="{{ route('public.services') }}" class="text-slate-800">Layanan Fotografi</a>
+                        <a href="{{ route('public.services') }}" class="text-slate-800">Fotografi</a>
                         <a href="{{ route('public.portfolio') }}" class="text-slate-800">Portofolio</a>
                         <a href="{{ route('public.courses') }}" class="text-slate-800">Kursus Fotografi</a>
                         <a href="{{ route('public.consultation') }}" class="text-slate-800">Konsultasi</a>
