@@ -129,15 +129,32 @@ class MidtransService
         try {
             $snapToken = \Midtrans\Snap::getSnapToken($params);
 
-            Pembayaran::create([
-                'nomor_transaksi' => 'TRX-' . $orderId,
-                'user_id' => $user->id,
-                'kursus_id' => $kursus->id,
-                'jumlah' => $grossAmount,
-                'metode_pembayaran' => 'Midtrans Payment Gateway (Snap)',
-                'snap_token' => $snapToken,
-                'status' => 'Belum Dibayar',
-            ]);
+            // Periksa apakah sudah ada transaksi kursus yang berstatus 'Belum Dibayar' untuk user ini
+            // Jika ada, lakukan update agar tidak membuat baris duplikat berulang kali saat refresh halaman
+            $pendingPembayaran = Pembayaran::where('user_id', $user->id)
+                ->where('kursus_id', $kursus->id)
+                ->where('status', 'Belum Dibayar')
+                ->latest()
+                ->first();
+
+            if ($pendingPembayaran) {
+                $pendingPembayaran->update([
+                    'nomor_transaksi' => 'TRX-' . $orderId,
+                    'jumlah' => $grossAmount,
+                    'metode_pembayaran' => 'Midtrans Payment Gateway (Snap)',
+                    'snap_token' => $snapToken,
+                ]);
+            } else {
+                Pembayaran::create([
+                    'nomor_transaksi' => 'TRX-' . $orderId,
+                    'user_id' => $user->id,
+                    'kursus_id' => $kursus->id,
+                    'jumlah' => $grossAmount,
+                    'metode_pembayaran' => 'Midtrans Payment Gateway (Snap)',
+                    'snap_token' => $snapToken,
+                    'status' => 'Belum Dibayar',
+                ]);
+            }
 
             return $snapToken;
         } catch (\Exception $e) {
