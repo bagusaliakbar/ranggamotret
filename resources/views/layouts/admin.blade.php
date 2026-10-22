@@ -134,10 +134,7 @@
                             <span>Dashboard</span>
                         </a>
 
-                        <a href="{{ route('admin.bookings.index') }}" class="sidebar-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-calendar-check text-base w-5"></i>
-                            <span>Kelola Reservasi</span>
-                        </a>
+                        
 
                         <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-receipt text-base w-5"></i>
@@ -150,7 +147,12 @@
 
                         <a href="{{ route('admin.layanan.index') }}" class="sidebar-link {{ request()->routeIs('admin.layanan.*') && !request()->routeIs('admin.kategori-layanan.*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-camera text-base w-5"></i>
-                            <span>Kelola Layanan & Paket</span>
+                            <span>Kelola Katalog Fotografi</span>
+                        </a>
+
+                        <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
+                            <span>Kelola Konsultasi</span>
                         </a>
 
                         <a href="{{ route('admin.kategori-layanan.index') }}" class="sidebar-link {{ request()->routeIs('admin.kategori-layanan.*') ? 'active' : '' }}">
@@ -168,15 +170,22 @@
                             <span>Kelola Kursus & Materi Kursus</span>
                         </a>
 
+                        <a href="{{ route('admin.bookings.index') }}" class="sidebar-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-calendar-check text-base w-5"></i>
+                            <span>Kelola Reservasi Fotografi</span>
+                        </a>
+
+                        <a href="{{ route('admin.courses.reservations.index') }}" class="sidebar-link {{ request()->routeIs('admin.courses.reservations.*') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-receipt text-base w-5"></i>
+                            <span>Kelola Reservasi Kursus</span>
+                        </a>
+
                         <a href="{{ route('instructor.assignments.index') }}" class="sidebar-link {{ request()->routeIs('instructor.assignments*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-pencil-simple-line text-base w-5"></i>
                             <span>Penilaian Tugas Siswa</span>
                         </a>
 
-                        <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
-                            <span>Kelola Konsultasi</span>
-                        </a>
+                        
 
                         <a href="{{ route('admin.testimonials.index') }}" class="sidebar-link {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-star text-base w-5"></i>

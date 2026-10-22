@@ -308,6 +308,93 @@ class KursusController extends Controller
     // ==========================================
 
     /**
+     * Menampilkan daftar seluruh reservasi / pendaftaran kursus bagi Owner
+     */
+    public function adminReservations(Request $request)
+    {
+        $search = $request->query('search');
+        $status = $request->query('status');
+        $kursusId = $request->query('kursus_id');
+
+        $query = Pembayaran::whereNotNull('kursus_id')
+            ->with(['user', 'kursus.instruktur', 'invoice']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nomor_transaksi', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%")
+                         ->orWhere('phone', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('kursus', function ($kq) use ($search) {
+                      $kq->where('nama', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        if ($kursusId) {
+            $query->where('kursus_id', $kursusId);
+        }
+
+        $reservations = $query->latest('id')->paginate(12)->withQueryString();
+
+        // Metrik statistik pendaftaran kursus
+        $totalReservations = Pembayaran::whereNotNull('kursus_id')->count();
+        $totalLunas = Pembayaran::whereNotNull('kursus_id')->where('status', 'Dibayar')->count();
+        $totalMenunggu = Pembayaran::whereNotNull('kursus_id')->where('status', 'Menunggu Verifikasi')->count();
+        $totalPendapatanKursus = Pembayaran::whereNotNull('kursus_id')->where('status', 'Dibayar')->sum('jumlah');
+
+        $allCourses = Kursus::orderBy('nama')->get();
+
+        return view('kursus.admin-reservasi', compact(
+            'reservations',
+            'allCourses',
+            'search',
+            'status',
+            'kursusId',
+            'totalReservations',
+            'totalLunas',
+            'totalMenunggu',
+            'totalPendapatanKursus'
+        ));
+    }
+
+    /**
+     * Memperbarui status reservasi / pembayaran kursus oleh Owner
+     */
+    public function adminUpdateReservationStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:Dibayar,Menunggu Verifikasi,Belum Dibayar,Ditolak,Dibatalkan',
+        ]);
+
+        $pembayaran = Pembayaran::whereNotNull('kursus_id')->findOrFail($id);
+        $oldStatus = $pembayaran->status;
+        $newStatus = $request->status;
+
+        $pembayaran->status = $newStatus;
+        if ($newStatus === 'Dibayar' && empty($pembayaran->tanggal_pembayaran)) {
+            $pembayaran->tanggal_pembayaran = now();
+        }
+        $pembayaran->save();
+
+        // Notifikasi ke peserta
+        Notifikasi::create([
+            'user_id' => $pembayaran->user_id,
+            'judul' => 'Status Reservasi Kursus Diperbarui',
+            'pesan' => "Status pendaftaran kursus {$pembayaran->kursus->nama} ({$pembayaran->nomor_transaksi}) kini: {$newStatus}.",
+            'link' => route('customer.courses.reservations'),
+        ]);
+
+        return back()->with('success', "Status reservasi kursus {$pembayaran->nomor_transaksi} berhasil diubah menjadi: {$newStatus}.");
+    }
+
+    /**
      * Daftar kursus di panel admin/instruktur
      */
     public function adminIndex()

@@ -206,6 +206,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Kursus & Modul LMS
     Route::get('/courses', [KursusController::class, 'adminIndex'])->name('courses.index');
+    Route::get('/courses/reservations', [KursusController::class, 'adminReservations'])->name('courses.reservations.index');
+    Route::post('/courses/reservations/{id}/status', [KursusController::class, 'adminUpdateReservationStatus'])->name('courses.reservations.update-status');
     Route::post('/courses', [KursusController::class, 'storeCourse'])->name('courses.store');
     Route::put('/courses/{id}', [KursusController::class, 'updateCourse'])->name('courses.update');
     Route::delete('/courses/{id}', [KursusController::class, 'destroyCourse'])->name('courses.destroy');
