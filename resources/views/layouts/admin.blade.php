@@ -227,7 +227,7 @@
 
                         <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('customer.dashboard') ? 'active' : '' }}">
                             <i class="ph-duotone ph-gauge text-base w-5"></i>
-                            <span>Dashboard Saya</span>
+                            <span>Dashboard</span>
                         </a>
 
                         <a href="{{ route('customer.bookings.index') }}" class="sidebar-link {{ request()->routeIs('customer.bookings.*') ? 'active' : '' }}">

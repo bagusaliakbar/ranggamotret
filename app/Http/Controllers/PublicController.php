@@ -112,25 +112,7 @@ class PublicController extends Controller
 
     public function storeConsultation(Request $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-            'jenis_layanan' => 'required|string',
-            'konsep' => 'nullable|string|max:255',
-            'lokasi' => 'nullable|string|max:255',
-            'tanggal' => 'nullable|date',
-            'budget' => 'nullable|numeric',
-            'kebutuhan' => 'nullable|string',
-        ]);
-
-        if (auth()->check()) {
-            $validated['user_id'] = auth()->id();
-        }
-
-        Konsultasi::create($validated);
-
-        return back()->with('success', 'Permintaan konsultasi Anda berhasil dikirim! Tim RanggaMotret akan segera menghubungi Anda.');
+        return app(KonsultasiController::class)->store($request);
     }
 
     public function verifyCertificate($code = null)

@@ -58,3 +58,58 @@ test('nine robustness diagram entity models are properly registered and function
     }
 });
 
+test('customer can submit consultation request successfully', function () {
+    $response = $this->post('/consultation', [
+        'nama' => 'Budi Santoso',
+        'email' => 'budi@example.com',
+        'phone' => '081234567899',
+        'jenis_layanan' => 'Wedding & Prewedding',
+        'konsep' => 'Outdoor Sunset',
+        'lokasi' => 'Pantai Indah Kapuk',
+        'tanggal' => '2026-11-20',
+        'budget' => 5000000,
+        'kebutuhan' => 'Mohon rekomendasi paket prewedding lengkap busana.',
+    ]);
+
+    $response->assertSessionHas('success');
+    $this->assertDatabaseHas('konsultasi', [
+        'nama' => 'Budi Santoso',
+        'email' => 'budi@example.com',
+        'phone' => '081234567899',
+        'jenis_layanan' => 'Wedding & Prewedding',
+    ]);
+});
+
+test('authenticated user consultation links user_id and appears in consultation view', function () {
+    $user = User::firstOrCreate(
+        ['email' => 'consultclient@example.com'],
+        [
+            'name' => 'Consult Client',
+            'password' => bcrypt('password123'),
+            'role' => 'customer',
+            'status' => 'active',
+        ]
+    );
+
+    $this->actingAs($user)->post('/konsultasi', [
+        'nama' => $user->name,
+        'email' => $user->email,
+        'phone' => '081987654321',
+        'jenis_layanan' => 'Wisuda / Graduation',
+        'konsep' => 'Studio Portrait Elegant',
+        'budget' => 1500000,
+        'kebutuhan' => 'Foto wisuda bersama 4 anggota keluarga.',
+    ])->assertSessionHas('success');
+
+    $this->assertDatabaseHas('konsultasi', [
+        'user_id' => $user->id,
+        'email' => $user->email,
+        'jenis_layanan' => 'Wisuda / Graduation',
+    ]);
+
+    $this->actingAs($user)->get('/konsultasi')
+        ->assertStatus(200)
+        ->assertSee('Riwayat Konsultasi Anda')
+        ->assertSee('Wisuda / Graduation');
+});
+
