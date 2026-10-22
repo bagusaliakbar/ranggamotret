@@ -235,6 +235,11 @@
                             <span>Pesanan & Sesi Foto</span>
                         </a>
 
+                        <a href="{{ route('customer.consultations.index') }}" class="sidebar-link {{ request()->routeIs('customer.consultations.*') || request()->routeIs('konsultasi.riwayat') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
+                            <span>Riwayat Konsultasi</span>
+                        </a>
+
                         <a href="{{ route('payments.index') }}" class="sidebar-link {{ request()->routeIs('payments.*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-receipt text-base w-5"></i>
                             <span>Riwayat Pembayaran</span>
@@ -261,11 +266,6 @@
                         <a href="{{ route('public.courses') }}" class="sidebar-link">
                             <i class="ph-duotone ph-book-open text-base w-5"></i>
                             <span>Katalog Kursus</span>
-                        </a>
-
-                        <a href="{{ route('public.consultation') }}" class="sidebar-link">
-                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
-                            <span>Konsultasi Fotografer</span>
                         </a>
                     </div>
                 @endif

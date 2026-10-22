@@ -339,8 +339,8 @@
                     <h4 class="font-black text-sm text-white">Butuh Konsultasi Konsep?</h4>
                     <p class="text-xs text-slate-300 mt-1 leading-relaxed font-medium">Tim kreatif kami siap membantu moodboard, rekomendasi venue, dan persiapan busana pemotretan Anda.</p>
                 </div>
-                <a href="{{ route('public.consultation') }}" class="w-full bg-white text-slate-900 hover:bg-slate-100 py-2.5 rounded-xl text-xs font-black text-center block shadow-sm transition-colors">
-                    Konsultasi Gratis
+                <a href="{{ route('customer.consultations.index') }}" class="w-full bg-white text-slate-900 hover:bg-slate-100 py-2.5 rounded-xl text-xs font-black text-center block shadow-sm transition-colors">
+                    Riwayat & Konsultasi
                 </a>
             </div>
         </div>

@@ -123,10 +123,39 @@ class KonsultasiController extends Controller
                 'user_id' => $konsultasi->user_id,
                 'judul' => 'Tanggapan Konsultasi RanggaMotret',
                 'pesan' => 'Konsultasi Anda mengenai layanan ' . $konsultasi->jenis_layanan . ' telah ditanggapi oleh admin.',
-                'link' => '/konsultasi',
+                'link' => '/customer/consultations',
             ]);
         }
 
         return back()->with('success', 'Tanggapan konsultasi berhasil dikirim.');
+    }
+
+    /**
+     * Tampilan Riwayat Konsultasi untuk Pelanggan / Member di Dashboard Portal
+     */
+    public function customerIndex()
+    {
+        $consultations = Konsultasi::where('user_id', Auth::id())
+            ->latest()
+            ->paginate(10);
+
+        $layananList = Katalog::where('status', 'aktif')->pluck('nama');
+        if ($layananList->isEmpty()) {
+            $layananList = collect([
+                'Wedding & Prewedding',
+                'Wisuda / Graduation',
+                'Studio Portrait & Group',
+                'Event & Gathering',
+                'Produk & Komersial'
+            ]);
+        }
+
+        $stats = [
+            'total' => Konsultasi::where('user_id', Auth::id())->count(),
+            'pending' => Konsultasi::where('user_id', Auth::id())->where('status', 'pending')->count(),
+            'replied' => Konsultasi::where('user_id', Auth::id())->where('status', 'replied')->count(),
+        ];
+
+        return view('konsultasi.customer', compact('consultations', 'layananList', 'stats'));
     }
 }
