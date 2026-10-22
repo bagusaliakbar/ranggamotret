@@ -250,7 +250,7 @@
 
                                         <div class="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 flex items-center gap-1.5 text-[11px] font-semibold">
                                             <i class="fa-solid fa-calendar-check text-slate-400"></i>
-                                            <span>{{ $item->bookings_count }} Riwayat Booking</span>
+                                            <span>{{ $item->bookings_count }} Riwayat Reservasi</span>
                                         </div>
 
                                         <div class="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 flex items-center gap-1.5 text-[11px] font-semibold">
@@ -809,7 +809,7 @@
                 <div>
                     <label class="block text-slate-700 font-extrabold mb-1.5">Status Paket</label>
                     <select name="status" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
-                        <option value="aktif">Aktif (Tersedia untuk Booking)</option>
+                        <option value="aktif">Aktif (Tersedia untuk Reservasi)</option>
                         <option value="nonaktif">Nonaktif (Disembunyikan)</option>
                     </select>
                 </div>
@@ -920,7 +920,7 @@
                 <div>
                     <label class="block text-slate-700 font-extrabold mb-1.5">Status Paket</label>
                     <select name="status" x-model="editPaket.status" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
-                        <option value="aktif">Aktif (Tersedia untuk Booking)</option>
+                        <option value="aktif">Aktif (Tersedia untuk Reservasi)</option>
                         <option value="nonaktif">Nonaktif (Disembunyikan)</option>
                     </select>
                 </div>

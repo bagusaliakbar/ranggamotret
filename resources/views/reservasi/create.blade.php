@@ -111,7 +111,7 @@
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-extrabold uppercase tracking-wider mb-2">
                 <i class="ph-duotone ph-camera text-slate-700"></i> Reservasi Fotografi
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Formulir Booking Sesi Foto</h1>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Formulir Reservasi Sesi Foto</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Konfigurasikan paket dokumentasi, jadwal pemotretan, dan lokasi venue yang Anda kehendaki.</p>
         </div>
 
@@ -359,7 +359,7 @@
                         class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2"
                         :class="isPastTime(waktu) ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none' : 'btn-dark shadow-slate-900/20 hover:scale-[1.02] active:scale-95'">
                         <i class="ph-duotone ph-lock-key" x-show="!isPastTime(waktu)"></i>
-                        <span x-text="isPastTime(waktu) ? 'Pilih Jam Sesi yang Belum Terlewat' : 'Kirim Booking Pemotretan &rarr;'"></span>
+                        <span x-text="isPastTime(waktu) ? 'Pilih Jam Sesi yang Belum Terlewat' : 'Kirim Reservasi Pemotretan &rarr;'"></span>
                     </button>
 
                     <!-- Trust Guarantees -->

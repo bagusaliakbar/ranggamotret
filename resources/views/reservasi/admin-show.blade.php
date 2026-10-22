@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Booking ' . $booking->nomor_booking . ' - Admin')
+@section('title', 'Detail Reservasi ' . $booking->nomor_booking . ' - Admin')
 
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
@@ -9,7 +9,7 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <a href="{{ route('admin.bookings.index') }}" class="hover:text-slate-700 transition-colors">Kelola Booking</a>
+                <a href="{{ route('admin.bookings.index') }}" class="hover:text-slate-700 transition-colors">Kelola Reservasi</a>
                 <span>/</span>
                 <span class="text-slate-700">{{ $booking->nomor_booking }}</span>
             </div>

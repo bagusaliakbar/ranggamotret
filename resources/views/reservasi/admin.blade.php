@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Booking — Admin RanggaMotret.id')
+@section('title', 'Kelola Reservasi — Admin RanggaMotret.id')
 
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
@@ -11,8 +11,8 @@
                 <span>/</span>
                 <span class="text-slate-700">Kelola Reservasi</span>
             </div>
-            <h1 class="text-3xl font-extrabold text-slate-900">Kelola Seluruh Booking</h1>
-            <p class="text-xs text-slate-600 font-medium">Daftar pesanan sesi pemotretan dari pelanggan.</p>
+            <h1 class="text-3xl font-extrabold text-slate-900">Kelola Seluruh Reservasi</h1>
+            <p class="text-xs text-slate-600 font-medium">Daftar reservasi sesi pemotretan dari pelanggan.</p>
         </div>
     </div>
 
@@ -22,7 +22,7 @@
             <table class="w-full text-left text-xs text-slate-700">
                 <thead class="bg-slate-100 text-slate-900 uppercase font-extrabold text-[10px] border-b border-slate-200">
                     <tr>
-                        <th class="p-4">Kode Booking</th>
+                        <th class="p-4">Kode Reservasi</th>
                         <th class="p-4">Nama Customer</th>
                         <th class="p-4">Layanan / Paket</th>
                         <th class="p-4">Jadwal Foto</th>
@@ -79,7 +79,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-slate-500 font-medium">Belum ada booking masuk.</td>
+                            <td colspan="6" class="p-8 text-center text-slate-500 font-medium">Belum ada reservasi masuk.</td>
                         </tr>
                     @endforelse
                 </tbody>

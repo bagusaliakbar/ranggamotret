@@ -19,7 +19,7 @@
                 <i class="fa-solid fa-camera-retro mr-1 text-slate-600"></i> Kelola Layanan
             </a>
             <a href="{{ route('admin.bookings.index') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md">
-                <i class="fa-solid fa-camera mr-1"></i> Kelola Booking
+                <i class="fa-solid fa-camera mr-1"></i> Kelola Reservasi
             </a>
             <a href="{{ route('admin.reports.index') }}" class="btn-outline px-4 py-2.5 rounded-xl text-xs font-bold">
                 <i class="fa-solid fa-chart-pie mr-1"></i> Laporan Keuangan
@@ -31,7 +31,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="clean-card p-6 rounded-2xl space-y-2">
             <div class="flex items-center justify-between text-slate-500 text-xs font-bold uppercase tracking-wider">
-                <span>Total Bookings</span>
+                <span>Total Reservasi</span>
                 <i class="fa-solid fa-calendar-check text-slate-700 text-base"></i>
             </div>
             <div class="text-3xl font-extrabold text-slate-900">{{ number_format($totalBooking) }}</div>
@@ -71,7 +71,7 @@
         <!-- Recent Bookings -->
         <div class="clean-card p-6 rounded-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="font-extrabold text-slate-900 text-base">Booking Terakhir</h3>
+                <h3 class="font-extrabold text-slate-900 text-base">Reservasi Terakhir</h3>
                 <a href="{{ route('admin.bookings.index') }}" class="text-xs font-bold text-slate-900 hover:underline">Lihat Semua</a>
             </div>
             <div class="space-y-3 text-xs">

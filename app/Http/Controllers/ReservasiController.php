@@ -116,8 +116,8 @@ class ReservasiController extends Controller
         // Notifikasi ke Admin
         Notifikasi::create([
             'user_id' => 1,
-            'judul' => 'Booking Fotografi Baru',
-            'pesan' => 'Booking baru ' . $bookingNumber . ' dari ' . Auth::user()->name,
+            'judul' => 'Reservasi Fotografi Baru',
+            'pesan' => 'Reservasi baru ' . $bookingNumber . ' dari ' . Auth::user()->name,
             'link' => '/admin/bookings/' . $booking->id,
         ]);
 
@@ -188,12 +188,12 @@ class ReservasiController extends Controller
 
         Notifikasi::create([
             'user_id' => $booking->user_id,
-            'judul' => 'Status Booking Diperbarui',
-            'pesan' => 'Status booking ' . $booking->nomor_booking . ' diubah menjadi: ' . $booking->status,
+            'judul' => 'Status Reservasi Diperbarui',
+            'pesan' => 'Status reservasi ' . $booking->nomor_booking . ' diubah menjadi: ' . $booking->status,
             'link' => '/customer/bookings/' . $booking->id,
         ]);
 
-        return back()->with('success', 'Status booking berhasil diperbarui.');
+        return back()->with('success', 'Status reservasi berhasil diperbarui.');
     }
 
     // ==========================================

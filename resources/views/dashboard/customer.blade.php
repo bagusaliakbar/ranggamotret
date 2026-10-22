@@ -26,7 +26,7 @@
 
         <div class="flex items-center gap-3">
             <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all">
-                <i class="ph-duotone ph-plus text-emerald-400 text-sm"></i> Booking Sesi Foto
+                <i class="ph-duotone ph-plus text-emerald-400 text-sm"></i> Reservasi Sesi Foto
             </a>
             <a href="{{ route('student.dashboard') }}" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-800 hover:bg-slate-50 text-xs font-bold shadow-sm flex items-center gap-2">
                 <i class="ph-duotone ph-graduation-cap text-slate-500 text-sm"></i> Ruang Belajar
@@ -97,7 +97,7 @@
         <div class="clean-card p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Timeline Alur Booking</span>
+                    <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Timeline Alur Reservasi</span>
                     <span class="font-bold text-slate-900 text-xs">• {{ $latestBooking->nomor_booking }}</span>
                 </div>
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-800">
@@ -112,7 +112,7 @@
                     <div class="w-7 h-7 mx-auto rounded-full flex items-center justify-center font-black text-xs {{ $statusStep >= 1 ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-400' }}">
                         1
                     </div>
-                    <span class="text-[10px] sm:text-[11px] font-bold block leading-tight {{ $statusStep >= 1 ? 'text-slate-900' : 'text-slate-400' }}">Booking Dibuat</span>
+                    <span class="text-[10px] sm:text-[11px] font-bold block leading-tight {{ $statusStep >= 1 ? 'text-slate-900' : 'text-slate-400' }}">Reservasi Dibuat</span>
                 </div>
 
                 <!-- Step 2 -->
@@ -262,7 +262,7 @@
                         <h4 class="text-sm font-bold text-slate-900">Belum Ada Sesi Pemotretan</h4>
                         <p class="text-xs text-slate-500 max-w-sm mx-auto">Anda belum memiliki pesanan jadwal foto. Mulai abadikan momen spesial Anda bersama RanggaMotret.</p>
                         <a href="{{ route('customer.bookings.create') }}" class="btn-dark inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold shadow-md mt-2">
-                            <i class="ph-duotone ph-plus"></i> Buat Booking Sekarang
+                            <i class="ph-duotone ph-plus"></i> Buat Reservasi Sekarang
                         </a>
                     </div>
                 @endforelse

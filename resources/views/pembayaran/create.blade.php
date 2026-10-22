@@ -53,7 +53,7 @@
 
         @if($booking)
             <a href="{{ route('customer.bookings.show', $booking->id) }}" class="btn-outline px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail Booking
+                <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail Reservasi
             </a>
         @endif
     </div>

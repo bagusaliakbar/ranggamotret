@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Daftar Booking Saya — RanggaMotret.id')
+@section('title', 'Daftar Reservasi Saya — RanggaMotret.id')
 
 @section('content')
 <div class="space-y-8">
@@ -9,13 +9,13 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <span class="text-slate-700">Riwayat Booking</span>
+                <span class="text-slate-700">Riwayat Reservasi</span>
             </div>
-            <h1 class="text-3xl font-extrabold text-slate-900">Riwayat Booking Saya</h1>
+            <h1 class="text-3xl font-extrabold text-slate-900">Riwayat Reservasi Saya</h1>
             <p class="text-xs text-slate-600 font-medium">Kelola jadwal sesi pemotretan, unggah pembayaran, dan akses galeri proofing.</p>
         </div>
         <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-md">
-            <i class="ph-duotone ph-plus"></i> Booking Pemotretan Baru
+            <i class="ph-duotone ph-plus"></i> Reservasi Pemotretan Baru
         </a>
     </div>
 
@@ -63,8 +63,8 @@
         @empty
             <div class="clean-card p-12 text-center rounded-2xl space-y-3">
                 <i class="ph-duotone ph-camera text-4xl text-slate-300"></i>
-                <h3 class="text-base font-bold text-slate-900">Belum Ada Riwayat Pemesanan</h3>
-                <p class="text-xs text-slate-500 font-medium">Anda belum memiliki pesanan sesi foto. Klik tombol di atas untuk memulai reservasi.</p>
+                <h3 class="text-base font-bold text-slate-900">Belum Ada Riwayat Reservasi</h3>
+                <p class="text-xs text-slate-500 font-medium">Anda belum memiliki riwayat reservasi sesi foto. Klik tombol di atas untuk memulai reservasi baru.</p>
             </div>
         @endforelse
     </div>

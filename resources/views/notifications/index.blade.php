@@ -11,7 +11,7 @@
             <span class="text-slate-700">Notifikasi</span>
         </div>
         <h1 class="text-3xl font-extrabold text-slate-900">Notifikasi Akun</h1>
-        <p class="text-xs text-slate-600 font-medium">Pesan pembaruan status booking, verifikasi pembayaran, dan perkembangan kursus.</p>
+        <p class="text-xs text-slate-600 font-medium">Pesan pembaruan status reservasi, verifikasi pembayaran, dan perkembangan kursus.</p>
     </div>
 
     <div class="space-y-4">

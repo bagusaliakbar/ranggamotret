@@ -20,7 +20,7 @@
                 <thead class="bg-slate-100 text-slate-900 uppercase font-extrabold text-[10px] border-b border-slate-200">
                     <tr>
                         <th class="p-4">Kode Transaksi</th>
-                        <th class="p-4">Booking ID</th>
+                        <th class="p-4">ID Reservasi</th>
                         <th class="p-4">Jumlah</th>
                         <th class="p-4">Bukti Upload</th>
                         <th class="p-4">Status</th>

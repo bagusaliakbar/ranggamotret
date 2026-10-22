@@ -138,7 +138,7 @@
 
                         <a href="{{ route('admin.bookings.index') }}" class="sidebar-link {{ request()->routeIs('admin.bookings*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-calendar-check text-base w-5"></i>
-                            <span>Kelola Booking</span>
+                            <span>Kelola Reservasi</span>
                         </a>
 
                         <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments*') ? 'active' : '' }}">
@@ -255,7 +255,7 @@
 
                         <a href="{{ route('public.services') }}" class="sidebar-link">
                             <i class="ph-duotone ph-camera-plus text-base w-5"></i>
-                            <span>Booking Layanan Baru</span>
+                            <span>Reservasi Layanan Baru</span>
                         </a>
 
                         <a href="{{ route('public.courses') }}" class="sidebar-link">
