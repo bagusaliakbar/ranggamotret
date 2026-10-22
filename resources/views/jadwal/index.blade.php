@@ -25,6 +25,12 @@
         },
         actionUrl: '',
 
+        init() {
+            window.addEventListener('open-schedule-modal', (e) => {
+                this.openEditSchedule(e.detail);
+            });
+        },
+
         openEditSchedule(props) {
             this.selectedBooking = {
                 id: props.booking_id,
@@ -310,14 +316,16 @@
             },
             height: 'auto',
             dayMaxEvents: true,
+            eventDidMount: function(info) {
+                info.el.style.cursor = 'pointer';
+                info.el.setAttribute('title', 'Klik untuk mengatur jadwal sesi pemotretan ini');
+            },
             eventClick: function(info) {
                 info.jsEvent.preventDefault();
-                // Buka modal Alpine.js untuk mengatur jadwal
-                const alpineRoot = document.querySelector('[x-data]');
-                if (alpineRoot && window.Alpine) {
-                    Alpine.$data(alpineRoot).openEditSchedule(info.event.extendedProps);
-                } else if (info.event.extendedProps && info.event.extendedProps.detail_url) {
-                    window.location.href = info.event.extendedProps.detail_url;
+                if (info.event && info.event.extendedProps) {
+                    window.dispatchEvent(new CustomEvent('open-schedule-modal', {
+                        detail: info.event.extendedProps
+                    }));
                 }
             }
         });
