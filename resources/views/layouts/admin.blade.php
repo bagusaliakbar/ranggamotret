@@ -162,7 +162,7 @@
 
                         <a href="{{ route('admin.courses.index') }}" class="sidebar-link {{ request()->routeIs('admin.courses*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
-                            <span>Kelola Kursus</span>
+                            <span>Kelola Kursus & Materi Kursus</span>
                         </a>
 
                         <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
@@ -244,17 +244,12 @@
                             <i class="ph-duotone ph-receipt text-base w-5"></i>
                             <span>Riwayat Pembayaran</span>
                         </a>
-                    </div>
-
-                    <div class="space-y-1">
-                        <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Akademi Fotografi</div>
 
                         <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
-                            <span>Ruang Belajar (LMS)</span>
+                            <span>Kursus</span>
                         </a>
                     </div>
-
                     <div class="space-y-1">
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Eksplor Layanan</div>
 

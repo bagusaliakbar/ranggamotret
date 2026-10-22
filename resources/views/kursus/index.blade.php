@@ -55,7 +55,7 @@
                         <span class="text-lg font-extrabold text-slate-900">Rp {{ number_format($c->harga, 0, ',', '.') }}</span>
                     </div>
                     <a href="{{ route('public.courses.detail', $c->id) }}" class="btn-dark w-full py-2.5 rounded-xl text-center text-xs font-bold block">
-                        Detail Silabus & Pendaftaran
+                        Lihat Materi & Reservasi
                     </a>
                 </div>
             </div>

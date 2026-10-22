@@ -114,3 +114,24 @@ test('authenticated user consultation links user_id and appears in consultation 
         ->assertSee('Wisuda / Graduation');
 });
 
+test('course detail page with eager loaded relationships returns HTTP 200', function () {
+    $instruktur = User::firstOrCreate(
+        ['email' => 'instructor@test.com'],
+        ['name' => 'Instruktur Test', 'password' => bcrypt('password123'), 'role' => 'instructor', 'status' => 'active']
+    );
+
+    $kursus = Kursus::create([
+        'nama' => 'Mastering Portrait Photography',
+        'deskripsi' => 'Belajar portrait dari nol hingga pro.',
+        'harga' => 350000,
+        'durasi' => '4 Minggu',
+        'level' => 'Pemula',
+        'instruktur_id' => $instruktur->id,
+        'status' => 'published',
+    ]);
+
+    $this->get('/kursus/' . $kursus->id)
+        ->assertStatus(200)
+        ->assertSee('Mastering Portrait Photography');
+});
+

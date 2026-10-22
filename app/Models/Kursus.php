@@ -38,6 +38,16 @@ class Kursus extends Model
     {
         return $this->hasMany(Sertifikat::class, 'kursus_id');
     }
+
+    public function testimoni()
+    {
+        return $this->hasMany(Testimoni::class, 'kursus_id');
+    }
+
+    public function testimonis()
+    {
+        return $this->hasMany(Testimoni::class, 'kursus_id');
+    }
 }
 
 /**
