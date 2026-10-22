@@ -122,6 +122,7 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::get('/reservasi', [ReservasiController::class, 'customerIndex'])->name('reservasi.index');
     Route::get('/reservasi/create', [ReservasiController::class, 'create'])->name('reservasi.create');
     Route::post('/reservasi', [ReservasiController::class, 'store'])->name('reservasi.store');
+    Route::get('/reservasi/check-jadwal', [ReservasiController::class, 'checkJadwal'])->name('reservasi.check-jadwal');
     Route::get('/reservasi/{id}', [ReservasiController::class, 'customerShow'])->name('reservasi.show');
 
     // Proofing Studio & Testimoni

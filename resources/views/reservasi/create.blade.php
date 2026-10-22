@@ -39,6 +39,9 @@
         waktu: '{{ old('waktu', '') }}',
         lokasi: '{{ old('lokasi', '') }}',
         todayStr: '{{ date('Y-m-d') }}',
+        bookedSlots: @js($initialBookedSlots ?? []),
+        bookedRanges: @js($initialBookedRanges ?? []),
+        isLoadingSlots: false,
         popularSlots: [
             '08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:30', '16:30', '18:30', '19:30'
         ],
@@ -82,24 +85,49 @@
             }
             return false;
         },
+        isBooked(timeStr) {
+            if (!timeStr) return false;
+            // Cek apakah slot populer persis ada di bookedSlots
+            if (this.bookedSlots && this.bookedSlots.includes(timeStr)) {
+                return true;
+            }
+            // Cek apakah waktu kustom berada di dalam rentang sesi [start, end)
+            if (this.bookedRanges && this.bookedRanges.length > 0) {
+                return this.bookedRanges.some(range => {
+                    return timeStr >= range.start && timeStr < range.end;
+                });
+            }
+            return false;
+        },
+        fetchBookedSlots() {
+            this.isLoadingSlots = true;
+            fetch(`{{ route('reservasi.check-jadwal') }}?tanggal=${this.tanggal}`)
+                .then(res => res.json())
+                .then(data => {
+                    this.bookedSlots = data.booked_slots || [];
+                    this.bookedRanges = data.booked_ranges || [];
+                    this.checkAndAdjustTime();
+                })
+                .catch(err => {
+                    console.error('Gagal mengambil ketersediaan jadwal:', err);
+                })
+                .finally(() => {
+                    this.isLoadingSlots = false;
+                });
+        },
         checkAndAdjustTime() {
-            if (this.tanggal === this.todayStr) {
-                const curTime = this.getCurrentTime();
-                if (this.waktu && this.waktu <= curTime) {
-                    this.waktu = '';
-                    const nextAvailable = this.popularSlots.find(s => s > curTime);
-                    if (nextAvailable) {
-                        this.waktu = nextAvailable;
-                    }
-                } else if (!this.waktu) {
-                    const nextAvailable = this.popularSlots.find(s => s > curTime);
-                    if (nextAvailable) {
-                        this.waktu = nextAvailable;
-                    }
+            const isSlotUnavailable = (slot) => this.isPastTime(slot) || this.isBooked(slot);
+            
+            if (this.waktu && isSlotUnavailable(this.waktu)) {
+                this.waktu = '';
+                const nextAvailable = this.popularSlots.find(s => !isSlotUnavailable(s));
+                if (nextAvailable) {
+                    this.waktu = nextAvailable;
                 }
-            } else {
-                if (!this.waktu) {
-                    this.waktu = '09:00';
+            } else if (!this.waktu) {
+                const nextAvailable = this.popularSlots.find(s => !isSlotUnavailable(s));
+                if (nextAvailable) {
+                    this.waktu = nextAvailable;
                 }
             }
         }
@@ -239,7 +267,7 @@
                             <label class="block text-slate-700 font-bold mb-2 text-xs">Tanggal Pemotretan <span class="text-rose-500">*</span></label>
                             <input type="date" name="tanggal" required 
                                 x-model="tanggal" 
-                                @change="checkAndAdjustTime()"
+                                @change="fetchBookedSlots()"
                                 min="{{ date('Y-m-d') }}"
                                 class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-medium focus:border-slate-900 focus:bg-white focus:outline-none transition-colors">
                             <p class="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1">
@@ -254,37 +282,76 @@
                                 x-model="waktu"
                                 :min="getMinTime()"
                                 class="w-full px-4 py-3 rounded-xl bg-slate-50 border text-slate-900 font-bold focus:border-slate-900 focus:bg-white focus:outline-none transition-colors"
-                                :class="isPastTime(waktu) ? 'border-rose-300 bg-rose-50 text-rose-900' : 'border-slate-200'">
+                                :class="(isPastTime(waktu) || isBooked(waktu)) ? 'border-rose-300 bg-rose-50 text-rose-900' : 'border-slate-200'">
                             
                             <!-- Real-time warning if past time is chosen for today -->
                             <div x-show="isPastTime(waktu)" x-cloak class="mt-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-medium flex items-center gap-1.5">
                                 <i class="ph-duotone ph-warning-circle text-rose-600"></i>
                                 <span>Jam sesi sudah terlewat untuk hari ini. Silakan pilih jam setelah <strong x-text="getCurrentTime()"></strong>.</span>
                             </div>
+
+                            <!-- Real-time warning if slot is booked / clash -->
+                            <div x-show="!isPastTime(waktu) && isBooked(waktu)" x-cloak class="mt-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-medium flex items-center gap-1.5">
+                                <i class="ph-duotone ph-warning-circle text-rose-600"></i>
+                                <span>Jam sesi <strong x-text="waktu"></strong> sudah direservasi oleh pelanggan lain. Silakan pilih jam lain.</span>
+                            </div>
                         </div>
 
                         <!-- Quick Slot Selector Pills -->
-                        <div class="md:col-span-2 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2.5">
-                            <div class="flex items-center justify-between text-[11px] flex-wrap gap-1">
-                                <span class="font-extrabold text-slate-800"><i class="ph-duotone ph-lightning text-amber-500 mr-1"></i> Pilihan Cepat Jam Sesi Populer:</span>
-                                <span class="text-[10px] text-slate-400" x-show="tanggal === todayStr">Slot lampau otomatis dinonaktifkan</span>
+                        <div class="md:col-span-2 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                            <div class="flex items-center justify-between text-[11px] flex-wrap gap-2">
+                                <span class="font-extrabold text-slate-800 flex items-center gap-1.5">
+                                    <i class="ph-duotone ph-lightning text-amber-500 text-sm"></i>
+                                    <span>Pilihan Cepat Jam Sesi Populer:</span>
+                                    <span x-show="isLoadingSlots" x-cloak class="text-[10px] text-slate-500 font-normal flex items-center gap-1">
+                                        <i class="ph-duotone ph-spinner animate-spin"></i> Mengecek ketersediaan...
+                                    </span>
+                                </span>
+                                <div class="flex items-center gap-3 text-[10px] text-slate-500 font-semibold">
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span> Tersedia</span>
+                                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> Terisi / Bentrok</span>
+                                </div>
                             </div>
+
                             <div class="flex flex-wrap gap-2">
                                 <template x-for="slot in popularSlots" :key="slot">
                                     <button type="button" 
-                                        @click="if(!isPastTime(slot)) waktu = slot"
-                                        :disabled="isPastTime(slot)"
+                                        @click="if(!isPastTime(slot) && !isBooked(slot)) waktu = slot"
+                                        :disabled="isPastTime(slot) || isBooked(slot)"
                                         class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border"
                                         :class="{
-                                            'bg-slate-900 text-white border-slate-900 shadow-sm': waktu === slot && !isPastTime(slot),
-                                            'bg-white text-slate-700 border-slate-200 hover:border-slate-900 hover:bg-slate-100': waktu !== slot && !isPastTime(slot),
-                                            'bg-slate-100 text-slate-300 border-slate-200 line-through cursor-not-allowed opacity-60': isPastTime(slot)
+                                            'bg-slate-900 text-white border-slate-900 shadow-sm': waktu === slot && !isPastTime(slot) && !isBooked(slot),
+                                            'bg-white text-slate-700 border-slate-200 hover:border-slate-900 hover:bg-slate-100': waktu !== slot && !isPastTime(slot) && !isBooked(slot),
+                                            'bg-slate-100 text-slate-300 border-slate-200 line-through cursor-not-allowed opacity-60': isPastTime(slot),
+                                            'bg-rose-50 text-rose-500 border-rose-200 line-through cursor-not-allowed opacity-80': isBooked(slot) && !isPastTime(slot)
                                         }">
                                         <span x-text="slot"></span>
                                         <span x-show="isPastTime(slot)" class="text-[9px] font-normal no-underline text-slate-400">(lewat)</span>
+                                        <span x-show="isBooked(slot) && !isPastTime(slot)" class="text-[9px] font-bold no-underline text-rose-600 flex items-center gap-0.5">
+                                            <i class="ph-duotone ph-lock-key text-[10px]"></i> (Terisi)
+                                        </span>
                                     </button>
                                 </template>
                             </div>
+
+                            <!-- Booked Ranges Info Box -->
+                            <template x-if="bookedRanges && bookedRanges.length > 0">
+                                <div class="p-3 bg-white rounded-xl border border-rose-200 text-xs space-y-1 mt-2">
+                                    <div class="flex items-center gap-1.5 font-bold text-rose-800 text-[11px]">
+                                        <i class="ph-duotone ph-calendar-x text-rose-600 text-sm"></i>
+                                        <span>Jadwal yang Telah Direservasi pada Tanggal Ini:</span>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2 pt-1">
+                                        <template x-for="range in bookedRanges" :key="range.booking_id">
+                                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 text-[11px] font-bold text-rose-800">
+                                                <i class="ph-duotone ph-clock text-rose-600"></i>
+                                                <span x-text="range.start + ' - ' + range.end + ' WIB'"></span>
+                                                <span class="text-[10px] text-rose-600 font-medium" x-text="'(' + range.layanan + ')'"></span>
+                                            </span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
                         </div>
 
                         <!-- Venue Location -->
@@ -355,11 +422,12 @@
 
                     <!-- Primary Submit Button -->
                     <button type="submit" 
-                        :disabled="isPastTime(waktu)"
+                        :disabled="isPastTime(waktu) || isBooked(waktu)"
                         class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2"
-                        :class="isPastTime(waktu) ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none' : 'btn-dark shadow-slate-900/20 hover:scale-[1.02] active:scale-95'">
-                        <i class="ph-duotone ph-lock-key" x-show="!isPastTime(waktu)"></i>
-                        <span x-text="isPastTime(waktu) ? 'Pilih Jam Sesi yang Belum Terlewat' : 'Buat Reservasi Fotografi'"></span>
+                        :class="(isPastTime(waktu) || isBooked(waktu)) ? 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed shadow-none' : 'btn-dark shadow-slate-900/20 hover:scale-[1.02] active:scale-95'">
+                        <i class="ph-duotone ph-warning-circle text-rose-500" x-show="isBooked(waktu) && !isPastTime(waktu)"></i>
+                        <i class="ph-duotone ph-lock-key" x-show="!isPastTime(waktu) && !isBooked(waktu)"></i>
+                        <span x-text="isPastTime(waktu) ? 'Pilih Jam Sesi yang Belum Terlewat' : (isBooked(waktu) ? 'Jadwal Bentrok — Pilih Jam Lain' : 'Buat Reservasi Fotografi')"></span>
                     </button>
 
                     <!-- Trust Guarantees -->

@@ -73,19 +73,105 @@ class ReservasiController extends Controller
     }
 
     /**
+     * Mengambil daftar slot dan rentang jam pemotretan yang telah direservasi untuk tanggal tertentu
+     */
+    private function getBookedScheduleData($tanggal)
+    {
+        $popularSlots = ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:30', '16:30', '18:30', '19:30'];
+        
+        $bookings = Reservasi::with(['paket', 'layanan'])
+            ->where('tanggal', $tanggal)
+            ->whereIn('status', ['Menunggu Konfirmasi', 'Menunggu Pembayaran', 'Disetujui', 'Dibayar', 'Terjadwal'])
+            ->get();
+
+        $bookedRanges = [];
+        $occupiedSlots = [];
+
+        foreach ($bookings as $b) {
+            $startTime = substr($b->waktu, 0, 5);
+            $durasiStr = $b->paket->durasi ?? '2';
+            $durationHours = (int) filter_var($durasiStr, FILTER_SANITIZE_NUMBER_INT) ?: 2;
+            
+            try {
+                $startCarbon = Carbon::createFromFormat('H:i', $startTime);
+                $endCarbon = (clone $startCarbon)->addHours($durationHours);
+            } catch (\Exception $e) {
+                $startCarbon = Carbon::parse($startTime);
+                $endCarbon = (clone $startCarbon)->addHours($durationHours);
+            }
+
+            $bookedRanges[] = [
+                'booking_id' => $b->id,
+                'start' => $startTime,
+                'end' => $endCarbon->format('H:i'),
+                'layanan' => $b->layanan->nama ?? 'Sesi Foto',
+                'paket' => $b->paket->nama_paket ?? 'Paket',
+                'durasi' => $durationHours . ' Jam',
+            ];
+        }
+
+        foreach ($popularSlots as $slot) {
+            try {
+                $slotCarbon = Carbon::createFromFormat('H:i', $slot);
+                foreach ($bookedRanges as $range) {
+                    $rangeStart = Carbon::createFromFormat('H:i', $range['start']);
+                    $rangeEnd = Carbon::createFromFormat('H:i', $range['end']);
+                    if ($slotCarbon >= $rangeStart && $slotCarbon < $rangeEnd) {
+                        $occupiedSlots[] = $slot;
+                        break;
+                    }
+                }
+            } catch (\Exception $e) {
+                // ignore format issue
+            }
+        }
+
+        return [
+            'bookedSlots' => array_values(array_unique($occupiedSlots)),
+            'bookedRanges' => $bookedRanges,
+        ];
+    }
+
+    /**
+     * AJAX endpoint: cek ketersediaan slot jadwal pemotretan berdasarkan tanggal
+     */
+    public function checkJadwal(Request $request)
+    {
+        $tanggal = $request->query('tanggal', date('Y-m-d'));
+        $scheduleData = $this->getBookedScheduleData($tanggal);
+
+        return response()->json([
+            'tanggal' => $tanggal,
+            'booked_slots' => $scheduleData['bookedSlots'],
+            'booked_ranges' => $scheduleData['bookedRanges'],
+        ]);
+    }
+
+    /**
      * Form formulir reservasi baru
      */
     public function create(Request $request)
     {
         $layananId = $request->query('layanan_id');
         $paketId = $request->query('paket_id');
+        $initialDate = old('tanggal', date('Y-m-d'));
 
         $layananList = Katalog::where('status', 'aktif')
             ->with(['pakets' => fn($q) => $q->where('status', 'aktif')])
             ->get();
         $selectedPaket = $paketId ? Paket::where('status', 'aktif')->find($paketId) : null;
 
-        return view('reservasi.create', compact('layananList', 'layananId', 'selectedPaket'));
+        $scheduleData = $this->getBookedScheduleData($initialDate);
+        $initialBookedSlots = $scheduleData['bookedSlots'];
+        $initialBookedRanges = $scheduleData['bookedRanges'];
+
+        return view('reservasi.create', compact(
+            'layananList',
+            'layananId',
+            'selectedPaket',
+            'initialBookedSlots',
+            'initialBookedRanges'
+        ));
     }
 
     /**
@@ -119,6 +205,40 @@ class ReservasiController extends Controller
             if ($bookingDateTime->isPast()) {
                 return back()->withInput()->withErrors([
                     'waktu' => 'Waktu sesi yang dipilih sudah terlewat. Silakan pilih waktu yang akan datang.'
+                ]);
+            }
+        }
+
+        // Validasi bentrok jadwal sesi foto
+        $paket = Paket::find($validated['paket_id']);
+        $requestedDurationHours = (int) filter_var($paket->durasi ?? '2', FILTER_SANITIZE_NUMBER_INT) ?: 2;
+        
+        try {
+            $requestedStart = Carbon::createFromFormat('H:i', $validated['waktu']);
+        } catch (\Exception $e) {
+            $requestedStart = Carbon::parse($validated['waktu']);
+        }
+        $requestedEnd = (clone $requestedStart)->addHours($requestedDurationHours);
+
+        $existingBookings = Reservasi::with('paket')
+            ->where('tanggal', $validated['tanggal'])
+            ->whereIn('status', ['Menunggu Konfirmasi', 'Menunggu Pembayaran', 'Disetujui', 'Dibayar', 'Terjadwal'])
+            ->get();
+
+        foreach ($existingBookings as $eb) {
+            $existingStartTime = substr($eb->waktu, 0, 5);
+            $existingDuration = (int) filter_var($eb->paket->durasi ?? '2', FILTER_SANITIZE_NUMBER_INT) ?: 2;
+            try {
+                $existingStart = Carbon::createFromFormat('H:i', $existingStartTime);
+            } catch (\Exception $e) {
+                $existingStart = Carbon::parse($existingStartTime);
+            }
+            $existingEnd = (clone $existingStart)->addHours($existingDuration);
+
+            // Deteksi bentrok: interval A overlap interval B jika (StartA < EndB) && (EndA > StartB)
+            if ($requestedStart < $existingEnd && $requestedEnd > $existingStart) {
+                return back()->withInput()->withErrors([
+                    'waktu' => 'Maaf, jadwal sesi pada jam ' . $validated['waktu'] . ' (estimasi durasi ' . $requestedDurationHours . ' jam) bentrok dengan jadwal reservasi yang sudah ada (' . $existingStart->format('H:i') . ' - ' . $existingEnd->format('H:i') . ' WIB). Silakan pilih jam atau tanggal lain.'
                 ]);
             }
         }
