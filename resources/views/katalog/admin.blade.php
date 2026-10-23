@@ -477,18 +477,20 @@
     <!-- ============================================================== -->
     <!-- MODAL 1: TAMBAH LAYANAN BARU                                   -->
     <!-- ============================================================== -->
-    <div x-show="openAddLayanan" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
-         style="display: none;">
-        
-        <div class="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
-             @click.away="openAddLayanan = false">
+    <template x-teleport="body">
+        <div x-show="openAddLayanan" 
+             x-cloak
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="modal-backdrop-fixed bg-slate-900/60 flex items-center justify-center p-4 overflow-y-auto" 
+             style="display: none;">
+            
+            <div class="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-auto relative z-10" 
+                 @click.away="openAddLayanan = false">
             
             <!-- Modal Header -->
             <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
@@ -618,21 +620,24 @@
 
         </div>
     </div>
+    </template>
 
     <!-- ============================================================== -->
     <!-- MODAL 2: EDIT LAYANAN                                          -->
     <!-- ============================================================== -->
+    <template x-teleport="body">
     <div x-show="openEditLayanan" 
+         x-cloak
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
+         class="modal-backdrop-fixed bg-slate-900/60 flex items-center justify-center p-4 overflow-y-auto" 
          style="display: none;">
         
-        <div class="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
+        <div class="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-auto relative z-10" 
              @click.away="openEditLayanan = false">
             
             <!-- Modal Header -->
@@ -775,21 +780,24 @@
 
         </div>
     </div>
+    </template>
 
     <!-- ============================================================== -->
     <!-- MODAL 3: TAMBAH PAKET LAYANAN                                  -->
     <!-- ============================================================== -->
+    <template x-teleport="body">
     <div x-show="openAddPaket" 
+         x-cloak
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
+         class="modal-backdrop-fixed bg-slate-900/60 flex items-center justify-center p-4 overflow-y-auto" 
          style="display: none;">
         
-        <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
+        <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden my-auto relative z-10" 
              @click.away="openAddPaket = false">
             
             <!-- Modal Header -->
@@ -885,21 +893,24 @@
 
         </div>
     </div>
+    </template>
 
     <!-- ============================================================== -->
     <!-- MODAL 4: EDIT PAKET LAYANAN                                    -->
     <!-- ============================================================== -->
+    <template x-teleport="body">
     <div x-show="openEditPaket" 
+         x-cloak
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
+         class="modal-backdrop-fixed bg-slate-900/60 flex items-center justify-center p-4 overflow-y-auto" 
          style="display: none;">
         
-        <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
+        <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden my-auto relative z-10" 
              @click.away="openEditPaket = false">
             
             <!-- Modal Header -->
@@ -996,21 +1007,24 @@
 
         </div>
     </div>
+    </template>
 
     <!-- ============================================================== -->
     <!-- MODAL 5: KONFIRMASI HAPUS                                      -->
     <!-- ============================================================== -->
+    <template x-teleport="body">
     <div x-show="openDeleteModal" 
+         x-cloak
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4" 
+         class="modal-backdrop-fixed bg-slate-900/60 flex items-center justify-center p-4" 
          style="display: none;">
         
-        <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 space-y-5 text-xs" 
+        <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 space-y-5 text-xs my-auto relative z-10" 
              @click.away="openDeleteModal = false">
             
             <div class="flex items-center gap-3">
@@ -1039,6 +1053,7 @@
             </form>
         </div>
     </div>
+    </template>
 
 </div>
 @endsection

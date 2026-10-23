@@ -43,6 +43,20 @@
             background-color: #f8fafc;
             color: #0f172a;
         }
+        .z-100 {
+            z-index: 100 !important;
+        }
+        .modal-backdrop-fixed {
+            position: fixed !important;
+            inset: 0 !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999 !important;
+        }
         .clean-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
