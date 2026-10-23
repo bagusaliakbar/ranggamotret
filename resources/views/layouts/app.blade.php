@@ -180,7 +180,7 @@
                                     $previewNotifsApp = Auth::user()->notifikasis()->latest()->take(5)->get();
                                 @endphp
 
-                                <div class="max-h-[340px] overflow-y-auto divide-y divide-slate-100 no-scrollbar">
+                                <div class="max-h-85 overflow-y-auto divide-y divide-slate-100 no-scrollbar">
                                     @forelse($previewNotifsApp as $n)
                                         <a href="{{ route('notifications.read', $n->id) }}" 
                                            class="p-4 block transition-colors hover:bg-slate-50 group {{ !$n->is_read ? 'bg-amber-50/40' : 'bg-white opacity-80' }}">
@@ -251,7 +251,7 @@
                                     </div>
                                 @endif
                                 <div class="text-xs">
-                                    <div class="font-bold text-slate-900 truncate max-w-[100px]">{{ Auth::user()->name }}</div>
+                                    <div class="font-bold text-slate-900 truncate max-w-25">{{ Auth::user()->name }}</div>
                                 </div>
                                 <i class="ph-bold ph-caret-down text-[10px] text-slate-500"></i>
                             </button>

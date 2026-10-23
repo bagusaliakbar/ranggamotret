@@ -373,7 +373,7 @@
                     @if($prevItem)
                         <a href="{{ $prevItem['url'] }}" class="btn-outline px-5 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-sm hover:bg-slate-100 transition-all">
                             <i class="fa-solid fa-chevron-left"></i>
-                            <span class="truncate max-w-[150px] sm:max-w-xs">{{ $prevItem['title'] }}</span>
+                            <span class="truncate max-w-37.5 sm:max-w-xs">{{ $prevItem['title'] }}</span>
                         </a>
                     @else
                         <div></div>
@@ -381,7 +381,7 @@
 
                     @if($nextItem)
                         <a href="{{ $nextItem['url'] }}" class="btn-dark px-6 py-3 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-md hover:scale-[1.02] active:scale-95 transition-all">
-                            <span class="truncate max-w-[150px] sm:max-w-xs">{{ $nextItem['title'] }}</span>
+                            <span class="truncate max-w-37.5 sm:max-w-xs">{{ $nextItem['title'] }}</span>
                             <i class="fa-solid fa-chevron-right text-emerald-400"></i>
                         </a>
                     @endif

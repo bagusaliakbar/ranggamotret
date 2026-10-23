@@ -127,7 +127,7 @@
                     <div class="p-4 flex items-center justify-between text-xs border-t border-slate-100 bg-white">
                         <div class="space-y-0.5">
                             <span class="font-mono text-[11px] font-black text-slate-900" x-text="foto.code"></span>
-                            <div x-show="foto.catatan" class="text-[10px] text-slate-500 italic truncate max-w-[130px]" x-text="foto.catatan"></div>
+                            <div x-show="foto.catatan" class="text-[10px] text-slate-500 italic truncate max-w-32.5" x-text="foto.catatan"></div>
                         </div>
 
                         <div class="flex items-center gap-2">

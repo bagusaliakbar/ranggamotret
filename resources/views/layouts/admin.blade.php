@@ -344,7 +344,7 @@
                             $previewNotifs = Auth::user()->notifikasis()->latest()->take(5)->get();
                         @endphp
 
-                        <div class="max-h-[340px] overflow-y-auto divide-y divide-slate-100 no-scrollbar">
+                        <div class="max-h-85 overflow-y-auto divide-y divide-slate-100 no-scrollbar">
                             @forelse($previewNotifs as $n)
                                 <a href="{{ route('notifications.read', $n->id) }}" 
                                    class="p-4 block transition-colors hover:bg-slate-50 group {{ !$n->is_read ? 'bg-amber-50/40' : 'bg-white opacity-80' }}">
@@ -416,7 +416,7 @@
                             </div>
                         @endif
                         <div class="hidden sm:block text-left leading-tight">
-                            <div class="text-xs font-bold text-slate-900 truncate max-w-[120px]">{{ Auth::user()->name }}</div>
+                            <div class="text-xs font-bold text-slate-900 truncate max-w-30">{{ Auth::user()->name }}</div>
                             <div class="text-[10px] text-slate-500 font-semibold capitalize">{{ Auth::user()->role }}</div>
                         </div>
                         <i class="ph-bold ph-caret-down text-[10px] text-slate-400 group-hover:text-slate-700 transition-transform duration-200 ml-0.5" :class="{ 'rotate-180': open }"></i>

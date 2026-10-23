@@ -80,10 +80,10 @@
                             <div class="flex items-start gap-4">
                                 @if($c->thumbnail)
                                     <img src="{{ $c->thumbnail }}"
-                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-sm border border-slate-100 flex-shrink-0">
+                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover shadow-sm border border-slate-100 shrink-0">
                                 @else
                                     <div
-                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 flex-shrink-0 border border-slate-200">
+                                        class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 shrink-0 border border-slate-200">
                                         <i class="fa-solid fa-graduation-cap text-2xl"></i>
                                     </div>
                                 @endif
@@ -119,7 +119,7 @@
                             </div>
 
                             <!-- Actions for Course -->
-                            <div class="flex items-center gap-1.5 flex-shrink-0">
+                            <div class="flex items-center gap-1.5 shrink-0">
                                 <button @click="editCourseData = {
                                                 id: {{ $c->id }},
                                                 nama: '{{ addslashes($c->nama) }}',
@@ -172,19 +172,19 @@
                                             <div class="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer"
                                                 @click="expanded = !expanded">
                                                 <span
-                                                    class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-extrabold flex items-center justify-center flex-shrink-0">
+                                                    class="w-5 h-5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-extrabold flex items-center justify-center shrink-0">
                                                     {{ $mod->urutan }}
                                                 </span>
                                                 <span class="font-bold text-slate-900 text-xs truncate">{{ $mod->judul }}</span>
                                                 <span
-                                                    class="px-2 py-0.5 rounded text-[9px] font-bold bg-white text-slate-500 border border-slate-200 flex-shrink-0">
+                                                    class="px-2 py-0.5 rounded text-[9px] font-bold bg-white text-slate-500 border border-slate-200 shrink-0">
                                                     {{ $mod->materis->count() }} Materi
                                                 </span>
                                                 <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform"
                                                     :class="expanded ? 'rotate-180' : ''"></i>
                                             </div>
 
-                                            <div class="flex items-center gap-1.5 flex-shrink-0">
+                                            <div class="flex items-center gap-1.5 shrink-0">
                                                 <!-- Add Materi Button -->
                                                 <button
                                                     @click="selectedModulId = {{ $mod->id }}; selectedModulTitle = '{{ addslashes($mod->judul) }}'; openAddMateri = true"
@@ -234,7 +234,7 @@
                                                                 default => 'fa-file-lines text-slate-500',
                                                             };
                                                         @endphp
-                                                        <i class="fa-solid {{ $typeIcon }} text-xs flex-shrink-0"></i>
+                                                        <i class="fa-solid {{ $typeIcon }} text-xs shrink-0"></i>
                                                         <div class="truncate">
                                                             <span class="font-bold text-slate-800">{{ $mat->judul }}</span>
                                                             @if($mat->video_url)
@@ -244,7 +244,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                                    <div class="flex items-center gap-1 shrink-0">
                                                         <button @click="editMateriData = {
                                                                                 id: {{ $mat->id }},
                                                                                 judul: '{{ addslashes($mat->judul) }}',
@@ -283,7 +283,7 @@
                                             @foreach($mod->quizs as $qz)
                                                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/70 border border-blue-200 hover:border-blue-300 transition-colors">
                                                     <div class="flex items-center gap-2.5 min-w-0">
-                                                        <i class="ph-duotone ph-list-checks text-blue-600 text-base flex-shrink-0"></i>
+                                                        <i class="ph-duotone ph-list-checks text-blue-600 text-base shrink-0"></i>
                                                         <div class="truncate">
                                                             <div class="flex items-center gap-2">
                                                                 <span class="font-extrabold text-blue-950">{{ $qz->judul }}</span>
@@ -295,7 +295,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                                    <div class="flex items-center gap-1 shrink-0">
                                                         <form method="POST"
                                                             action="{{ route('admin.quizzes.destroy', $qz->id) }}"
                                                             onsubmit="return confirm('Hapus kuis evaluasi {{ addslashes($qz->judul) }} beserta seluruh butir soalnya?')">
@@ -340,13 +340,13 @@
 
         <!-- 1. Modal Tambah Kursus Baru -->
         <div x-show="openAddCourse" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
             <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
                 @click.away="openAddCourse = false">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Tambah Kursus</h3>
                     <button type="button" @click="openAddCourse = false" 
-                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
                         title="Tutup (Esc)">
                         <i class="ph-duotone ph-x text-base font-bold"></i>
                     </button>
@@ -422,13 +422,13 @@
 
         <!-- 2. Modal Edit Kursus -->
         <div x-show="openEditCourse" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
             <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
                 @click.away="openEditCourse = false">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Data Kursus</h3>
                     <button type="button" @click="openEditCourse = false" 
-                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
                         title="Tutup (Esc)">
                         <i class="ph-duotone ph-x text-base font-bold"></i>
                     </button>
@@ -506,7 +506,7 @@
 
         <!-- 3. Modal Tambah Modul Silabus -->
         <div x-show="openAddModule" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl"
                 @click.away="openAddModule = false">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
@@ -515,7 +515,7 @@
                         <p class="text-[11px] text-slate-400 mt-0.5" x-text="selectedCourseName"></p>
                     </div>
                     <button type="button" @click="openAddModule = false" 
-                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
                         title="Tutup (Esc)">
                         <i class="ph-duotone ph-x text-base font-bold"></i>
                     </button>
@@ -550,13 +550,13 @@
 
         <!-- 4. Modal Edit Modul Silabus -->
         <div x-show="openEditModule" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl"
                 @click.away="openEditModule = false">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Modul Silabus</h3>
                     <button type="button" @click="openEditModule = false" 
-                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
                         title="Tutup (Esc)">
                         <i class="ph-duotone ph-x text-base font-bold"></i>
                     </button>
@@ -591,11 +591,11 @@
 
         <!-- 5. Modal Tambah Materi Pembelajaran / Kuis Evaluasi -->
         <div x-show="openAddMateri" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-3 sm:p-4">
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-3 sm:p-4">
             <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
                 @click.away="openAddMateri = false">
                 <!-- Modal Sticky Header -->
-                <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white flex-shrink-0">
+                <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
                     <div class="space-y-0.5 pr-4">
                         <div class="flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full" :class="materiType === 'quiz' ? 'bg-blue-600' : 'bg-slate-900'"></span>
@@ -604,7 +604,7 @@
                         <p class="text-[11px] text-slate-400 font-medium truncate" x-text="'Modul: ' + selectedModulTitle"></p>
                     </div>
                     <button type="button" @click="openAddMateri = false" 
-                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
                         title="Tutup Modal (Esc)">
                         <i class="ph-duotone ph-x text-base font-bold"></i>
                     </button>
@@ -775,7 +775,7 @@
                 </div>
 
                 <!-- Modal Sticky Footer Action Bar -->
-                <div class="px-6 py-4 sm:px-7 sm:py-4 bg-slate-50/80 border-t border-slate-200/80 flex items-center justify-end gap-3 flex-shrink-0">
+                <div class="px-6 py-4 sm:px-7 sm:py-4 bg-slate-50/80 border-t border-slate-200/80 flex items-center justify-end gap-3 shrink-0">
                     <button type="button" @click="openAddMateri = false"
                         class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all">
                         Batal
@@ -792,16 +792,16 @@
 
         <!-- 6. Modal Edit Materi Pembelajaran -->
         <div x-show="openEditMateri" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-3 sm:p-4">
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-3 sm:p-4">
             <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
                 @click.away="openEditMateri = false">
-                <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white flex-shrink-0">
+                <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
                     <div class="space-y-0.5">
                         <h3 class="font-extrabold text-base text-slate-900">Edit Materi Pembelajaran</h3>
                         <p class="text-[11px] text-slate-400 font-medium">Perbarui konten dan detail materi</p>
                     </div>
                     <button type="button" @click="openEditMateri = false" 
-                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
                         title="Tutup Modal (Esc)">
                         <i class="ph-duotone ph-x text-base font-bold"></i>
                     </button>
@@ -847,7 +847,7 @@
                     </div>
 
                     <!-- Modal Sticky Footer Action Bar -->
-                    <div class="px-6 py-4 sm:px-7 sm:py-4 bg-slate-50/80 border-t border-slate-200/80 flex items-center justify-end gap-3 flex-shrink-0">
+                    <div class="px-6 py-4 sm:px-7 sm:py-4 bg-slate-50/80 border-t border-slate-200/80 flex items-center justify-end gap-3 shrink-0">
                         <button type="button" @click="openEditMateri = false"
                             class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all">
                             Batal

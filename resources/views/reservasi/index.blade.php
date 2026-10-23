@@ -254,7 +254,7 @@
                  class="clean-card rounded-3xl overflow-hidden border border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-md transition-all duration-300">
                 
                 <!-- Main Header Strip of Card -->
-                <div class="p-5 sm:p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 border-b border-slate-100 bg-gradient-to-r from-slate-50/50 via-white to-white">
+                <div class="p-5 sm:p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 border-b border-slate-100 bg-linear-to-r from-slate-50/50 via-white to-white">
                     <!-- Left Identity -->
                     <div class="flex items-start sm:items-center gap-4">
                         <!-- Service Thumbnail Avatar -->

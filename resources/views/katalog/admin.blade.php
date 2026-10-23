@@ -426,7 +426,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto" 
+         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
          style="display: none;">
         
         <div class="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
@@ -491,7 +491,7 @@
                 <div>
                     <label class="block text-slate-700 font-extrabold mb-1.5">Status Publikasi <span class="text-rose-500">*</span></label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-[:checked]:border-slate-900 has-[:checked]:bg-slate-900/5">
+                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
                             <input type="radio" name="status" value="aktif" checked class="text-slate-900 focus:ring-slate-900">
                             <div>
                                 <div class="font-bold text-slate-900">Aktif (Published)</div>
@@ -499,7 +499,7 @@
                             </div>
                         </label>
 
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-[:checked]:border-slate-900 has-[:checked]:bg-slate-900/5">
+                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
                             <input type="radio" name="status" value="nonaktif" class="text-slate-900 focus:ring-slate-900">
                             <div>
                                 <div class="font-bold text-slate-900">Nonaktif (Draft)</div>
@@ -571,7 +571,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto" 
+         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
          style="display: none;">
         
         <div class="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
@@ -637,7 +637,7 @@
                 <div>
                     <label class="block text-slate-700 font-extrabold mb-1.5">Status Publikasi <span class="text-rose-500">*</span></label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-[:checked]:border-slate-900 has-[:checked]:bg-slate-900/5">
+                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
                             <input type="radio" name="status" value="aktif" x-model="editLayanan.status" class="text-slate-900 focus:ring-slate-900">
                             <div>
                                 <div class="font-bold text-slate-900">Aktif (Published)</div>
@@ -645,7 +645,7 @@
                             </div>
                         </label>
 
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-[:checked]:border-slate-900 has-[:checked]:bg-slate-900/5">
+                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
                             <input type="radio" name="status" value="nonaktif" x-model="editLayanan.status" class="text-slate-900 focus:ring-slate-900">
                             <div>
                                 <div class="font-bold text-slate-900">Nonaktif (Draft)</div>
@@ -728,7 +728,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto" 
+         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
          style="display: none;">
         
         <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
@@ -838,7 +838,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 overflow-y-auto" 
+         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
          style="display: none;">
         
         <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
@@ -949,7 +949,7 @@
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4" 
+         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4" 
          style="display: none;">
         
         <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 space-y-5 text-xs" 

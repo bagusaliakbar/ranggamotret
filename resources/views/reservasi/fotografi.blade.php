@@ -144,7 +144,7 @@
                     <div class="clean-card rounded-3xl overflow-hidden flex flex-col justify-between group border-2 {{ !$isPaid ? 'border-amber-300 ring-4 ring-amber-400/10' : 'border-slate-200/80' }} shadow-sm hover:shadow-md transition-all duration-300 bg-white">
                         <div>
                             <!-- Thumbnail & Category Tag -->
-                            <div class="aspect-[16/9] overflow-hidden relative bg-slate-100">
+                            <div class="aspect-video overflow-hidden relative bg-slate-100">
                                 <img src="{{ $b->layanan->thumbnail }}" alt="{{ $b->layanan->nama }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 
                                 <div class="absolute top-3 left-3 flex items-center gap-2">
