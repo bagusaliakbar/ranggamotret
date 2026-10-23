@@ -62,11 +62,6 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.courses.reservations.index') }}" 
-                   class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs">
-                    <i class="ph-duotone ph-receipt text-base text-slate-600"></i>
-                    <span>Reservasi Pendaftaran</span>
-                </a>
                 <button @click="openAddCourse = true"
                     class="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
                     <i class="ph-duotone ph-plus-circle text-base text-emerald-400"></i>
