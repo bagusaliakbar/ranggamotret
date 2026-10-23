@@ -165,14 +165,12 @@
                                         </span>
 
                                         <!-- Aksi Invoice PDF jika lunas -->
-                                        @if($p->invoice)
-                                            <a href="{{ route('invoices.show', $p->invoice->id) }}" target="_blank" 
-                                               class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-[10px] inline-flex items-center gap-1 transition-all shadow-2xs hover:scale-105 active:scale-95"
-                                               title="Unduh / Cetak Bukti Invoice Resmi">
-                                                <i class="ph-duotone ph-receipt text-xs text-emerald-400"></i>
-                                                <span>Invoice PDF</span>
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('invoices.show', $p->invoice ? $p->invoice->id : $p->id) }}" target="_blank" 
+                                           class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-[10px] inline-flex items-center gap-1 transition-all shadow-2xs hover:scale-105 active:scale-95"
+                                           title="Unduh / Cetak Bukti Invoice Resmi">
+                                            <i class="ph-duotone ph-receipt text-xs text-emerald-400"></i>
+                                            <span>Invoice PDF</span>
+                                        </a>
 
                                     @elseif($p->status === 'Menunggu Verifikasi')
                                         <!-- Badge Status Menunggu Verifikasi -->

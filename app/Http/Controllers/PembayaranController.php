@@ -50,13 +50,39 @@ class PembayaranController extends Controller
                         'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($p->booking_id, 4, '0', STR_PAD_LEFT),
                         'user_id' => $userId,
                         'booking_id' => $p->booking_id,
+                        'kursus_id' => $p->kursus_id,
                         'subtotal' => $p->jumlah,
                         'diskon' => 0,
                         'total' => $p->jumlah,
-                        'status_pembayaran' => 'Lunas',
+                        'status_pembayaran' => 'LUNAS',
                     ]
                 );
             }
+        }
+
+        // Auto-heal: Pastikan SEMUA transaksi berstatus Dibayar (baik kursus maupun foto) memiliki record Invoice
+        $paidWithoutInvoices = Pembayaran::where('user_id', $userId)
+            ->where('status', 'Dibayar')
+            ->whereDoesntHave('invoice')
+            ->get();
+
+        foreach ($paidWithoutInvoices as $paid) {
+            $prefix = $paid->kursus_id ? 'KRS' : 'FTO';
+            $invNum = 'INV-' . date('Ymd', strtotime($paid->tanggal_pembayaran ?? $paid->created_at)) . '-' . $prefix . '-' . str_pad($paid->id, 4, '0', STR_PAD_LEFT);
+
+            Invoice::firstOrCreate(
+                ['pembayaran_id' => $paid->id],
+                [
+                    'nomor_invoice' => $invNum,
+                    'user_id' => $paid->user_id,
+                    'booking_id' => $paid->booking_id,
+                    'kursus_id' => $paid->kursus_id,
+                    'subtotal' => $paid->jumlah,
+                    'diskon' => 0,
+                    'total' => $paid->jumlah,
+                    'status_pembayaran' => 'LUNAS',
+                ]
+            );
         }
 
         $pembayarans = Pembayaran::where('user_id', $userId)
@@ -470,7 +496,39 @@ class PembayaranController extends Controller
      */
     public function showInvoice($id)
     {
-        $invoice = Invoice::with(['pembayaran', 'user', 'booking.layanan', 'booking.paket', 'kursus'])->findOrFail($id);
+        // Cari invoice berdasarkan ID invoice atau fallback berdasarkan pembayaran_id
+        $invoice = Invoice::with(['pembayaran', 'user', 'booking.layanan', 'booking.paket', 'kursus'])->find($id);
+
+        if (!$invoice) {
+            // Cek jika ID yang dikirim adalah ID Pembayaran
+            $pembayaran = Pembayaran::with(['invoice', 'user', 'booking.layanan', 'booking.paket', 'kursus'])->find($id);
+            if ($pembayaran) {
+                if ($pembayaran->invoice) {
+                    $invoice = $pembayaran->invoice;
+                } elseif ($pembayaran->status === 'Dibayar') {
+                    // Auto-generate invoice jika status pembayaran sudah Dibayar
+                    $prefix = $pembayaran->kursus_id ? 'KRS' : 'FTO';
+                    $invNum = 'INV-' . date('Ymd', strtotime($pembayaran->tanggal_pembayaran ?? $pembayaran->created_at)) . '-' . $prefix . '-' . str_pad($pembayaran->id, 4, '0', STR_PAD_LEFT);
+
+                    $invoice = Invoice::create([
+                        'pembayaran_id' => $pembayaran->id,
+                        'nomor_invoice' => $invNum,
+                        'user_id' => $pembayaran->user_id,
+                        'booking_id' => $pembayaran->booking_id,
+                        'kursus_id' => $pembayaran->kursus_id,
+                        'subtotal' => $pembayaran->jumlah,
+                        'diskon' => 0,
+                        'total' => $pembayaran->jumlah,
+                        'status_pembayaran' => 'LUNAS',
+                    ]);
+                    $invoice->load(['pembayaran', 'user', 'booking.layanan', 'booking.paket', 'kursus']);
+                }
+            }
+        }
+
+        if (!$invoice) {
+            abort(404, 'Invoice resmi untuk transaksi ini belum diterbitkan.');
+        }
 
         if (!Auth::user()->isAdmin() && Auth::id() !== $invoice->user_id) {
             abort(403);
