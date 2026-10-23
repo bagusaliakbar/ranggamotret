@@ -10,9 +10,9 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <span class="text-slate-700">Verifikasi Pembayaran</span>
+                <span class="text-slate-700">Kelola Pembayaran</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Verifikasi Pembayaran</h1>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Kelola Pembayaran</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">
                 Kelola dan verifikasi transaksi transfer bank manual pelanggan serta pantau pembayaran otomatis dari Payment Gateway.
             </p>

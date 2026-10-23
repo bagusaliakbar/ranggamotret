@@ -162,14 +162,14 @@
                             <span>Kelola Katalog Fotografi</span>
                         </a>
 
-                        <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
-                            <span>Kelola Konsultasi</span>
-                        </a>
-
                         <a href="{{ route('admin.kategori-layanan.index') }}" class="sidebar-link {{ request()->routeIs('admin.kategori-layanan.*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-squares-four text-base w-5"></i>
                             <span>Kategori Layanan</span>
+                        </a>
+
+                        <a href="{{ route('admin.consultations.index') }}" class="sidebar-link {{ request()->routeIs('admin.consultations*') ? 'active' : '' }}">
+                            <i class="ph-duotone ph-chats-circle text-base w-5"></i>
+                            <span>Kelola Konsultasi</span>
                         </a>
 
                         <a href="{{ route('admin.portofolio.index') }}" class="sidebar-link {{ request()->routeIs('admin.portofolio.*') ? 'active' : '' }}">
