@@ -343,10 +343,13 @@
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
                 @click.away="openAddCourse = false">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Tambah Kursus</h3>
-                    <button @click="openAddCourse = false" class="text-slate-400 hover:text-slate-900"><i
-                            class="fa-solid fa-xmark text-lg"></i></button>
+                    <button type="button" @click="openAddCourse = false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        title="Tutup (Esc)">
+                        <i class="ph-duotone ph-x text-base font-bold"></i>
+                    </button>
                 </div>
 
                 <form method="POST" action="{{ route('admin.courses.store') }}" class="space-y-4">
@@ -422,10 +425,13 @@
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
                 @click.away="openEditCourse = false">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Data Kursus</h3>
-                    <button @click="openEditCourse = false" class="text-slate-400 hover:text-slate-900"><i
-                            class="fa-solid fa-xmark text-lg"></i></button>
+                    <button type="button" @click="openEditCourse = false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        title="Tutup (Esc)">
+                        <i class="ph-duotone ph-x text-base font-bold"></i>
+                    </button>
                 </div>
 
                 <form method="POST" :action="'{{ url('/admin/courses') }}/' + editCourseData.id" class="space-y-4">
@@ -503,13 +509,16 @@
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl"
                 @click.away="openAddModule = false">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <div>
                         <h3 class="font-extrabold text-base text-slate-900">Tambah Modul Silabus</h3>
                         <p class="text-[11px] text-slate-400 mt-0.5" x-text="selectedCourseName"></p>
                     </div>
-                    <button @click="openAddModule = false" class="text-slate-400 hover:text-slate-900"><i
-                            class="fa-solid fa-xmark text-lg"></i></button>
+                    <button type="button" @click="openAddModule = false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        title="Tutup (Esc)">
+                        <i class="ph-duotone ph-x text-base font-bold"></i>
+                    </button>
                 </div>
 
                 <form method="POST" :action="'{{ url('/admin/courses') }}/' + selectedCourseId + '/modules'"
@@ -544,10 +553,13 @@
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl"
                 @click.away="openEditModule = false">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Modul Silabus</h3>
-                    <button @click="openEditModule = false" class="text-slate-400 hover:text-slate-900"><i
-                            class="fa-solid fa-xmark text-lg"></i></button>
+                    <button type="button" @click="openEditModule = false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        title="Tutup (Esc)">
+                        <i class="ph-duotone ph-x text-base font-bold"></i>
+                    </button>
                 </div>
 
                 <form method="POST" :action="'{{ url('/admin/modules') }}/' + editModuleData.id" class="space-y-4">
@@ -579,25 +591,34 @@
 
         <!-- 5. Modal Tambah Materi Pembelajaran / Kuis Evaluasi -->
         <div x-show="openAddMateri" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-xl w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-3 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
                 @click.away="openAddMateri = false">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-                    <div>
-                        <h3 class="font-extrabold text-base text-slate-900" x-text="materiType === 'quiz' ? 'Tambah Kuis Evaluasi Pilihan Ganda' : 'Tambah Materi Pembelajaran'"></h3>
-                        <p class="text-[11px] text-slate-400 mt-0.5" x-text="'Modul: ' + selectedModulTitle"></p>
+                <!-- Modal Sticky Header -->
+                <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white flex-shrink-0">
+                    <div class="space-y-0.5 pr-4">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full" :class="materiType === 'quiz' ? 'bg-blue-600' : 'bg-slate-900'"></span>
+                            <h3 class="font-extrabold text-base text-slate-900" x-text="materiType === 'quiz' ? 'Tambah Kuis Evaluasi Pilihan Ganda' : 'Tambah Materi Pembelajaran'"></h3>
+                        </div>
+                        <p class="text-[11px] text-slate-400 font-medium truncate" x-text="'Modul: ' + selectedModulTitle"></p>
                     </div>
-                    <button @click="openAddMateri = false" class="text-slate-400 hover:text-slate-900"><i
-                            class="ph-duotone ph-x text-lg"></i></button>
+                    <button type="button" @click="openAddMateri = false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        title="Tutup Modal (Esc)">
+                        <i class="ph-duotone ph-x text-base font-bold"></i>
+                    </button>
                 </div>
 
+                <!-- Modal Scrollable Body with Luxury Custom Scrollbar -->
                 <form method="POST" :action="materiType === 'quiz' ? '{{ url('/admin/modules') }}/' + selectedModulId + '/quizzes' : '{{ url('/admin/modules') }}/' + selectedModulId + '/materis'"
-                    class="space-y-4">
+                    class="flex flex-col flex-1 overflow-hidden">
                     @csrf
 
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">
-                            <span x-text="materiType === 'quiz' ? 'Judul Kuis Evaluasi' : 'Judul Materi'"></span>
+                    <div class="p-6 sm:p-7 space-y-5 overflow-y-auto custom-scrollbar flex-1 text-xs">
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1">
+                                <span x-text="materiType === 'quiz' ? 'Judul Kuis Evaluasi' : 'Judul Materi'"></span>
                             <span class="text-rose-500">*</span>
                         </label>
                         <input type="text" name="judul" required :placeholder="materiType === 'quiz' ? 'Contoh: Kuis Evaluasi Pemahaman Exposure & Lighting' : 'Contoh: Mengenal Sensor Full-Frame vs APS-C'"
@@ -751,30 +772,45 @@
                             </button>
                         </div>
                     </div>
+                </div>
 
-                    <button type="submit"
-                        class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2">
-                        <i :class="materiType === 'quiz' ? 'ph-duotone ph-list-checks' : 'ph-duotone ph-floppy-disk'" class="text-base"></i>
-                        <span x-text="materiType === 'quiz' ? 'Simpan Kuis & Soal Evaluasi' : 'Simpan Materi Pembelajaran'"></span>
+                <!-- Modal Sticky Footer Action Bar -->
+                <div class="px-6 py-4 sm:px-7 sm:py-4 bg-slate-50/80 border-t border-slate-200/80 flex items-center justify-end gap-3 flex-shrink-0">
+                    <button type="button" @click="openAddMateri = false"
+                        class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all">
+                        Batal
                     </button>
-                </form>
-            </div>
+                    <button type="submit"
+                        class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
+                        <i :class="materiType === 'quiz' ? 'ph-duotone ph-list-checks' : 'ph-duotone ph-floppy-disk'" class="text-base"></i>
+                        <span x-text="materiType === 'quiz' ? 'Simpan Kuis & Butir Soal' : 'Simpan Materi Pembelajaran'"></span>
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
 
         <!-- 6. Modal Edit Materi Pembelajaran -->
         <div x-show="openEditMateri" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-3 sm:p-4">
+            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
                 @click.away="openEditMateri = false">
-                <div class="flex justify-between items-center border-b border-slate-200 pb-3">
-                    <h3 class="font-extrabold text-base text-slate-900">Edit Materi Pembelajaran</h3>
-                    <button @click="openEditMateri = false" class="text-slate-400 hover:text-slate-900"><i
-                            class="fa-solid fa-xmark text-lg"></i></button>
+                <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white flex-shrink-0">
+                    <div class="space-y-0.5">
+                        <h3 class="font-extrabold text-base text-slate-900">Edit Materi Pembelajaran</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">Perbarui konten dan detail materi</p>
+                    </div>
+                    <button type="button" @click="openEditMateri = false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all flex-shrink-0"
+                        title="Tutup Modal (Esc)">
+                        <i class="ph-duotone ph-x text-base font-bold"></i>
+                    </button>
                 </div>
 
-                <form method="POST" :action="'{{ url('/admin/materis') }}/' + editMateriData.id" class="space-y-4">
+                <form method="POST" :action="'{{ url('/admin/materis') }}/' + editMateriData.id" class="flex flex-col flex-1 overflow-hidden">
                     @csrf
                     @method('PUT')
+                    <div class="p-6 sm:p-7 space-y-4 overflow-y-auto custom-scrollbar flex-1 text-xs">
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Judul Materi <span
                                 class="text-rose-500">*</span></label>
@@ -809,10 +845,19 @@
                         <textarea name="isi" x-model="editMateriData.isi" rows="4"
                             class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none"></textarea>
                     </div>
-                    <button type="submit"
-                        class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold shadow-md transition-all">
-                        Simpan Perubahan Materi
-                    </button>
+
+                    <!-- Modal Sticky Footer Action Bar -->
+                    <div class="px-6 py-4 sm:px-7 sm:py-4 bg-slate-50/80 border-t border-slate-200/80 flex items-center justify-end gap-3 flex-shrink-0">
+                        <button type="button" @click="openEditMateri = false"
+                            class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
+                            <i class="ph-duotone ph-floppy-disk text-base"></i>
+                            <span>Simpan Perubahan Materi</span>
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

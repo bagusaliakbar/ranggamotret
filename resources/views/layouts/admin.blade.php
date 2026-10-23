@@ -79,6 +79,26 @@
             background-color: #f1f5f9;
             color: #0f172a;
         }
+
+        /* Luxury Slim Smooth Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
     </style>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/favicon-square.png') }}">
