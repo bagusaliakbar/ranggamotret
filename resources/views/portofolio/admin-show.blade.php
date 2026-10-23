@@ -59,18 +59,6 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-            <a href="{{ route('portofolio.show', $album->id) }}" target="_blank"
-               class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-2">
-                <i class="ph-duotone ph-arrow-square-out text-sm"></i>
-                <span>Lihat di Web Publik</span>
-            </a>
-            <button @click="openUploadModal = true"
-                    class="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
-                <i class="ph-duotone ph-plus-circle text-base text-emerald-400"></i>
-                <span>Tambah Foto ke Album</span>
-            </button>
-        </div>
     </div>
 
     <!-- Alert Notifications -->
