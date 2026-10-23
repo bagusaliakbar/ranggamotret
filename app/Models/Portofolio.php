@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Portofolio extends Model
 {
@@ -18,11 +19,24 @@ class Portofolio extends Model
     ];
 
     /**
-     * Accessor URL Foto (mendukung external link Unsplash dan file upload lokal)
+     * Relasi ke foto-foto di dalam album
+     */
+    public function fotos(): HasMany
+    {
+        return $this->hasMany(PortofolioFoto::class, 'portofolio_id')->orderBy('urutan')->orderBy('id');
+    }
+
+    /**
+     * Accessor URL Foto Sampul (Cover Image)
      */
     public function getFotoUrlAttribute(): string
     {
         if (empty($this->foto)) {
+            // Jika foto cover belum diatur, coba ambil foto pertama dari galeri album
+            $firstFoto = $this->fotos->first();
+            if ($firstFoto) {
+                return $firstFoto->foto_url;
+            }
             return asset('images/placeholder.jpg');
         }
 

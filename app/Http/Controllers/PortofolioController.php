@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Portofolio;
+use App\Models\PortofolioFoto;
+use Illuminate\Support\Facades\Storage;
 
 /**
- * Controller Galeri Portofolio Hasil Karya Foto
+ * Controller Galeri Portofolio & Album Hasil Karya Foto
  * 
  * Merepresentasikan Control Object 'PortofolioController' pada Robustness Diagram.
  * Terhubung dengan boundary 'portofolio' dan entity 'Portofolio'.
@@ -14,25 +16,42 @@ use App\Models\Portofolio;
 class PortofolioController extends Controller
 {
     /**
-     * Menampilkan galeri kurasi portofolio fotografi & modal lightbox
+     * Menampilkan daftar album kurasi portofolio fotografi untuk publik
      */
     public function index(Request $request)
     {
         $category = $request->query('category');
-        $query = Portofolio::where('status_publikasi', 'published');
+        $query = Portofolio::with(['fotos'])->where('status_publikasi', 'published');
 
         if ($category) {
             $query->where('kategori', $category);
         }
 
-        $portofolio = $query->latest()->get();
-        $categories = Portofolio::select('kategori')->distinct()->pluck('kategori');
+        $portofolio = $query->latest('tanggal')->latest('id')->get();
+        $categories = Portofolio::where('status_publikasi', 'published')->select('kategori')->distinct()->pluck('kategori');
 
         return view('portofolio.index', compact('portofolio', 'categories', 'category'));
     }
 
     /**
-     * Menampilkan daftar portofolio untuk Owner/Admin
+     * Menampilkan detail isi album portofolio beserta seluruh fotonya (Publik)
+     */
+    public function show($id)
+    {
+        $album = Portofolio::with(['fotos'])->where('status_publikasi', 'published')->findOrFail($id);
+        $relatedAlbums = Portofolio::with(['fotos'])
+            ->where('status_publikasi', 'published')
+            ->where('id', '!=', $album->id)
+            ->where('kategori', $album->kategori)
+            ->latest('tanggal')
+            ->take(3)
+            ->get();
+
+        return view('portofolio.show', compact('album', 'relatedAlbums'));
+    }
+
+    /**
+     * Menampilkan daftar album portofolio untuk Owner/Admin
      */
     public function adminIndex(Request $request)
     {
@@ -40,7 +59,7 @@ class PortofolioController extends Controller
         $category = $request->query('category');
         $status = $request->query('status');
 
-        $query = Portofolio::query();
+        $query = Portofolio::withCount('fotos');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -65,11 +84,36 @@ class PortofolioController extends Controller
         $serviceCategories = \App\Models\KategoriLayanan::where('status', 'aktif')->pluck('nama');
         $allCategories = $categories->merge($serviceCategories)->unique()->sort()->values();
 
-        return view('portofolio.admin', compact('portofolios', 'allCategories', 'search', 'category', 'status'));
+        // Metrik statistik
+        $totalAlbums = Portofolio::count();
+        $publishedAlbums = Portofolio::where('status_publikasi', 'published')->count();
+        $draftAlbums = Portofolio::where('status_publikasi', 'draft')->count();
+        $totalPhotos = PortofolioFoto::count() + Portofolio::whereNotNull('foto')->count();
+
+        return view('portofolio.admin', compact(
+            'portofolios', 
+            'allCategories', 
+            'search', 
+            'category', 
+            'status',
+            'totalAlbums',
+            'publishedAlbums',
+            'draftAlbums',
+            'totalPhotos'
+        ));
     }
 
     /**
-     * Menyimpan portofolio baru
+     * Menampilkan kelola detail foto di dalam album untuk Owner/Admin
+     */
+    public function adminShow($id)
+    {
+        $portofolio = Portofolio::with(['fotos'])->findOrFail($id);
+        return view('portofolio.admin-show', compact('portofolio'));
+    }
+
+    /**
+     * Menyimpan album portofolio baru (bisa menyertakan foto sampul & multiple foto)
      */
     public function store(Request $request)
     {
@@ -79,8 +123,9 @@ class PortofolioController extends Controller
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
             'status_publikasi' => 'required|in:published,draft,archived',
-            'foto_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'foto_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'foto_url' => 'nullable|url|max:1000',
+            'gallery_files.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
 
         $fotoPath = null;
@@ -89,11 +134,18 @@ class PortofolioController extends Controller
             $fotoPath = $request->file('foto_file')->store('portofolio', 'public');
         } elseif (!empty($validated['foto_url'])) {
             $fotoPath = $validated['foto_url'];
-        } else {
-            return back()->withInput()->with('error', 'Silakan unggah berkas foto atau masukkan tautan URL gambar.');
         }
 
-        Portofolio::create([
+        // Jika cover tidak diunggah tapi ada file galeri, jadikan foto galeri pertama sebagai cover
+        if (!$fotoPath && $request->hasFile('gallery_files') && count($request->file('gallery_files')) > 0) {
+            $fotoPath = $request->file('gallery_files')[0]->store('portofolio', 'public');
+        }
+
+        if (!$fotoPath) {
+            return back()->withInput()->with('error', 'Silakan pilih foto sampul album atau unggah foto galeri.');
+        }
+
+        $portofolio = Portofolio::create([
             'judul' => $validated['judul'],
             'kategori' => $validated['kategori'],
             'deskripsi' => $validated['deskripsi'] ?? null,
@@ -102,11 +154,24 @@ class PortofolioController extends Controller
             'foto' => $fotoPath,
         ]);
 
-        return redirect()->route('admin.portofolio.index')->with('success', 'Karya portofolio berhasil ditambahkan dan siap tampil di galeri.');
+        // Simpan multiple foto galeri jika ada
+        if ($request->hasFile('gallery_files')) {
+            $urutan = 1;
+            foreach ($request->file('gallery_files') as $file) {
+                $path = $file->store('portofolio/album_' . $portofolio->id, 'public');
+                PortofolioFoto::create([
+                    'portofolio_id' => $portofolio->id,
+                    'foto' => $path,
+                    'urutan' => $urutan++,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.portofolio.show', $portofolio->id)->with('success', 'Album portofolio berhasil dibuat. Anda dapat menambah atau mengelola foto di dalamnya.');
     }
 
     /**
-     * Memperbarui data portofolio
+     * Memperbarui informasi album portofolio
      */
     public function update(Request $request, $id)
     {
@@ -118,16 +183,15 @@ class PortofolioController extends Controller
             'deskripsi' => 'nullable|string',
             'tanggal' => 'required|date',
             'status_publikasi' => 'required|in:published,draft,archived',
-            'foto_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'foto_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'foto_url' => 'nullable|url|max:1000',
         ]);
 
         $fotoPath = $portofolio->foto;
 
         if ($request->hasFile('foto_file')) {
-            // Hapus foto lama jika tersimpan di disk lokal storage
-            if ($fotoPath && !str_starts_with($fotoPath, 'http') && \Illuminate\Support\Facades\Storage::disk('public')->exists($fotoPath)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($fotoPath);
+            if ($fotoPath && !str_starts_with($fotoPath, 'http') && Storage::disk('public')->exists($fotoPath)) {
+                Storage::disk('public')->delete($fotoPath);
             }
             $fotoPath = $request->file('foto_file')->store('portofolio', 'public');
         } elseif (!empty($validated['foto_url'])) {
@@ -143,24 +207,76 @@ class PortofolioController extends Controller
             'foto' => $fotoPath,
         ]);
 
-        return redirect()->route('admin.portofolio.index')->with('success', 'Data portofolio berhasil diperbarui.');
+        return back()->with('success', 'Informasi album portofolio berhasil diperbarui.');
     }
 
     /**
-     * Menghapus portofolio
+     * Unggah foto-foto tambahan ke dalam album
      */
-    public function destroy($id)
+    public function uploadPhotos(Request $request, $id)
     {
         $portofolio = Portofolio::findOrFail($id);
 
-        // Hapus file fisik jika ada di storage lokal
-        if ($portofolio->foto && !str_starts_with($portofolio->foto, 'http') && \Illuminate\Support\Facades\Storage::disk('public')->exists($portofolio->foto)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($portofolio->foto);
+        $request->validate([
+            'photos' => 'required|array|min:1',
+            'photos.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
+            'caption' => 'nullable|string|max:255',
+        ]);
+
+        $currentMaxUrutan = $portofolio->fotos()->max('urutan') ?? 0;
+
+        foreach ($request->file('photos') as $file) {
+            $currentMaxUrutan++;
+            $path = $file->store('portofolio/album_' . $portofolio->id, 'public');
+            PortofolioFoto::create([
+                'portofolio_id' => $portofolio->id,
+                'foto' => $path,
+                'caption' => $request->caption,
+                'urutan' => $currentMaxUrutan,
+            ]);
+        }
+
+        return back()->with('success', 'Foto-foto berhasil diunggah ke album.');
+    }
+
+    /**
+     * Menghapus salah satu foto dari album
+     */
+    public function destroyPhoto($photoId)
+    {
+        $foto = PortofolioFoto::findOrFail($photoId);
+
+        if ($foto->foto && !str_starts_with($foto->foto, 'http') && Storage::disk('public')->exists($foto->foto)) {
+            Storage::disk('public')->delete($foto->foto);
+        }
+
+        $foto->delete();
+
+        return back()->with('success', 'Foto berhasil dihapus dari album.');
+    }
+
+    /**
+     * Menghapus album portofolio beserta seluruh foto di dalamnya
+     */
+    public function destroy($id)
+    {
+        $portofolio = Portofolio::with('fotos')->findOrFail($id);
+
+        // Hapus file cover
+        if ($portofolio->foto && !str_starts_with($portofolio->foto, 'http') && Storage::disk('public')->exists($portofolio->foto)) {
+            Storage::disk('public')->delete($portofolio->foto);
+        }
+
+        // Hapus seluruh file foto galeri album
+        foreach ($portofolio->fotos as $f) {
+            if ($f->foto && !str_starts_with($f->foto, 'http') && Storage::disk('public')->exists($f->foto)) {
+                Storage::disk('public')->delete($f->foto);
+            }
         }
 
         $portofolio->delete();
 
-        return redirect()->route('admin.portofolio.index')->with('success', 'Karya portofolio berhasil dihapus dari galeri.');
+        return redirect()->route('admin.portofolio.index')->with('success', 'Album portofolio beserta seluruh fotonya berhasil dihapus.');
     }
 
     /**
@@ -172,6 +288,7 @@ class PortofolioController extends Controller
         $newStatus = $portofolio->status_publikasi === 'published' ? 'draft' : 'published';
         $portofolio->update(['status_publikasi' => $newStatus]);
 
-        return back()->with('success', "Status portofolio berhasil diubah menjadi: {$newStatus}");
+        return back()->with('success', "Status album portofolio berhasil diubah menjadi: {$newStatus}");
     }
 }
+

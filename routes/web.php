@@ -39,9 +39,11 @@ Route::get('/katalog/{id}', [KatalogController::class, 'detail'])->name('katalog
 Route::get('/services', [KatalogController::class, 'index'])->name('public.services');
 Route::get('/services/{id}', [KatalogController::class, 'detail'])->name('public.services.detail');
 
-// Boundary: Portofolio Foto
+// Boundary: Portofolio Foto & Album
 Route::get('/portofolio', [PortofolioController::class, 'index'])->name('portofolio.index');
+Route::get('/portofolio/{id}', [PortofolioController::class, 'show'])->name('portofolio.show');
 Route::get('/portfolio', [PortofolioController::class, 'index'])->name('public.portfolio');
+Route::get('/portfolio/{id}', [PortofolioController::class, 'show'])->name('public.portfolio.show');
 
 // Boundary: Kursus Akademi
 Route::get('/kursus', [KursusController::class, 'index'])->name('kursus.index');
@@ -112,13 +114,9 @@ Route::post('/payments/midtrans-callback', [PembayaranController::class, 'handle
 // 4. CUSTOMER ROUTES (Boundary: Reservasi Foto & Proofing)
 // ==========================================
 Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
-    // Menu Layanan Fotografi yang Telah Dipesan (Dialihkan terpadu ke customer.bookings.index)
-    Route::get('/customer/fotografi', function() {
-        return redirect()->route('customer.bookings.index');
-    })->name('customer.fotografi.index');
-    Route::get('/fotografi-saya', function() {
-        return redirect()->route('customer.bookings.index');
-    })->name('fotografi.saya');
+    // Menu Layanan Fotografi yang Telah Dipesan
+    Route::get('/customer/fotografi', [ReservasiController::class, 'customerIndex'])->name('customer.fotografi.index');
+    Route::get('/fotografi-saya', [ReservasiController::class, 'customerIndex'])->name('fotografi.saya');
 
     Route::get('/customer/bookings', [ReservasiController::class, 'customerIndex'])->name('customer.bookings.index');
     Route::get('/customer/bookings/create', [ReservasiController::class, 'create'])->name('customer.bookings.create');
@@ -153,10 +151,7 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::get('/customer/courses', [KursusController::class, 'studentIndex'])->name('customer.courses.index');
 
     // Riwayat Reservasi Kursus (Boundary ICONIX: reservasi_kursus)
-    // Riwayat Reservasi Kursus (Dialihkan terpadu ke student.dashboard)
-    Route::get('/customer/reservasi-kursus', function() {
-        return redirect()->route('student.dashboard');
-    })->name('customer.courses.reservations');
+    Route::get('/customer/reservasi-kursus', [KursusController::class, 'customerCourseReservations'])->name('customer.courses.reservations');
     Route::get('/reservasi-kursus', [KursusController::class, 'customerCourseReservations'])->name('reservasi.kursus.index');
 
     Route::get('/student/courses/{kursusId}/learn', [KursusController::class, 'learn'])->name('student.learn');
@@ -242,12 +237,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/testimonials', [ReservasiController::class, 'adminTestimonialsIndex'])->name('testimonials.index');
     Route::post('/testimonials/{id}/status', [ReservasiController::class, 'adminUpdateTestimonialStatus'])->name('testimonials.update-status');
 
-    // Kelola Portofolio (Owner / Admin)
+    // Kelola Portofolio & Album Foto (Owner / Admin)
     Route::get('/portofolio', [PortofolioController::class, 'adminIndex'])->name('portofolio.index');
     Route::post('/portofolio', [PortofolioController::class, 'store'])->name('portofolio.store');
+    Route::get('/portofolio/{id}', [PortofolioController::class, 'adminShow'])->name('portofolio.show');
     Route::put('/portofolio/{id}', [PortofolioController::class, 'update'])->name('portofolio.update');
     Route::delete('/portofolio/{id}', [PortofolioController::class, 'destroy'])->name('portofolio.destroy');
     Route::post('/portofolio/{id}/toggle-status', [PortofolioController::class, 'toggleStatus'])->name('portofolio.toggle-status');
+    Route::post('/portofolio/{id}/photos', [PortofolioController::class, 'uploadPhotos'])->name('portofolio.photos.upload');
+    Route::delete('/portofolio/photos/{photoId}', [PortofolioController::class, 'destroyPhoto'])->name('portofolio.photos.destroy');
 
     // Manajemen Pengguna
     Route::get('/users', [UserController::class, 'index'])->name('users.index');

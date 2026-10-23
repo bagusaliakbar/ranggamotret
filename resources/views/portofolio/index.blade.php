@@ -86,37 +86,54 @@
             </a>
         </div>
     @else
-        <!-- Gallery Grid with Lightbox Trigger -->
+        <!-- Gallery Grid with Multi-Photo Album Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($portofolio as $index => $p)
-                <div class="clean-card rounded-2xl overflow-hidden group relative h-96 cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-300"
-                     @click="openLightbox({{ $index }})">
-                    
+                <div class="clean-card rounded-2xl overflow-hidden group relative h-96 cursor-pointer shadow-sm hover:shadow-2xl transition-all duration-300">
                     <img src="{{ $p->foto_url }}" alt="{{ $p->judul }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     
-                    <!-- Top Category Chip -->
-                    <div class="absolute top-4 left-4 z-10">
+                    <!-- Top Category & Photo Count Chip -->
+                    <div class="absolute top-4 left-4 z-10 flex items-center gap-2">
                         <span class="px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider border border-white/10 shadow-sm">
                             {{ $p->kategori }}
+                        </span>
+                        <span class="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold border border-white/10 shadow-sm flex items-center gap-1">
+                            <i class="ph-duotone ph-images text-indigo-400"></i>
+                            <span>{{ $p->fotos->count() + ($p->foto ? 1 : 0) }} Foto</span>
                         </span>
                     </div>
 
                     <!-- Magnify Zoom Hover Badge -->
-                    <div class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md text-slate-900 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity shadow-md">
-                        <i class="fa-solid fa-expand"></i>
+                    <div class="absolute top-4 right-4 z-10 flex items-center gap-2">
+                        <a href="{{ route('portofolio.show', $p->id) }}" 
+                           class="w-9 h-9 rounded-full bg-white/95 text-slate-900 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:scale-110"
+                           title="Buka Seluruh Album">
+                            <i class="ph-duotone ph-folder-open text-indigo-600"></i>
+                        </a>
+                        <button type="button" 
+                                @click="openLightbox({{ $index }})"
+                                class="w-9 h-9 rounded-full bg-white/95 text-slate-900 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:scale-110"
+                                title="Lihat Foto HD">
+                            <i class="ph-duotone ph-arrows-out"></i>
+                        </button>
                     </div>
 
                     <!-- Overlay Bottom Details -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent opacity-85 group-hover:opacity-100 transition-opacity duration-300 p-6 flex flex-col justify-end text-white">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-transparent opacity-85 group-hover:opacity-100 transition-opacity duration-300 p-6 flex flex-col justify-end text-white">
                         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">{{ $p->kategori }}</span>
                         <h3 class="text-xl font-bold text-white mt-1">{{ $p->judul }}</h3>
-                        <p class="text-xs text-slate-200 mt-1 line-clamp-2 leading-relaxed font-normal">{{ $p->deskripsi }}</p>
+                        <p class="text-xs text-slate-200 mt-1 line-clamp-2 leading-relaxed font-normal">{{ $p->deskripsi ?: 'Koleksi dokumentasi foto estetik berkualitas tinggi oleh RanggaMotret.' }}</p>
                         
                         <div class="flex items-center justify-between text-[11px] text-slate-300 mt-3 pt-3 border-t border-white/15">
-                            <span class="font-medium"><i class="fa-regular fa-calendar mr-1"></i> {{ date('d M Y', strtotime($p->tanggal)) }}</span>
-                            <span class="font-bold text-amber-300 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                                <span>Lihat HD</span> &rarr;
+                            <span class="font-medium flex items-center gap-1">
+                                <i class="ph-duotone ph-calendar text-xs"></i>
+                                <span>{{ date('d M Y', strtotime($p->tanggal)) }}</span>
                             </span>
+                            <a href="{{ route('portofolio.show', $p->id) }}" 
+                               class="font-bold text-amber-300 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                                <span>Buka Album</span>
+                                <i class="ph ph-arrow-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -149,11 +166,11 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('customer.bookings.create') }}" class="hidden sm:inline-flex btn-dark bg-white hover:bg-slate-100 text-slate-900 px-4 py-2 rounded-xl text-xs font-bold items-center gap-2">
-                    <i class="fa-solid fa-calendar-check text-slate-700"></i> Pesan Sesi Serupa
+                <a href="{{ route('customer.bookings.create') }}" class="hidden sm:inline-flex bg-white hover:bg-slate-100 text-slate-900 px-4 py-2 rounded-xl text-xs font-bold items-center gap-2">
+                    <i class="ph-duotone ph-calendar-plus text-slate-700"></i> Pesan Sesi Serupa
                 </a>
                 <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-base" title="Tutup (Esc)">
-                    <i class="fa-solid fa-xmark"></i>
+                    <i class="ph ph-x"></i>
                 </button>
             </div>
         </div>
@@ -162,7 +179,7 @@
         <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
             <!-- Prev Button -->
             <button @click="prev()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Sebelumnya (Panah Kiri)">
-                <i class="fa-solid fa-chevron-left"></i>
+                <i class="ph ph-caret-left"></i>
             </button>
 
             <!-- Image View -->
@@ -174,7 +191,7 @@
 
             <!-- Next Button -->
             <button @click="next()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Selanjutnya (Panah Kanan)">
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="ph ph-caret-right"></i>
             </button>
         </div>
 
@@ -183,18 +200,18 @@
             <div class="space-y-1 max-w-2xl">
                 <p class="text-xs text-slate-300 font-medium leading-relaxed" x-text="photos[currentIndex]?.deskripsi"></p>
                 <div class="flex items-center gap-4 text-[11px] text-slate-400 font-medium">
-                    <span><i class="fa-regular fa-calendar mr-1"></i> Tanggal: <span class="text-white" x-text="photos[currentIndex]?.tanggal"></span></span>
+                    <span><i class="ph-duotone ph-calendar mr-1"></i> Tanggal: <span class="text-white" x-text="photos[currentIndex]?.tanggal"></span></span>
                     <span>•</span>
-                    <span><i class="fa-solid fa-camera mr-1"></i> Sony Alpha G-Master Optics</span>
+                    <span><i class="ph-duotone ph-camera mr-1"></i> Sony Alpha G-Master Optics</span>
                 </div>
             </div>
 
             <div class="flex items-center gap-3 w-full sm:w-auto">
                 <a :href="photos[currentIndex]?.foto" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors flex-1 sm:flex-initial">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Fullscreen
+                    <i class="ph-duotone ph-arrows-out"></i> Buka Fullscreen
                 </a>
                 <a href="{{ route('customer.bookings.create') }}" class="btn-dark bg-white hover:bg-slate-100 text-slate-900 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg flex-1 sm:flex-initial">
-                    <i class="fa-solid fa-calendar-plus"></i> Reservasi Sesi
+                    <i class="ph-duotone ph-calendar-plus"></i> Reservasi Sesi
                 </a>
             </div>
         </div>

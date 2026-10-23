@@ -128,6 +128,53 @@
         </div>
     @endif
 
+    <!-- 4 Quick Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Album</span>
+                <div class="text-2xl font-black text-slate-900">{{ $totalAlbums ?? $portofolios->total() }}</div>
+                <div class="text-[11px] text-slate-500 font-medium">Koleksi karya terdaftar</div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center text-2xl">
+                <i class="ph-duotone ph-folders"></i>
+            </div>
+        </div>
+
+        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Album Tayang</span>
+                <div class="text-2xl font-black text-emerald-600">{{ $publishedAlbums ?? 0 }}</div>
+                <div class="text-[11px] text-emerald-600 font-medium">Aktif di galeri publik</div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">
+                <i class="ph-duotone ph-check-circle"></i>
+            </div>
+        </div>
+
+        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Draft / Arsip</span>
+                <div class="text-2xl font-black text-amber-600">{{ $draftAlbums ?? 0 }}</div>
+                <div class="text-[11px] text-amber-600 font-medium">Hanya terlihat owner</div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl">
+                <i class="ph-duotone ph-pause-circle"></i>
+            </div>
+        </div>
+
+        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Foto Koleksi</span>
+                <div class="text-2xl font-black text-indigo-600">{{ $totalPhotos ?? 0 }}</div>
+                <div class="text-[11px] text-indigo-600 font-medium">Foto di seluruh album</div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl">
+                <i class="ph-duotone ph-images"></i>
+            </div>
+        </div>
+    </div>
+
     <!-- Filter & Search Toolbar -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <form method="GET" action="{{ route('admin.portofolio.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
@@ -210,6 +257,14 @@
                                 </span>
                             </div>
 
+                            <!-- Count of Photos in Album Badge -->
+                            <div class="absolute bottom-3 left-3 z-10">
+                                <span class="px-2.5 py-1 rounded-lg bg-slate-900/85 backdrop-blur-md text-white font-black text-[10px] shadow-sm flex items-center gap-1.5 border border-white/10">
+                                    <i class="ph-duotone ph-images text-indigo-400"></i>
+                                    <span>{{ $item->fotos_count ?? $item->fotos->count() }} Foto</span>
+                                </span>
+                            </div>
+
                             <!-- Status Badge -->
                             <div class="absolute top-3 right-3 z-10">
                                 @if($item->status_publikasi === 'published')
@@ -229,10 +284,10 @@
 
                             <!-- Hover Overlay Action Buttons -->
                             <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                <a href="{{ $item->foto_url }}" target="_blank" 
-                                   class="w-9 h-9 rounded-xl bg-white/90 hover:bg-white text-slate-900 flex items-center justify-center text-sm shadow-md transition-transform hover:scale-110"
-                                   title="Lihat Foto HD Penuh">
-                                    <i class="ph-duotone ph-arrows-out"></i>
+                                <a href="{{ route('admin.portofolio.show', $item->id) }}"
+                                   class="w-9 h-9 rounded-xl bg-white/95 hover:bg-white text-slate-900 flex items-center justify-center text-sm shadow-md transition-transform hover:scale-110"
+                                   title="Buka & Kelola Isi Album">
+                                    <i class="ph-duotone ph-folder-open text-base text-indigo-600"></i>
                                 </a>
                                 <button type="button" 
                                         @click="openEdit({{ json_encode($item) }})"
@@ -267,20 +322,15 @@
                                 {{ $item->deskripsi ?: 'Tidak ada deskripsi tambahan untuk karya ini.' }}
                             </p>
                         </div>
-                    </div>
-
-                    <!-- Bottom Quick Actions -->
+                    </div>                    <!-- Bottom Quick Actions -->
                     <div class="p-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                        <!-- Toggle Quick Status -->
-                        <form method="POST" action="{{ route('admin.portofolio.toggle-status', $item->id) }}" class="inline">
-                            @csrf
-                            <button type="submit" 
-                                    class="text-[11px] font-bold px-2 py-1 rounded-lg border transition-all inline-flex items-center gap-1 {{ $item->status_publikasi === 'published' ? 'border-amber-200 text-amber-700 hover:bg-amber-50' : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50' }}"
-                                    title="Klik untuk ubah cepat status">
-                                <i class="ph-duotone ph-arrows-clockwise text-xs"></i>
-                                <span>{{ $item->status_publikasi === 'published' ? 'Jadikan Draft' : 'Publikasikan' }}</span>
-                            </button>
-                        </form>
+                        <!-- Manage Album Photos Button -->
+                        <a href="{{ route('admin.portofolio.show', $item->id) }}"
+                           class="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition-colors inline-flex items-center gap-1.5 border border-indigo-200/60"
+                           title="Buka detail dan kelola foto-foto di dalam album">
+                            <i class="ph-duotone ph-folder-open text-xs"></i>
+                            <span>Kelola Foto Album</span>
+                        </a>
 
                         <div class="flex items-center gap-1">
                             <button type="button" 
@@ -320,8 +370,8 @@
                         <i class="ph-duotone ph-images"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-slate-900">Tambah Portofolio Baru</h3>
-                        <p class="text-xs text-slate-400 font-medium">Unggah hasil karya foto terbaik ke etalase publik</p>
+                        <h3 class="text-lg font-black text-slate-900">Tambah Album Portofolio Baru</h3>
+                        <p class="text-xs text-slate-400 font-medium">Buat koleksi galeri foto baru dengan banyak foto sekaligus</p>
                     </div>
                 </div>
                 <button @click="openAddModal = false" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100">
@@ -334,9 +384,9 @@
 
                 <!-- Judul Foto / Project -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Judul Karya / Momen Foto <span class="text-rose-500">*</span></label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Album / Momen Foto <span class="text-rose-500">*</span></label>
                     <input type="text" name="judul" x-model="addForm.judul" required
-                           placeholder="Contoh: Golden Hour Romantic Prewedding at Bromo"
+                           placeholder="Contoh: Romantic Prewedding Ceremony at Bromo"
                            class="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 font-medium">
                 </div>
 
@@ -357,14 +407,14 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Tanggal Pemotretan <span class="text-rose-500">*</span></label>
                         <input type="date" name="tanggal" x-model="addForm.tanggal" required
-                               class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 font-medium">
+                                class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 font-medium">
                     </div>
                 </div>
 
-                <!-- Mode Input Gambar (Upload File vs Link URL) -->
+                <!-- Mode Input Cover Gambar -->
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
-                        <label class="block text-xs font-bold text-slate-700">Gambar Portofolio <span class="text-rose-500">*</span></label>
+                        <label class="block text-xs font-bold text-slate-700">Foto Cover Utama <span class="text-slate-400 font-normal">(Opsional jika memilih multiple galeri)</span></label>
                         <div class="inline-flex rounded-lg bg-slate-100 p-0.5 text-[11px] font-bold">
                             <button type="button" @click="addMode = 'file'" 
                                     :class="addMode === 'file' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500'" 
@@ -387,15 +437,15 @@
                             <template x-if="!previewAdd">
                                 <div class="space-y-1">
                                     <i class="ph-duotone ph-cloud-arrow-up text-2xl text-slate-400"></i>
-                                    <div class="text-xs font-bold text-slate-700">Pilih berkas foto atau seret ke sini</div>
+                                    <div class="text-xs font-bold text-slate-700">Pilih berkas cover album atau seret ke sini</div>
                                     <p class="text-[10px] text-slate-400">Format JPG, PNG, WEBP (Maksimal 5MB)</p>
                                 </div>
                             </template>
                             <template x-if="previewAdd">
-                                <div class="relative w-full h-40 rounded-xl overflow-hidden">
+                                <div class="relative w-full h-36 rounded-xl overflow-hidden">
                                     <img :src="previewAdd" class="w-full h-full object-cover">
                                     <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs font-bold">
-                                        Klik untuk ganti foto
+                                        Klik untuk ganti cover
                                     </div>
                                 </div>
                             </template>
@@ -407,8 +457,18 @@
                         <input type="url" name="foto_url" x-model="addForm.foto_url" 
                                placeholder="https://images.unsplash.com/photo-..."
                                class="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 font-mono">
-                        <p class="text-[10px] text-slate-400">Masukkan tautan langsung gambar resolusi tinggi.</p>
                     </div>
+                </div>
+
+                <!-- Multiple Photo Gallery Input (Opsi A) -->
+                <div class="space-y-1.5 p-3.5 bg-indigo-50/60 rounded-2xl border border-indigo-100">
+                    <label class="block text-xs font-bold text-indigo-950 flex items-center gap-1.5">
+                        <i class="ph-duotone ph-images text-indigo-600 text-sm"></i>
+                        <span>Unggah Foto Galeri Album Sekaligus</span>
+                    </label>
+                    <input type="file" name="gallery_files[]" multiple accept="image/*"
+                           class="w-full px-3 py-2 text-xs rounded-xl border border-indigo-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
+                    <p class="text-[10px] text-indigo-600 font-medium">Bisa memilih lebih dari 1 foto sekaligus untuk langsung dimasukkan ke dalam album ini.</p>
                 </div>
 
                 <!-- Deskripsi Karya -->
