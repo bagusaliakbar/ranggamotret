@@ -245,7 +245,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/portofolio/{id}', [PortofolioController::class, 'destroy'])->name('portofolio.destroy');
     Route::post('/portofolio/{id}/toggle-status', [PortofolioController::class, 'toggleStatus'])->name('portofolio.toggle-status');
     Route::post('/portofolio/{id}/photos', [PortofolioController::class, 'uploadPhotos'])->name('portofolio.photos.upload');
+    Route::post('/portofolio/{id}/upload-photos', [PortofolioController::class, 'uploadPhotos'])->name('portofolio.upload-photos');
     Route::delete('/portofolio/photos/{photoId}', [PortofolioController::class, 'destroyPhoto'])->name('portofolio.photos.destroy');
+    Route::delete('/portofolio/destroy-photo/{photoId}', [PortofolioController::class, 'destroyPhoto'])->name('portofolio.destroy-photo');
 
     // Manajemen Pengguna
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
