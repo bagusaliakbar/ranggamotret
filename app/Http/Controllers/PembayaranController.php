@@ -417,6 +417,10 @@ class PembayaranController extends Controller
         // Hitung statistik untuk badge & filter tab
         $countManualPending = Pembayaran::where('status', 'Menunggu Verifikasi')->count();
         $countGateway = Pembayaran::where('metode_pembayaran', 'like', '%Midtrans%')->count();
+        $countManual = Pembayaran::where(function($q) {
+            $q->where('metode_pembayaran', 'like', '%Transfer%')
+              ->orWhereNotNull('bukti_pembayaran');
+        })->count();
         $countLunas = Pembayaran::where('status', 'Dibayar')->count();
         $countTotal = Pembayaran::count();
 
@@ -426,6 +430,7 @@ class PembayaranController extends Controller
             'metode',
             'countManualPending',
             'countGateway',
+            'countManual',
             'countLunas',
             'countTotal'
         ));

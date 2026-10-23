@@ -108,12 +108,14 @@
            class="px-4 py-2 rounded-xl text-xs font-bold transition-all inline-flex items-center gap-2 {{ $metode === 'manual' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200' }}">
             <i class="ph-duotone ph-bank text-sm text-indigo-400"></i>
             <span>Transfer Bank Manual</span>
+            <span class="px-1.5 py-0.5 rounded-full text-[10px] {{ $metode === 'manual' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600' }}">{{ $countManual }}</span>
         </a>
 
         <a href="{{ route('admin.payments.index', ['status' => 'Dibayar']) }}" 
            class="px-4 py-2 rounded-xl text-xs font-bold transition-all inline-flex items-center gap-2 {{ $status === 'Dibayar' ? 'bg-slate-900 text-white shadow-sm' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200' }}">
             <i class="ph-duotone ph-check-circle text-sm text-emerald-400"></i>
             <span>Lunas</span>
+            <span class="px-1.5 py-0.5 rounded-full text-[10px] {{ $status === 'Dibayar' ? 'bg-slate-800 text-slate-200' : 'bg-slate-100 text-slate-600' }}">{{ $countLunas }}</span>
         </a>
     </div>
 
