@@ -39,21 +39,6 @@
                 <i class="ph-duotone ph-file-xls text-base text-emerald-600"></i>
                 <span>Export Excel</span>
             </a>
-
-            <!-- Print Browser -->
-            <button onclick="window.print()" 
-                    class="hidden sm:inline-flex px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all items-center gap-1.5 shadow-2xs"
-                    title="Cetak Cepat via Browser">
-                <i class="ph-duotone ph-printer text-base text-slate-500"></i>
-                <span>Print</span>
-            </button>
-
-            <!-- Link ke Laporan Reservasi -->
-            <a href="{{ route('admin.reports.reservasi') }}" 
-               class="bg-slate-900 hover:bg-black text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
-                <i class="ph-duotone ph-calendar-check text-base text-indigo-400"></i>
-                <span>Laporan Reservasi</span>
-            </a>
         </div>
     </div>
 

@@ -172,15 +172,7 @@
                             <span>Kelola Reservasi Kursus</span>
                         </a>
 
-                        <a href="{{ route('instructor.assignments.index') }}" class="sidebar-link {{ request()->routeIs('instructor.assignments*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-pencil-simple-line text-base w-5"></i>
-                            <span>Penilaian Tugas Siswa</span>
-                        </a>
-            
-                        <a href="{{ route('admin.testimonials.index') }}" class="sidebar-link {{ request()->routeIs('admin.testimonials*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-star text-base w-5"></i>
-                            <span>Moderasi Testimoni</span>
-                        </a>
+
 
                         <a href="{{ route('calendar') }}" class="sidebar-link {{ request()->routeIs('calendar') ? 'active' : '' }}">
                             <i class="ph-duotone ph-calendar-blank text-base w-5"></i>
