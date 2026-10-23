@@ -15,6 +15,7 @@
             openAddMateri: false,
             selectedModulId: null,
             selectedModulTitle: '',
+            materiType: 'teks',
             openEditMateri: false,
             editMateriData: {}
          }">
@@ -241,11 +242,45 @@
                                                     </div>
                                                 </div>
                                             @empty
-                                                <div class="p-3 text-center text-slate-400 text-[11px] italic">
-                                                    Belum ada materi pembelajaran dalam modul ini. Klik tombol <strong>+ Materi</strong>
-                                                    di atas.
-                                                </div>
+                                                @if($mod->quizs->isEmpty())
+                                                    <div class="p-3 text-center text-slate-400 text-[11px] italic">
+                                                        Belum ada materi pembelajaran atau kuis dalam modul ini. Klik tombol <strong>+ Materi</strong>
+                                                        di atas.
+                                                    </div>
+                                                @endif
                                             @endforelse
+
+                                            {{-- Daftar Kuis Evaluasi pada Modul --}}
+                                            @foreach($mod->quizs as $qz)
+                                                <div class="flex items-center justify-between p-2.5 rounded-xl bg-blue-50/70 border border-blue-200 hover:border-blue-300 transition-colors">
+                                                    <div class="flex items-center gap-2.5 min-w-0">
+                                                        <i class="ph-duotone ph-list-checks text-blue-600 text-base flex-shrink-0"></i>
+                                                        <div class="truncate">
+                                                            <div class="flex items-center gap-2">
+                                                                <span class="font-extrabold text-blue-950">{{ $qz->judul }}</span>
+                                                                <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase bg-blue-100 text-blue-800 border border-blue-200">Kuis Evaluasi</span>
+                                                            </div>
+                                                            <span class="text-[10px] text-blue-700/80 block truncate">
+                                                                Durasi: {{ $qz->durasi_menit }} Menit • Passing Grade: {{ $qz->passing_grade }}% • Total: {{ $qz->soals->count() }} Soal
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                                        <form method="POST"
+                                                            action="{{ route('admin.quizzes.destroy', $qz->id) }}"
+                                                            onsubmit="return confirm('Hapus kuis evaluasi {{ addslashes($qz->judul) }} beserta seluruh butir soalnya?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="w-6 h-6 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors"
+                                                                title="Hapus Kuis">
+                                                                <i class="ph-duotone ph-trash text-xs"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </div>
                                 @empty
@@ -513,62 +548,152 @@
             </div>
         </div>
 
-        <!-- 5. Modal Tambah Materi Pembelajaran -->
+        <!-- 5. Modal Tambah Materi Pembelajaran / Kuis Evaluasi -->
         <div x-show="openAddMateri" x-transition.opacity
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
+            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-xl w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
                 @click.away="openAddMateri = false">
                 <div class="flex justify-between items-center border-b border-slate-200 pb-3">
                     <div>
-                        <h3 class="font-extrabold text-base text-slate-900">Tambah Materi Pembelajaran</h3>
+                        <h3 class="font-extrabold text-base text-slate-900" x-text="materiType === 'quiz' ? 'Tambah Kuis Evaluasi Pilihan Ganda' : 'Tambah Materi Pembelajaran'"></h3>
                         <p class="text-[11px] text-slate-400 mt-0.5" x-text="'Modul: ' + selectedModulTitle"></p>
                     </div>
                     <button @click="openAddMateri = false" class="text-slate-400 hover:text-slate-900"><i
-                            class="fa-solid fa-xmark text-lg"></i></button>
+                            class="ph-duotone ph-x text-lg"></i></button>
                 </div>
 
-                <form method="POST" :action="'{{ url('/admin/modules') }}/' + selectedModulId + '/materis'"
+                <form method="POST" :action="materiType === 'quiz' ? '{{ url('/admin/modules') }}/' + selectedModulId + '/quizzes' : '{{ url('/admin/modules') }}/' + selectedModulId + '/materis'"
                     class="space-y-4">
                     @csrf
+
                     <div>
-                        <label class="block text-slate-700 font-bold mb-1">Judul Materi <span
-                                class="text-rose-500">*</span></label>
-                        <input type="text" name="judul" required placeholder="Contoh: Mengenal Sensor Full-Frame vs APS-C"
+                        <label class="block text-slate-700 font-bold mb-1">
+                            <span x-text="materiType === 'quiz' ? 'Judul Kuis Evaluasi' : 'Judul Materi'"></span>
+                            <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" name="judul" required :placeholder="materiType === 'quiz' ? 'Contoh: Kuis Evaluasi Pemahaman Exposure & Lighting' : 'Contoh: Mengenal Sensor Full-Frame vs APS-C'"
                             class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
                     </div>
+
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-slate-700 font-bold mb-1">Tipe Materi <span
+                            <label class="block text-slate-700 font-bold mb-1">Tipe Konten <span
                                     class="text-rose-500">*</span></label>
-                            <select name="tipe" required
+                            <select name="tipe" x-model="materiType" required
                                 class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
                                 <option value="teks">Teks & Artikel Bacaan</option>
                                 <option value="video">Video Pembelajaran</option>
                                 <option value="pdf">Dokumen / E-Book PDF</option>
                                 <option value="link">Link Eksternal</option>
+                                <option value="quiz">🎯 Kuis Evaluasi (Pilihan Ganda)</option>
                             </select>
                         </div>
+                        <template x-if="materiType !== 'quiz'">
+                            <div>
+                                <label class="block text-slate-700 font-bold mb-1">Urutan Materi</label>
+                                <input type="number" name="urutan" value="1" required
+                                    class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
+                            </div>
+                        </template>
+                        <template x-if="materiType === 'quiz'">
+                            <div>
+                                <label class="block text-slate-700 font-bold mb-1">Durasi Pengerjaan (Menit) <span class="text-rose-500">*</span></label>
+                                <input type="number" name="durasi_menit" value="15" min="1" required
+                                    class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Fields Khusus Materi Pembelajaran Biasa -->
+                    <div x-show="materiType !== 'quiz'" class="space-y-4">
                         <div>
-                            <label class="block text-slate-700 font-bold mb-1">Urutan Materi</label>
-                            <input type="number" name="urutan" value="1" required
-                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
+                            <label class="block text-slate-700 font-bold mb-1">URL Video (Opsional, YouTube / Vimeo /
+                                MP4)</label>
+                            <input type="text" name="video_url" placeholder="https://www.youtube.com/watch?v=..."
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 font-bold mb-1">Isi Materi / Penjelasan Teks</label>
+                            <textarea name="isi" rows="4"
+                                placeholder="Tuliskan materi pembelajaran atau rangkuman teori di sini..."
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none"></textarea>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">URL Video (Opsional, YouTube / Vimeo /
-                            MP4)</label>
-                        <input type="text" name="video_url" placeholder="https://www.youtube.com/watch?v=..."
-                            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none">
+
+                    <!-- Fields Khusus Kuis Evaluasi Pilihan Ganda -->
+                    <div x-show="materiType === 'quiz'" class="space-y-4 bg-blue-50/50 p-4 rounded-2xl border border-blue-200/70">
+                        <div class="flex items-center justify-between">
+                            <span class="font-extrabold text-blue-900 text-xs flex items-center gap-1.5">
+                                <i class="ph-duotone ph-sparkle text-blue-600 text-sm"></i> Parameter Kelulusan & Soal
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <label class="text-slate-600 font-bold text-[11px]">Passing Grade (%):</label>
+                                <input type="number" name="passing_grade" value="70" min="1" max="100" required
+                                    class="w-16 px-2 py-1 rounded-lg bg-white border border-blue-300 font-black text-slate-900 text-center">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-800 font-bold mb-1">Pertanyaan Soal <span class="text-rose-500">*</span></label>
+                            <textarea name="pertanyaan" rows="2" placeholder="Tuliskan butir soal evaluasi pemahaman di sini..."
+                                class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 focus:border-blue-600 focus:outline-none"></textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-slate-800 font-bold">Pilihan Jawaban (A, B, C, D) <span class="text-rose-500">*</span></label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">A</span>
+                                    <input type="text" name="pilihan_a" placeholder="Pilihan A"
+                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">B</span>
+                                    <input type="text" name="pilihan_b" placeholder="Pilihan B"
+                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">C</span>
+                                    <input type="text" name="pilihan_c" placeholder="Pilihan C"
+                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">D</span>
+                                    <input type="text" name="pilihan_d" placeholder="Pilihan D"
+                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <div>
+                                <label class="block text-slate-800 font-bold mb-1">Kunci Jawaban Benar <span class="text-rose-500">*</span></label>
+                                <select name="jawaban_benar"
+                                    class="w-full px-3 py-2 rounded-xl bg-white border border-blue-400 text-blue-950 font-black focus:outline-none">
+                                    <option value="A">Pilihan A</option>
+                                    <option value="B">Pilihan B</option>
+                                    <option value="C">Pilihan C</option>
+                                    <option value="D">Pilihan D</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-slate-800 font-bold mb-1">Bobot Nilai Soal</label>
+                                <input type="number" name="bobot_nilai" value="10" min="1"
+                                    class="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 font-bold focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-slate-800 font-bold mb-1">Pembahasan & Penjelasan Teori (Opsional)</label>
+                            <textarea name="pembahasan" rows="2" placeholder="Penjelasan kenapa kunci jawaban tersebut benar..."
+                                class="w-full px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 focus:border-blue-600 focus:outline-none"></textarea>
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Isi Materi / Penjelasan Teks</label>
-                        <textarea name="isi" rows="4"
-                            placeholder="Tuliskan materi pembelajaran atau rangkuman teori di sini..."
-                            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none"></textarea>
-                    </div>
+
                     <button type="submit"
-                        class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold shadow-md transition-all">
-                        Simpan Materi Pembelajaran
+                        class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-2">
+                        <i :class="materiType === 'quiz' ? 'ph-duotone ph-list-checks' : 'ph-duotone ph-floppy-disk'" class="text-base"></i>
+                        <span x-text="materiType === 'quiz' ? 'Simpan Kuis & Soal Evaluasi' : 'Simpan Materi Pembelajaran'"></span>
                     </button>
                 </form>
             </div>

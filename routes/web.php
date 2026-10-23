@@ -222,6 +222,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/materis/{id}', [KursusController::class, 'updateMateri'])->name('modules.materis.update');
     Route::delete('/materis/{id}', [KursusController::class, 'destroyMateri'])->name('modules.materis.destroy');
 
+    Route::post('/modules/{modulId}/quizzes', [KursusController::class, 'storeQuiz'])->name('modules.quizzes.store');
+    Route::delete('/quizzes/{id}', [KursusController::class, 'destroyQuiz'])->name('quizzes.destroy');
+
     // Konsultasi & Testimoni
     Route::get('/consultations', [KonsultasiController::class, 'adminIndex'])->name('consultations.index');
     Route::post('/consultations/{id}/reply', [KonsultasiController::class, 'adminReply'])->name('consultations.reply');

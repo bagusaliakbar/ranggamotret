@@ -13,6 +13,7 @@ use App\Models\Sertifikat;
 use App\Models\Tugas;
 use App\Models\TugasSubmission;
 use App\Models\Quiz;
+use App\Models\QuizSoal;
 use App\Models\QuizAttempt;
 use App\Models\Notifikasi;
 use App\Models\User;
@@ -444,7 +445,7 @@ class KursusController extends Controller
     public function adminIndex()
     {
         $user = Auth::user();
-        $courses = Kursus::with(['instruktur', 'moduls.materis', 'enrollments'])->latest()->get();
+        $courses = Kursus::with(['instruktur', 'moduls.materis', 'moduls.quizs.soals', 'enrollments'])->latest()->get();
         $instructors = User::where('role', 'admin')->get();
 
         return view('kursus.admin', compact('courses', 'instructors'));
@@ -582,5 +583,60 @@ class KursusController extends Controller
         $materi->delete();
 
         return back()->with('success', 'Materi pembelajaran berhasil dihapus.');
+    }
+
+    /**
+     * Menyimpan Kuis Evaluasi beserta pertanyaan pilihan ganda
+     */
+    public function storeQuiz(Request $request, $modulId)
+    {
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'durasi_menit' => 'required|integer|min:1',
+            'passing_grade' => 'required|numeric|min:0|max:100',
+            // Data soal pilihan ganda
+            'pertanyaan' => 'required|string',
+            'pilihan_a' => 'required|string',
+            'pilihan_b' => 'required|string',
+            'pilihan_c' => 'required|string',
+            'pilihan_d' => 'required|string',
+            'jawaban_benar' => 'required|in:A,B,C,D',
+            'bobot_nilai' => 'nullable|numeric|min:1',
+            'pembahasan' => 'nullable|string',
+        ]);
+
+        $quiz = Quiz::create([
+            'modul_id' => $modulId,
+            'judul' => $validated['judul'],
+            'durasi_menit' => $validated['durasi_menit'],
+            'passing_grade' => $validated['passing_grade'],
+        ]);
+
+        QuizSoal::create([
+            'quiz_id' => $quiz->id,
+            'pertanyaan' => $validated['pertanyaan'],
+            'pilihan_a' => $validated['pilihan_a'],
+            'pilihan_b' => $validated['pilihan_b'],
+            'pilihan_c' => $validated['pilihan_c'],
+            'pilihan_d' => $validated['pilihan_d'],
+            'jawaban_benar' => $validated['jawaban_benar'],
+            'bobot_nilai' => $validated['bobot_nilai'] ?? 10,
+            'pembahasan' => $validated['pembahasan'] ?? null,
+        ]);
+
+        return back()->with('success', 'Kuis evaluasi pilihan ganda berhasil ditambahkan ke modul silabus.');
+    }
+
+    /**
+     * Menghapus Kuis Evaluasi beserta butir soalnya
+     */
+    public function destroyQuiz($id)
+    {
+        $quiz = Quiz::findOrFail($id);
+        $quiz->soals()->delete();
+        $quiz->attempts()->delete();
+        $quiz->delete();
+
+        return back()->with('success', 'Kuis evaluasi berhasil dihapus.');
     }
 }
