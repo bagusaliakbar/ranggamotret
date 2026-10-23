@@ -109,7 +109,8 @@ class PortofolioController extends Controller
     public function adminShow($id)
     {
         $portofolio = Portofolio::with(['fotos'])->findOrFail($id);
-        return view('portofolio.admin-show', compact('portofolio'));
+        $album = $portofolio;
+        return view('portofolio.admin-show', compact('album', 'portofolio'));
     }
 
     /**
