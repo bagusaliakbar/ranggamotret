@@ -156,7 +156,7 @@ class LaporanController extends Controller
         $data = $this->getPendapatanData($request);
         $pembayarans = (clone $data['query'])->latest('tanggal_pembayaran')->latest('id')->get();
 
-        $pdf = Pdf::loadView('laporan.pdf.pendapatan', array_merge($data, [
+        $pdf = Pdf::loadView('laporan.pendapatan_pdf', array_merge($data, [
             'pembayarans' => $pembayarans,
         ]))->setPaper('a4', 'landscape');
 
@@ -466,7 +466,7 @@ class LaporanController extends Controller
     {
         $data = $this->getReservasiData($request);
 
-        $pdf = Pdf::loadView('laporan.pdf.reservasi', $data)->setPaper('a4', 'landscape');
+        $pdf = Pdf::loadView('laporan.reservasi_pdf', $data)->setPaper('a4', 'landscape');
         $filename = 'Laporan_Reservasi_' . $data['startDate'] . '_sd_' . $data['endDate'] . '.pdf';
 
         return $pdf->stream($filename);
