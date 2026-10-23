@@ -152,7 +152,10 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::get('/customer/courses', [KursusController::class, 'studentIndex'])->name('customer.courses.index');
 
     // Riwayat Reservasi Kursus (Boundary ICONIX: reservasi_kursus)
-    Route::get('/customer/reservasi-kursus', [KursusController::class, 'customerCourseReservations'])->name('customer.courses.reservations');
+    // Riwayat Reservasi Kursus (Dialihkan terpadu ke student.dashboard)
+    Route::get('/customer/reservasi-kursus', function() {
+        return redirect()->route('student.dashboard');
+    })->name('customer.courses.reservations');
     Route::get('/reservasi-kursus', [KursusController::class, 'customerCourseReservations'])->name('reservasi.kursus.index');
 
     Route::get('/student/courses/{kursusId}/learn', [KursusController::class, 'learn'])->name('student.learn');

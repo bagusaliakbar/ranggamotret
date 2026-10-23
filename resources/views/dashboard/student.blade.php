@@ -261,6 +261,21 @@
                                 <span>{{ $isCompleted ? 'Buka Kembali Materi' : ($e->progress_persen > 0 ? 'Lanjutkan Belajar' : 'Mulai Belajar Sekarang') }}</span>
                             </a>
 
+                            @if($e->pembayaran)
+                                <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                                    <div class="text-[11px] text-slate-500 font-mono">
+                                        TRX: <strong class="text-slate-800">{{ $e->pembayaran->nomor_transaksi }}</strong>
+                                    </div>
+                                    <a href="{{ route('invoices.show', $e->pembayaran->invoice ? $e->pembayaran->invoice->id : $e->pembayaran->id) }}" 
+                                       target="_blank" 
+                                       class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-[10px] font-bold inline-flex items-center gap-1 transition-colors"
+                                       title="Unduh / Cetak Bukti Invoice Resmi">
+                                        <i class="ph-duotone ph-receipt text-xs text-emerald-600"></i>
+                                        <span>Invoice</span>
+                                    </a>
+                                </div>
+                            @endif
+
                             @if($e->sertifikat)
                                 <a href="{{ route('student.certificate.show', $e->sertifikat->id) }}" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors">
                                     <i class="ph-duotone ph-certificate text-base"></i>

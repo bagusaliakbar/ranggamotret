@@ -90,7 +90,7 @@ class KursusController extends Controller
         }
 
         $enrollments = Enrollment::where('user_id', $user->id)
-            ->with(['kursus.instruktur', 'kursus.moduls.materis', 'sertifikat'])
+            ->with(['kursus.instruktur', 'kursus.moduls.materis', 'sertifikat', 'pembayaran.invoice'])
             ->latest()
             ->get();
 

@@ -253,16 +253,10 @@
                             <span>Layanan Fotografi</span>
                         </a>
 
-                        <!-- 2. Menu Kursus (Kelas & Materi Belajar yang Diikuti) -->
-                        <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') || request()->routeIs('student.courses') || request()->routeIs('customer.courses.index') ? 'active' : '' }}">
+                        <!-- 2. Menu Kursus (Terpadu: Kelas Belajar, Progres Materi & Riwayat Pendaftaran) -->
+                        <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') || request()->routeIs('student.courses') || request()->routeIs('customer.courses.index') || request()->routeIs('customer.courses.reservations') || request()->routeIs('reservasi.kursus.*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
                             <span>Kursus</span>
-                        </a>
-
-                        <!-- 4. Menu Riwayat Reservasi Kursus (Riwayat Pemesanan Kursus) -->
-                        <a href="{{ route('customer.courses.reservations') }}" class="sidebar-link {{ request()->routeIs('customer.courses.reservations') || request()->routeIs('reservasi.kursus.*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-receipt text-base w-5"></i>
-                            <span>Riwayat Reservasi Kursus</span>
                         </a>
 
                         <!-- 5. Menu Riwayat Konsultasi -->
