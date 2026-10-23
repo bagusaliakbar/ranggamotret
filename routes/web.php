@@ -111,9 +111,13 @@ Route::post('/payments/midtrans-callback', [PembayaranController::class, 'handle
 // 4. CUSTOMER ROUTES (Boundary: Reservasi Foto & Proofing)
 // ==========================================
 Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
-    // Menu Layanan Fotografi yang Telah Dipesan
-    Route::get('/customer/fotografi', [ReservasiController::class, 'customerFotografi'])->name('customer.fotografi.index');
-    Route::get('/fotografi-saya', [ReservasiController::class, 'customerFotografi'])->name('fotografi.saya');
+    // Menu Layanan Fotografi yang Telah Dipesan (Dialihkan terpadu ke customer.bookings.index)
+    Route::get('/customer/fotografi', function() {
+        return redirect()->route('customer.bookings.index');
+    })->name('customer.fotografi.index');
+    Route::get('/fotografi-saya', function() {
+        return redirect()->route('customer.bookings.index');
+    })->name('fotografi.saya');
 
     Route::get('/customer/bookings', [ReservasiController::class, 'customerIndex'])->name('customer.bookings.index');
     Route::get('/customer/bookings/create', [ReservasiController::class, 'create'])->name('customer.bookings.create');

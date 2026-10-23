@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Riwayat Reservasi Fotografi — RanggaMotret.id')
+@section('title', 'Layanan Fotografi — RanggaMotret.id')
 
 @section('content')
 <div class="space-y-8" x-data="{ 
@@ -29,22 +29,16 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <span class="text-slate-800">Layanan & Pemotretan</span>
-                <span>/</span>
-                <span class="text-slate-900 font-extrabold">Riwayat Reservasi</span>
+                <span class="text-slate-900 font-extrabold">Layanan Fotografi</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Riwayat Reservasi Fotografi</h1>
-            <p class="text-xs text-slate-500 font-medium mt-1">Daftar lengkap sesi pemotretan, kepastian jadwal, invoice pelunasan, hingga kurasi galeri hasil foto.</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Layanan Fotografi Saya</h1>
+            <p class="text-xs text-slate-500 font-medium mt-1">Kelola seluruh sesi pemotretan Anda, kepastian jadwal studio, bukti pelunasan invoice, dan kurasi galeri hasil foto.</p>
         </div>
 
         <div class="flex items-center gap-2.5 self-start sm:self-auto">
-            <a href="{{ route('customer.fotografi.index') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs hover:scale-[1.02] transition-transform">
-                <i class="ph-duotone ph-camera text-slate-600"></i>
-                <span>Galeri Layanan Saya</span>
-            </a>
             <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md inline-flex items-center gap-2 hover:scale-[1.02] transition-transform">
                 <i class="ph-duotone ph-plus-circle text-sm text-emerald-400"></i>
-                <span>Buat Reservasi Baru</span>
+                <span>Reservasi Layanan Baru</span>
             </a>
         </div>
     </div>

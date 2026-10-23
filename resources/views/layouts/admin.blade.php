@@ -247,19 +247,13 @@
                             <span>Dashboard</span>
                         </a>
 
-                        <!-- 1. Menu Fotografi (Layanan yang Sudah Dipesan) -->
-                        <a href="{{ route('customer.fotografi.index') }}" class="sidebar-link {{ request()->routeIs('customer.fotografi.*') || request()->routeIs('fotografi.saya') ? 'active' : '' }}">
+                        <!-- 1. Menu Layanan Fotografi (Terpadu: Layanan Dipesan, Jadwal & Riwayat Reservasi) -->
+                        <a href="{{ route('customer.bookings.index') }}" class="sidebar-link {{ request()->routeIs('customer.bookings.*') || request()->routeIs('reservasi.*') || request()->routeIs('customer.fotografi.*') || request()->routeIs('fotografi.saya') ? 'active' : '' }}">
                             <i class="ph-duotone ph-camera text-base w-5"></i>
-                            <span>Fotografi</span>
+                            <span>Layanan Fotografi</span>
                         </a>
 
-                        <!-- 2. Menu Riwayat Reservasi Fotografi (Riwayat Pemesanan) -->
-                        <a href="{{ route('customer.bookings.index') }}" class="sidebar-link {{ request()->routeIs('customer.bookings.*') || request()->routeIs('reservasi.index') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-calendar-check text-base w-5"></i>
-                            <span>Riwayat Reservasi Fotografi</span>
-                        </a>
-
-                        <!-- 3. Menu Kursus (Kelas & Materi Belajar yang Diikuti) -->
+                        <!-- 2. Menu Kursus (Kelas & Materi Belajar yang Diikuti) -->
                         <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') || request()->routeIs('student.courses') || request()->routeIs('customer.courses.index') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
                             <span>Kursus</span>
