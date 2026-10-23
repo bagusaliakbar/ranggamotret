@@ -116,7 +116,7 @@
     </div>
 
     <!-- Secondary Insights Bar (Quick Stat Badges) -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 flex items-center gap-3">
             <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm shrink-0">
                 <i class="ph-duotone ph-users"></i>
@@ -144,16 +144,6 @@
             <div class="min-w-0">
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ulasan Masuk</div>
                 <div class="text-sm font-black text-slate-900 truncate">{{ number_format($pendingTestimonials ?? 0) }} Ulasan</div>
-            </div>
-        </div>
-
-        <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shrink-0">
-                <i class="ph-duotone ph-chart-line-up"></i>
-            </div>
-            <div class="min-w-0">
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status Studio</div>
-                <div class="text-sm font-black text-emerald-600 truncate">Operasional Optimal</div>
             </div>
         </div>
     </div>
