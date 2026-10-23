@@ -130,6 +130,7 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     // Proofing Studio & Testimoni
     Route::get('/customer/proofing/{bookingId}', [ReservasiController::class, 'customerProofing'])->name('customer.proofing.show');
     Route::post('/customer/proofing/{id}/toggle', [ReservasiController::class, 'toggleProofingSelection'])->name('customer.proofing.toggle');
+    Route::post('/customer/proofing/{bookingId}/submit', [ReservasiController::class, 'submitFinalProofing'])->name('customer.proofing.submit');
     Route::post('/customer/testimonials', [ReservasiController::class, 'storeTestimonial'])->name('customer.testimonials.store');
 
     // Riwayat Konsultasi Customer (Portal Dashboard)

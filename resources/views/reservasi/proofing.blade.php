@@ -154,8 +154,8 @@
         <!-- Sticky Floating Bottom Selection Action Bar -->
         <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-xl w-[90%] bg-slate-900 text-white p-4 rounded-3xl shadow-2xl border border-slate-800 flex items-center justify-between gap-4 backdrop-blur-md">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-sm">
-                    <i class="fa-solid fa-camera-retro"></i>
+                <div class="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xl shadow-sm">
+                    <i class="ph-duotone ph-camera"></i>
                 </div>
                 <div class="text-xs">
                     <span class="text-slate-400 font-bold block text-[10px] uppercase tracking-wider">Kurasi Foto Anda</span>
@@ -166,7 +166,7 @@
             <div class="flex items-center gap-2">
                 <button type="button" @click="confirmFinalSubmission()" 
                         class="px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform active:scale-95">
-                    <i class="fa-solid fa-check text-emerald-600"></i>
+                    <i class="ph-duotone ph-paper-plane-tilt text-base text-emerald-600"></i>
                     <span>Kirim Kurasi Final</span>
                 </button>
             </div>
@@ -244,6 +244,68 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal Konfirmasi Kirim Kurasi Final -->
+        <div x-show="showConfirmModal" x-cloak x-transition.opacity
+            class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+            style="display: none;">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-5 border border-slate-200 shadow-2xl text-center"
+                @click.away="showConfirmModal = false">
+                <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto text-3xl">
+                    <i class="ph-duotone ph-camera"></i>
+                </div>
+                <div class="space-y-1.5">
+                    <h3 class="text-lg font-black text-slate-900">Kirim Kurasi Foto Final?</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Anda telah memilih <strong class="text-slate-900 font-extrabold" x-text="selectedCount + ' foto'"></strong>. Setelah dikirim, pilihan Anda akan dikunci dan tim fotografer kami akan segera memproses *editing & retouching*.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 pt-2">
+                    <button type="button" @click="showConfirmModal = false" :disabled="isSubmitting"
+                        class="flex-1 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors">
+                        Tinjau Kembali
+                    </button>
+                    <button type="button" @click="submitFinalProofing()" :disabled="isSubmitting"
+                        class="flex-1 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                        <template x-if="isSubmitting">
+                            <i class="ph-duotone ph-spinner animate-spin text-base"></i>
+                        </template>
+                        <template x-if="!isSubmitting">
+                            <i class="ph-duotone ph-paper-plane-tilt text-base"></i>
+                        </template>
+                        <span x-text="isSubmitting ? 'Mengirim...' : 'Ya, Kirim Sekarang'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Sukses Kirim Kurasi -->
+        <div x-show="showSuccessModal" x-cloak x-transition.opacity
+            class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+            style="display: none;">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 border border-slate-200 shadow-2xl text-center">
+                <div class="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-4xl shadow-sm animate-bounce">
+                    <i class="ph-duotone ph-check-circle"></i>
+                </div>
+                <div class="space-y-2">
+                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
+                        Kurasi Terkunci
+                    </span>
+                    <h3 class="text-xl font-black text-slate-900">Kurasi Berhasil Dikirim!</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium" x-text="successMessage"></p>
+                </div>
+                <div class="space-y-2 pt-2">
+                    <a href="{{ route('customer.bookings.show', $booking->id) }}"
+                        class="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                        <i class="ph-duotone ph-arrow-left"></i> Kembali ke Detail Reservasi
+                    </a>
+                    <button type="button" @click="showSuccessModal = false"
+                        class="w-full py-2.5 rounded-xl text-slate-500 hover:text-slate-800 font-bold text-xs transition-colors">
+                        Tetap di Halaman Galeri
+                    </button>
+                </div>
+            </div>
+        </div>
     @endif
 </div>
 
@@ -255,6 +317,10 @@
             showLightbox: false,
             activePhotoIndex: 0,
             activePhotoNotes: '',
+            showConfirmModal: false,
+            showSuccessModal: false,
+            isSubmitting: false,
+            successMessage: '',
             
             get filteredPhotos() {
                 if (this.activeFilter === 'selected') {
@@ -357,12 +423,38 @@
 
             confirmFinalSubmission() {
                 if (this.selectedCount === 0) {
-                    alert('Anda belum memilih foto satupun. Silakan pilih minimal 1 foto bintang terlebih dahulu.');
+                    alert('Anda belum memilih foto satupun. Silakan klik ikon bintang pada minimal 1 foto favorit Anda.');
                     return;
                 }
-                if (confirm(`Apakah Anda yakin ingin menyelesaikan kurasi ${this.selectedCount} foto terpilih untuk diproses cetak & retouch oleh studio?`)) {
-                    alert('Kurasi foto Anda berhasil dikunci! Tim fotografer RanggaMotret akan segera memproses berkas deliverables Anda.');
-                }
+                this.showConfirmModal = true;
+            },
+
+            submitFinalProofing() {
+                this.isSubmitting = true;
+                fetch('{{ route('customer.proofing.submit', $booking->id) }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    this.isSubmitting = false;
+                    this.showConfirmModal = false;
+                    if (data.success) {
+                        this.successMessage = data.message;
+                        this.showSuccessModal = true;
+                    } else {
+                        alert(data.message || 'Terjadi kesalahan saat mengirim kurasi.');
+                    }
+                })
+                .catch(err => {
+                    this.isSubmitting = false;
+                    this.showConfirmModal = false;
+                    alert('Gagal terhubung ke server. Silakan coba lagi.');
+                });
             }
         }
     }
