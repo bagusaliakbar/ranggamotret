@@ -41,7 +41,7 @@ class ReservasiController extends Controller
     public function customerIndex()
     {
         $bookings = Reservasi::where('user_id', Auth::id())
-            ->with(['layanan', 'paket', 'pembayaran', 'galeriFotos'])
+            ->with(['layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])
             ->latest()
             ->get();
 
