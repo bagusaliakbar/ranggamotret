@@ -294,42 +294,45 @@
     </div>
 
     <!-- Modal Preview Gambar Bukti Struk -->
-    <div x-show="previewImage" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
-         @keydown.escape.window="previewImage = null"
-         style="display: none;">
-        
-        <div class="relative bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-4" @click.outside="previewImage = null">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <i class="ph-duotone ph-file-text text-xl text-slate-700"></i>
-                    <h3 class="font-black text-sm text-slate-900">Bukti Transfer Pelanggan</h3>
+    <template x-teleport="body">
+        <div x-show="previewImage" 
+             x-cloak
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="modal-backdrop-fixed flex items-center justify-center bg-slate-950/80 p-4"
+             @keydown.escape.window="previewImage = null"
+             style="display: none;">
+            
+            <div class="relative bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-4 my-auto z-10" @click.outside="previewImage = null">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="ph-duotone ph-file-text text-xl text-slate-700"></i>
+                        <h3 class="font-black text-sm text-slate-900">Bukti Transfer Pelanggan</h3>
+                    </div>
+                    <button type="button" @click="previewImage = null" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-sm font-bold">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
                 </div>
-                <button type="button" @click="previewImage = null" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-sm font-bold">
-                    <i class="ph-bold ph-x"></i>
-                </button>
-            </div>
 
-            <div class="max-h-[70vh] overflow-y-auto rounded-2xl bg-slate-50 border border-slate-200 p-2 flex items-center justify-center">
-                <img :src="previewImage" alt="Bukti Transfer" class="max-w-full max-h-[65vh] object-contain rounded-xl shadow-sm">
-            </div>
+                <div class="max-h-[70vh] overflow-y-auto rounded-2xl bg-slate-50 border border-slate-200 p-2 flex items-center justify-center">
+                    <img :src="previewImage" alt="Bukti Transfer" class="max-w-full max-h-[65vh] object-contain rounded-xl shadow-sm">
+                </div>
 
-            <div class="flex items-center justify-between pt-2">
-                <a :href="previewImage" target="_blank" download class="btn-dark px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm">
-                    <i class="ph-duotone ph-download-simple"></i>
-                    <span>Unduh Berkas Asli</span>
-                </a>
-                <button type="button" @click="previewImage = null" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold">
-                    Tutup
-                </button>
+                <div class="flex items-center justify-between pt-2">
+                    <a :href="previewImage" target="_blank" download class="btn-dark px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm">
+                        <i class="ph-duotone ph-download-simple"></i>
+                        <span>Unduh Berkas Asli</span>
+                    </a>
+                    <button type="button" @click="previewImage = null" class="px-4 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold">
+                        Tutup
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </template>
 </div>
 @endsection
