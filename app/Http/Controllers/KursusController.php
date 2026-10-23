@@ -442,13 +442,50 @@ class KursusController extends Controller
     /**
      * Daftar kursus di panel admin/instruktur
      */
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
         $user = Auth::user();
-        $courses = Kursus::with(['instruktur', 'moduls.materis', 'moduls.quizs.soals', 'enrollments'])->latest()->get();
+        $search = $request->query('search');
+        $level = $request->query('level');
+        $status = $request->query('status');
+
+        $query = Kursus::with(['instruktur', 'moduls.materis', 'moduls.quizs.soals', 'enrollments']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($level && $level !== 'all') {
+            $query->where('level', $level);
+        }
+
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $courses = $query->latest()->get();
         $instructors = User::where('role', 'admin')->get();
 
-        return view('kursus.admin', compact('courses', 'instructors'));
+        // Metrik statistik kursus
+        $totalCourses = Kursus::count();
+        $activeCourses = Kursus::where('status', 'aktif')->count();
+        $totalEnrollments = \App\Models\Enrollment::count();
+        $totalModules = \App\Models\Modul::count();
+
+        return view('kursus.admin', compact(
+            'courses',
+            'instructors',
+            'search',
+            'level',
+            'status',
+            'totalCourses',
+            'activeCourses',
+            'totalEnrollments',
+            'totalModules'
+        ));
     }
 
     public function storeCourse(Request $request)

@@ -3,7 +3,7 @@
 @section('title', 'Kelola Layanan & Paket — RanggaMotret.id')
 
 @section('content')
-<div class="w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8" 
+<div class="space-y-8" 
      x-data="{
         openAddLayanan: false,
         openEditLayanan: false,
@@ -112,25 +112,83 @@
                 <span>/</span>
                 <span class="text-slate-700">Layanan & Paket</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Kelola Layanan & Paket Fotografi</h1>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Kelola Katalog Layanan Fotografi</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Atur portofolio layanan, varian paket harga, durasi sesi, dan ketersediaan status publikasi.</p>
         </div>
 
-        <button @click="openAddLayanan = true" 
-                class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-3 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-            <i class="fa-solid fa-plus text-sm"></i>
-            <span>Tambah Layanan Baru</span>
-        </button>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.kategori-layanan.index') }}" 
+               class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs">
+                <i class="ph-duotone ph-squares-four text-base text-slate-600"></i>
+                <span>Kategori Layanan</span>
+            </a>
+            <button @click="openAddLayanan = true" 
+                    class="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
+                <i class="ph-duotone ph-plus-circle text-base text-emerald-400"></i>
+                <span>Tambah Layanan Baru</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards (Ringkasan Metrik Layanan & Paket) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- 1. Total Layanan -->
+        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Layanan</span>
+                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-camera"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-slate-900">{{ number_format($totalLayanan) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Katalog tema fotografi</div>
+        </div>
+
+        <!-- 2. Layanan Aktif -->
+        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Layanan Aktif</span>
+                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-check-circle"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-emerald-600">{{ number_format($layananAktif) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Bisa dibooking oleh klien</div>
+        </div>
+
+        <!-- 3. Total Paket -->
+        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Paket</span>
+                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-package"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-indigo-600">{{ number_format($totalPaket) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Opsi variasi harga & durasi</div>
+        </div>
+
+        <!-- 4. Paket Aktif -->
+        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Paket Aktif</span>
+                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-tag"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-blue-600">{{ number_format($paketAktif) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Tersedia untuk reservasi</div>
+        </div>
     </div>
 
     <!-- Filter, Search, & Toolbar -->
-    <div class="clean-card p-4 rounded-2xl">
+    <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs">
         <form method="GET" action="{{ route('admin.layanan.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center text-xs">
             <!-- Search Query -->
             <div class="sm:col-span-5 relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama layanan, kategori, deskripsi..."
-                       class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
+                       class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
             </div>
 
             <!-- Filter Kategori -->
@@ -156,14 +214,13 @@
 
             <!-- Action Buttons -->
             <div class="sm:col-span-2 flex gap-2">
-                <button type="submit" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-filter text-[10px]"></i> Filter
+                <button type="submit" class="flex-1 bg-slate-900 hover:bg-black text-white py-2.5 rounded-xl font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs">
+                    <i class="ph-duotone ph-funnel text-sm"></i> Filter
                 </button>
                 @if($search || ($kategori && $kategori !== 'all') || ($status && $status !== 'all'))
                     <a href="{{ route('admin.layanan.index') }}" title="Reset Filter" class="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold transition-all flex items-center justify-center">
-                        <i class="fa-solid fa-rotate-left"></i>
+                        <i class="ph-duotone ph-arrows-counter-clockwise text-base"></i>
                     </a>
-                @endif
             </div>
         </form>
     </div>

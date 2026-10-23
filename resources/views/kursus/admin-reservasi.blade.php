@@ -3,7 +3,7 @@
 @section('title', 'Kelola Reservasi Kursus — Owner RanggaMotret.id')
 
 @section('content')
-<div class="w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8"
+<div class="space-y-8"
      x-data="{
         showBuktiModal: false,
         buktiSrc: '',

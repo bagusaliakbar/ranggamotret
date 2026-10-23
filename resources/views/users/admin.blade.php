@@ -92,8 +92,8 @@
                     Filter
                 </button>
                 @if($search || $role || $status)
-                    <a href="{{ route('admin.users.index') }}" class="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-center" title="Reset Filter">
-                        <i class="fa-solid fa-rotate-left"></i>
+                    <a href="{{ route('admin.users.index') }}" class="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 text-center flex items-center justify-center shrink-0" title="Reset Filter">
+                        <i class="ph-duotone ph-arrows-counter-clockwise text-base"></i>
                     </a>
                 @endif
             </div>

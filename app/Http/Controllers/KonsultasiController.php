@@ -98,10 +98,43 @@ class KonsultasiController extends Controller
     /**
      * Daftar seluruh konsultasi di panel Admin
      */
-    public function adminIndex()
+    public function adminIndex(Request $request)
     {
-        $consultations = Konsultasi::latest()->paginate(15);
-        return view('konsultasi.admin', compact('consultations'));
+        $search = $request->query('search');
+        $status = $request->query('status');
+
+        $query = Konsultasi::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('jenis_layanan', 'like', "%{$search}%")
+                  ->orWhere('konsep', 'like', "%{$search}%")
+                  ->orWhere('lokasi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $consultations = $query->latest()->paginate(15)->withQueryString();
+
+        // Metrik statistik konsultasi
+        $totalConsultations = Konsultasi::count();
+        $countPending = Konsultasi::where('status', 'pending')->count();
+        $countReplied = Konsultasi::where('status', 'replied')->count();
+
+        return view('konsultasi.admin', compact(
+            'consultations',
+            'search',
+            'status',
+            'totalConsultations',
+            'countPending',
+            'countReplied'
+        ));
     }
 
     /**

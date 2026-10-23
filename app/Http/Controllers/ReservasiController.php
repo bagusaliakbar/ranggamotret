@@ -296,16 +296,48 @@ class ReservasiController extends Controller
     public function adminIndex(Request $request)
     {
         $status = $request->query('status');
+        $search = $request->query('search');
+
         $query = Reservasi::with(['customer', 'layanan', 'paket', 'pembayaran']);
 
-        if ($status) {
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nomor_booking', 'like', "%{$search}%")
+                  ->orWhere('lokasi', 'like', "%{$search}%")
+                  ->orWhereHas('customer', function ($cq) use ($search) {
+                      $cq->where('name', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%")
+                         ->orWhere('phone', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('layanan', function ($lq) use ($search) {
+                      $lq->where('nama', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($status && $status !== 'all') {
             $query->where('status', $status);
         }
 
-        $bookings = $query->latest()->paginate(15);
+        $bookings = $query->latest()->paginate(15)->withQueryString();
         $statuses = ['Menunggu Konfirmasi', 'Disetujui', 'Ditolak', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Pemotretan Selesai', 'Selesai', 'Dibatalkan'];
 
-        return view('reservasi.admin', compact('bookings', 'statuses', 'status'));
+        // Metrik statistik untuk Quick KPI Cards & Tabs
+        $totalBookings = Reservasi::count();
+        $countPending = Reservasi::where('status', 'Menunggu Konfirmasi')->count();
+        $countScheduled = Reservasi::whereIn('status', ['Dibayar', 'Disetujui', 'Terjadwal'])->count();
+        $countCompleted = Reservasi::where('status', 'Selesai')->count();
+
+        return view('reservasi.admin', compact(
+            'bookings',
+            'statuses',
+            'status',
+            'search',
+            'totalBookings',
+            'countPending',
+            'countScheduled',
+            'countCompleted'
+        ));
     }
 
     /**

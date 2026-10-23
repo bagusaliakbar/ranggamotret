@@ -3,7 +3,7 @@
 @section('title', 'Kelola Kategori Layanan — RanggaMotret.id')
 
 @section('content')
-<div class="w-full px-4 sm:px-6 lg:px-8 py-8 space-y-8" 
+<div class="space-y-8" 
      x-data="{
         openAddModal: false,
         openEditModal: false,
@@ -81,27 +81,71 @@
                 <span>/</span>
                 <span class="text-slate-700">Kategori Layanan</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Kelola Kategori Layanan</h1>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Kelola Kategori Layanan</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Kelola master segmentasi kategori fotografi, ikon visual, dan status ketersediaan.</p>
         </div>
 
         <div class="flex items-center gap-3">
+            <a href="{{ route('admin.layanan.index') }}" 
+               class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs">
+                <i class="ph-duotone ph-camera text-base text-slate-600"></i>
+                <span>Katalog Layanan</span>
+            </a>
             <button @click="openAddModal = true" 
-                    class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                <i class="fa-solid fa-plus text-xs"></i>
+                    class="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
+                <i class="ph-duotone ph-plus-circle text-base text-emerald-400"></i>
                 <span>Tambah Kategori Baru</span>
             </button>
         </div>
     </div>
 
+    <!-- Quick Stats Cards (Ringkasan Metrik Kategori) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+        <!-- 1. Total Kategori -->
+        <a href="{{ route('admin.kategori-layanan.index') }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-slate-400 transition-all">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Kategori</span>
+                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-squares-four"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-slate-900">{{ number_format($totalKategori) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Semua grup klasifikasi</div>
+        </a>
+
+        <!-- 2. Kategori Aktif -->
+        <a href="{{ route('admin.kategori-layanan.index', ['status' => 'aktif']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-emerald-400 transition-all">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Kategori Aktif</span>
+                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-check-circle"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-emerald-600">{{ number_format($kategoriAktif) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Tampil di navigasi & booking</div>
+        </a>
+
+        <!-- 3. Kategori Nonaktif -->
+        <a href="{{ route('admin.kategori-layanan.index', ['status' => 'nonaktif']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-amber-400 transition-all">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Kategori Nonaktif</span>
+                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-eye-slash"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-slate-600">{{ number_format($totalKategori - $kategoriAktif) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Diarsipkan dari katalog publik</div>
+        </a>
+    </div>
+
     <!-- Filter, Search, & Toolbar -->
-    <div class="clean-card p-4 rounded-2xl">
+    <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs">
         <form method="GET" action="{{ route('admin.kategori-layanan.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center text-xs">
             <!-- Search Query -->
             <div class="sm:col-span-7 relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama kategori, slug, deskripsi..."
-                       class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
+                       class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
             </div>
 
             <!-- Filter Status -->
@@ -116,12 +160,12 @@
 
             <!-- Action Buttons -->
             <div class="sm:col-span-2 flex items-center gap-2">
-                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all text-center">
+                <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 text-white font-bold hover:bg-black transition-all text-center shadow-2xs">
                     Filter
                 </button>
                 @if($search || ($status && $status !== 'all'))
-                    <a href="{{ route('admin.kategori-layanan.index') }}" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all" title="Reset filter">
-                        <i class="fa-solid fa-rotate-left"></i>
+                    <a href="{{ route('admin.kategori-layanan.index') }}" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all flex items-center justify-center shrink-0" title="Reset filter">
+                        <i class="ph-duotone ph-arrows-counter-clockwise text-base"></i>
                     </a>
                 @endif
             </div>
