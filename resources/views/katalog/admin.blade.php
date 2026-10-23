@@ -221,6 +221,7 @@
                     <a href="{{ route('admin.layanan.index') }}" title="Reset Filter" class="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold transition-all flex items-center justify-center">
                         <i class="ph-duotone ph-arrows-counter-clockwise text-base"></i>
                     </a>
+                @endif
             </div>
         </form>
     </div>
