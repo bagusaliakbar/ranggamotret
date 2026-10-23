@@ -16,6 +16,35 @@
             selectedModulId: null,
             selectedModulTitle: '',
             materiType: 'teks',
+            quizQuestions: [
+                {
+                    pertanyaan: '',
+                    pilihan_a: '',
+                    pilihan_b: '',
+                    pilihan_c: '',
+                    pilihan_d: '',
+                    jawaban_benar: 'A',
+                    bobot_nilai: 10,
+                    pembahasan: ''
+                }
+            ],
+            addQuizQuestion() {
+                this.quizQuestions.push({
+                    pertanyaan: '',
+                    pilihan_a: '',
+                    pilihan_b: '',
+                    pilihan_c: '',
+                    pilihan_d: '',
+                    jawaban_benar: 'A',
+                    bobot_nilai: 10,
+                    pembahasan: ''
+                });
+            },
+            removeQuizQuestion(index) {
+                if (this.quizQuestions.length > 1) {
+                    this.quizQuestions.splice(index, 1);
+                }
+            },
             openEditMateri: false,
             editMateriData: {}
          }">
@@ -585,7 +614,7 @@
                                 <option value="video">Video Pembelajaran</option>
                                 <option value="pdf">Dokumen / E-Book PDF</option>
                                 <option value="link">Link Eksternal</option>
-                                <option value="quiz">🎯 Kuis Evaluasi (Pilihan Ganda)</option>
+                                <option value="quiz">Kuis Evaluasi (Pilihan Ganda)</option>
                             </select>
                         </div>
                         <template x-if="materiType !== 'quiz'">
@@ -620,9 +649,10 @@
                         </div>
                     </div>
 
-                    <!-- Fields Khusus Kuis Evaluasi Pilihan Ganda -->
-                    <div x-show="materiType === 'quiz'" class="space-y-4 bg-blue-50/50 p-4 rounded-2xl border border-blue-200/70">
-                        <div class="flex items-center justify-between">
+                    <!-- Fields Khusus Kuis Evaluasi Pilihan Ganda (Mendukung Multiple Butir Soal) -->
+                    <div x-show="materiType === 'quiz'" class="space-y-5 bg-blue-50/50 p-4 sm:p-5 rounded-2xl border border-blue-200/70">
+                        <!-- Parameter Global Kuis -->
+                        <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
                             <span class="font-extrabold text-blue-900 text-xs flex items-center gap-1.5">
                                 <i class="ph-duotone ph-sparkle text-blue-600 text-sm"></i> Parameter Kelulusan & Soal
                             </span>
@@ -633,60 +663,96 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label class="block text-slate-800 font-bold mb-1">Pertanyaan Soal <span class="text-rose-500">*</span></label>
-                            <textarea name="pertanyaan" rows="2" placeholder="Tuliskan butir soal evaluasi pemahaman di sini..."
-                                class="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 focus:border-blue-600 focus:outline-none"></textarea>
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block text-slate-800 font-bold">Pilihan Jawaban (A, B, C, D) <span class="text-rose-500">*</span></label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">A</span>
-                                    <input type="text" name="pilihan_a" placeholder="Pilihan A"
-                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">B</span>
-                                    <input type="text" name="pilihan_b" placeholder="Pilihan B"
-                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">C</span>
-                                    <input type="text" name="pilihan_c" placeholder="Pilihan C"
-                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black flex items-center justify-center shrink-0">D</span>
-                                    <input type="text" name="pilihan_d" placeholder="Pilihan D"
-                                        class="w-full px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-xs focus:border-blue-600 focus:outline-none">
-                                </div>
+                        <!-- Repeater Butir Soal -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-black text-slate-800 uppercase tracking-wide">
+                                    Daftar Pertanyaan (<span x-text="quizQuestions.length"></span> Soal)
+                                </span>
+                                <button type="button" @click="addQuizQuestion()"
+                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
+                                    <i class="ph-duotone ph-plus-circle text-sm"></i> Tambah Soal
+                                </button>
                             </div>
-                        </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                            <div>
-                                <label class="block text-slate-800 font-bold mb-1">Kunci Jawaban Benar <span class="text-rose-500">*</span></label>
-                                <select name="jawaban_benar"
-                                    class="w-full px-3 py-2 rounded-xl bg-white border border-blue-400 text-blue-950 font-black focus:outline-none">
-                                    <option value="A">Pilihan A</option>
-                                    <option value="B">Pilihan B</option>
-                                    <option value="C">Pilihan C</option>
-                                    <option value="D">Pilihan D</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-slate-800 font-bold mb-1">Bobot Nilai Soal</label>
-                                <input type="number" name="bobot_nilai" value="10" min="1"
-                                    class="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 font-bold focus:outline-none">
-                            </div>
-                        </div>
+                            <template x-for="(q, idx) in quizQuestions" :key="idx">
+                                <div class="p-4 rounded-2xl bg-white border border-blue-200/80 shadow-sm space-y-3.5 relative">
+                                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-[11px] font-black flex items-center justify-center"
+                                                x-text="idx + 1"></span>
+                                            <span class="font-bold text-slate-800 text-xs">Butir Soal Nomor <span x-text="idx + 1"></span></span>
+                                        </div>
+                                        <button type="button" @click="removeQuizQuestion(idx)"
+                                            x-show="quizQuestions.length > 1"
+                                            class="text-rose-500 hover:text-rose-700 text-xs font-bold flex items-center gap-1 hover:bg-rose-50 px-2 py-1 rounded-lg transition-colors"
+                                            title="Hapus Butir Soal Ini">
+                                            <i class="ph-duotone ph-trash text-sm"></i> Hapus Soal
+                                        </button>
+                                    </div>
 
-                        <div>
-                            <label class="block text-slate-800 font-bold mb-1">Pembahasan & Penjelasan Teori (Opsional)</label>
-                            <textarea name="pembahasan" rows="2" placeholder="Penjelasan kenapa kunci jawaban tersebut benar..."
-                                class="w-full px-4 py-2 rounded-xl bg-white border border-slate-300 text-slate-900 focus:border-blue-600 focus:outline-none"></textarea>
+                                    <div>
+                                        <label class="block text-slate-800 font-bold mb-1">Pertanyaan Soal <span class="text-rose-500">*</span></label>
+                                        <textarea :name="'soal[' + idx + '][pertanyaan]'" x-model="q.pertanyaan" rows="2" required placeholder="Tuliskan butir soal evaluasi pemahaman di sini..."
+                                            class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none text-xs"></textarea>
+                                    </div>
+
+                                    <div class="space-y-1.5">
+                                        <label class="block text-slate-800 font-bold text-[11px]">Pilihan Jawaban (A, B, C, D) <span class="text-rose-500">*</span></label>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">A</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_a]'" x-model="q.pilihan_a" required placeholder="Pilihan A"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">B</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_b]'" x-model="q.pilihan_b" required placeholder="Pilihan B"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">C</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_c]'" x-model="q.pilihan_c" required placeholder="Pilihan C"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">D</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_d]'" x-model="q.pilihan_d" required placeholder="Pilihan D"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                        <div>
+                                            <label class="block text-slate-800 font-bold mb-1 text-[11px]">Kunci Jawaban Benar <span class="text-rose-500">*</span></label>
+                                            <select :name="'soal[' + idx + '][jawaban_benar]'" x-model="q.jawaban_benar" required
+                                                class="w-full px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-400 text-blue-950 font-black text-xs focus:outline-none">
+                                                <option value="A">Pilihan A</option>
+                                                <option value="B">Pilihan B</option>
+                                                <option value="C">Pilihan C</option>
+                                                <option value="D">Pilihan D</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-slate-800 font-bold mb-1 text-[11px]">Bobot Nilai Soal</label>
+                                            <input type="number" :name="'soal[' + idx + '][bobot_nilai]'" x-model="q.bobot_nilai" min="1"
+                                                class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs focus:bg-white focus:outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-slate-800 font-bold mb-1 text-[11px]">Pembahasan & Penjelasan Teori (Opsional)</label>
+                                        <textarea :name="'soal[' + idx + '][pembahasan]'" x-model="q.pembahasan" rows="1" placeholder="Penjelasan kenapa kunci jawaban tersebut benar..."
+                                            class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none"></textarea>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <button type="button" @click="addQuizQuestion()"
+                                class="w-full py-2.5 rounded-xl border border-dashed border-blue-300 hover:border-blue-500 hover:bg-blue-100/50 text-blue-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+                                <i class="ph-duotone ph-plus-circle text-base"></i> Tambah Butir Soal Berikutnya
+                            </button>
                         </div>
                     </div>
 

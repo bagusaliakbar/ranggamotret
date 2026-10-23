@@ -586,7 +586,7 @@ class KursusController extends Controller
     }
 
     /**
-     * Menyimpan Kuis Evaluasi beserta pertanyaan pilihan ganda
+     * Menyimpan Kuis Evaluasi beserta pertanyaan pilihan ganda (mendukung multiple butir soal)
      */
     public function storeQuiz(Request $request, $modulId)
     {
@@ -594,13 +594,23 @@ class KursusController extends Controller
             'judul' => 'required|string|max:255',
             'durasi_menit' => 'required|integer|min:1',
             'passing_grade' => 'required|numeric|min:0|max:100',
-            // Data soal pilihan ganda
-            'pertanyaan' => 'required|string',
-            'pilihan_a' => 'required|string',
-            'pilihan_b' => 'required|string',
-            'pilihan_c' => 'required|string',
-            'pilihan_d' => 'required|string',
-            'jawaban_benar' => 'required|in:A,B,C,D',
+            // Mendukung array butir soal (multiple questions)
+            'soal' => 'nullable|array|min:1',
+            'soal.*.pertanyaan' => 'required_with:soal|string',
+            'soal.*.pilihan_a' => 'required_with:soal|string',
+            'soal.*.pilihan_b' => 'required_with:soal|string',
+            'soal.*.pilihan_c' => 'required_with:soal|string',
+            'soal.*.pilihan_d' => 'required_with:soal|string',
+            'soal.*.jawaban_benar' => 'required_with:soal|in:A,B,C,D',
+            'soal.*.bobot_nilai' => 'nullable|numeric|min:1',
+            'soal.*.pembahasan' => 'nullable|string',
+            // Fallback backward-compatible untuk single question format lama
+            'pertanyaan' => 'nullable|string',
+            'pilihan_a' => 'nullable|string',
+            'pilihan_b' => 'nullable|string',
+            'pilihan_c' => 'nullable|string',
+            'pilihan_d' => 'nullable|string',
+            'jawaban_benar' => 'nullable|in:A,B,C,D',
             'bobot_nilai' => 'nullable|numeric|min:1',
             'pembahasan' => 'nullable|string',
         ]);
@@ -612,19 +622,39 @@ class KursusController extends Controller
             'passing_grade' => $validated['passing_grade'],
         ]);
 
-        QuizSoal::create([
-            'quiz_id' => $quiz->id,
-            'pertanyaan' => $validated['pertanyaan'],
-            'pilihan_a' => $validated['pilihan_a'],
-            'pilihan_b' => $validated['pilihan_b'],
-            'pilihan_c' => $validated['pilihan_c'],
-            'pilihan_d' => $validated['pilihan_d'],
-            'jawaban_benar' => $validated['jawaban_benar'],
-            'bobot_nilai' => $validated['bobot_nilai'] ?? 10,
-            'pembahasan' => $validated['pembahasan'] ?? null,
-        ]);
+        // Simpan multiple soal jika tersedia
+        if (!empty($validated['soal']) && is_array($validated['soal'])) {
+            foreach ($validated['soal'] as $item) {
+                if (!empty($item['pertanyaan'])) {
+                    QuizSoal::create([
+                        'quiz_id' => $quiz->id,
+                        'pertanyaan' => $item['pertanyaan'],
+                        'pilihan_a' => $item['pilihan_a'] ?? '',
+                        'pilihan_b' => $item['pilihan_b'] ?? '',
+                        'pilihan_c' => $item['pilihan_c'] ?? '',
+                        'pilihan_d' => $item['pilihan_d'] ?? '',
+                        'jawaban_benar' => $item['jawaban_benar'] ?? 'A',
+                        'bobot_nilai' => $item['bobot_nilai'] ?? 10,
+                        'pembahasan' => $item['pembahasan'] ?? null,
+                    ]);
+                }
+            }
+        } elseif (!empty($validated['pertanyaan'])) {
+            // Fallback single question
+            QuizSoal::create([
+                'quiz_id' => $quiz->id,
+                'pertanyaan' => $validated['pertanyaan'],
+                'pilihan_a' => $validated['pilihan_a'] ?? '',
+                'pilihan_b' => $validated['pilihan_b'] ?? '',
+                'pilihan_c' => $validated['pilihan_c'] ?? '',
+                'pilihan_d' => $validated['pilihan_d'] ?? '',
+                'jawaban_benar' => $validated['jawaban_benar'] ?? 'A',
+                'bobot_nilai' => $validated['bobot_nilai'] ?? 10,
+                'pembahasan' => $validated['pembahasan'] ?? null,
+            ]);
+        }
 
-        return back()->with('success', 'Kuis evaluasi pilihan ganda berhasil ditambahkan ke modul silabus.');
+        return back()->with('success', 'Kuis evaluasi beserta butir pertanyaan berhasil ditambahkan ke modul silabus.');
     }
 
     /**
