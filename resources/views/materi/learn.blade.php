@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Ruang Belajar — ' . $kursus->nama . ' — RanggaMotret.id')
 
@@ -44,7 +44,7 @@
     $nextItem = ($currentIndex !== false && $currentIndex < $allItems->count() - 1) ? $allItems->get($currentIndex + 1) : null;
 @endphp
 
-<div class="bg-slate-50 min-h-screen py-6 sm:py-8"
+<div class="w-full space-y-6"
      x-data="{ 
         theaterMode: false,
         activeTab: 'content',
@@ -56,7 +56,7 @@
             setTimeout(() => this.notesSaved = false, 2000);
         }
      }">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="space-y-6">
 
         <!-- Top Studio Classroom Bar -->
         <div class="clean-card p-4 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
