@@ -449,10 +449,12 @@
                                 <i class="ph-duotone ph-user-circle text-base text-slate-500"></i>
                                 <span>Profil Saya</span>
                             </a>
-                            <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors">
-                                <i class="ph-duotone ph-gauge text-base text-slate-500"></i>
-                                <span>Dashboard Terpadu</span>
-                            </a>
+                            @if(!Auth::user()->isAdmin())
+                                <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors">
+                                    <i class="ph-duotone ph-gauge text-base text-slate-500"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            @endif
                         </div>
 
                         <div class="border-t border-slate-100 my-1"></div>

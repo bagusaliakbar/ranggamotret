@@ -262,9 +262,15 @@
                                     <p class="text-slate-500 text-[10px] capitalize">{{ Auth::user()->role }}</p>
                                 </div>
 
-                                <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
-                                    <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard Terpadu
-                                </a>
+                                @if(!Auth::user()->isAdmin())
+                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
+                                        <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard
+                                    </a>
+                                @else
+                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
+                                        <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard Admin
+                                    </a>
+                                @endif
 
                                 @if(Auth::user()->isCustomer())
                                     <a href="{{ route('customer.bookings.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">

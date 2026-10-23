@@ -86,11 +86,6 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.layanan.index') }}" 
-               class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2">
-                <i class="fa-solid fa-arrow-left text-xs"></i>
-                <span>Katalog Layanan</span>
-            </a>
             <button @click="openAddModal = true" 
                     class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
                 <i class="fa-solid fa-plus text-xs"></i>
