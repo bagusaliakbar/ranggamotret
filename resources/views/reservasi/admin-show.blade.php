@@ -20,7 +20,7 @@
             @csrf
             <span class="text-xs text-slate-600 font-medium">Ubah Status:</span>
             <select name="status" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 font-bold focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-colors shadow-sm">
-                @foreach(['Menunggu Konfirmasi', 'Disetujui', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Selesai', 'Dibatalkan', 'Ditolak'] as $st)
+                @foreach(['Menunggu Konfirmasi', 'Disetujui', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Pemotretan Selesai', 'Selesai', 'Dibatalkan', 'Ditolak'] as $st)
                     <option value="{{ $st }}" {{ $booking->status === $st ? 'selected' : '' }}>{{ $st }}</option>
                 @endforeach
             </select>

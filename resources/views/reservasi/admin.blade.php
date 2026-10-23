@@ -50,6 +50,7 @@
                                 @php
                                     $badgeClass = match($b->status) {
                                         'Dibayar', 'Disetujui', 'Terjadwal' => 'bg-emerald-100 text-emerald-800 border-emerald-300',
+                                        'Pemotretan Selesai' => 'bg-purple-100 text-purple-800 border-purple-300',
                                         'Selesai' => 'bg-blue-100 text-blue-800 border-blue-300',
                                         'Dibatalkan', 'Ditolak' => 'bg-rose-100 text-rose-800 border-rose-300',
                                         default => 'bg-amber-100 text-amber-800 border-amber-300',

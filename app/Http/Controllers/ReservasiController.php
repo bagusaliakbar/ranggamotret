@@ -303,7 +303,7 @@ class ReservasiController extends Controller
         }
 
         $bookings = $query->latest()->paginate(15);
-        $statuses = ['Menunggu Konfirmasi', 'Disetujui', 'Ditolak', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Selesai', 'Dibatalkan'];
+        $statuses = ['Menunggu Konfirmasi', 'Disetujui', 'Ditolak', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Pemotretan Selesai', 'Selesai', 'Dibatalkan'];
 
         return view('reservasi.admin', compact('bookings', 'statuses', 'status'));
     }
