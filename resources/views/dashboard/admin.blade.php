@@ -14,17 +14,6 @@
             <h1 class="text-3xl font-extrabold text-slate-900">Panel Ringkasan Admin</h1>
             <p class="text-xs text-slate-600 font-medium">Metrik statistik operasional studio layanan dan akademi kursus.</p>
         </div>
-        <div class="flex gap-2 flex-wrap">
-            <a href="{{ route('admin.layanan.index') }}" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all">
-                <i class="fa-solid fa-camera-retro mr-1 text-slate-600"></i> Kelola Layanan
-            </a>
-            <a href="{{ route('admin.bookings.index') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md">
-                <i class="fa-solid fa-camera mr-1"></i> Kelola Reservasi
-            </a>
-            <a href="{{ route('admin.reports.index') }}" class="btn-outline px-4 py-2.5 rounded-xl text-xs font-bold">
-                <i class="fa-solid fa-chart-pie mr-1"></i> Laporan Keuangan
-            </a>
-        </div>
     </div>
 
     <!-- Stat Cards Grid -->
