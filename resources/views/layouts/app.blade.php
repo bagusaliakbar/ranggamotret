@@ -262,35 +262,9 @@
                                     <p class="text-slate-500 text-[10px] capitalize">{{ Auth::user()->role }}</p>
                                 </div>
 
-                                @if(!Auth::user()->isAdmin())
-                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
-                                        <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard
-                                    </a>
-                                @else
-                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
-                                        <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard Admin
-                                    </a>
-                                @endif
-
-                                @if(Auth::user()->isCustomer())
-                                    <a href="{{ route('customer.bookings.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="ph-duotone ph-camera mr-2 text-slate-500 text-sm"></i> Fotografi
-                                    </a>
-                                    <a href="{{ route('customer.consultations.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="ph-duotone ph-chats-circle mr-2 text-slate-500 text-sm"></i> Riwayat Konsultasi
-                                    </a>
-                                    <a href="{{ route('student.dashboard') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="ph-duotone ph-graduation-cap mr-2 text-slate-500 text-sm"></i> Ruang Belajar (Kursus)
-                                    </a>
-                                    <a href="{{ route('payments.index') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                        <i class="ph-duotone ph-receipt mr-2 text-slate-500 text-sm"></i> Riwayat Pembayaran
-                                    </a>
-                                @endif
-
-                                <a href="{{ route('profile') }}" class="block px-4 py-2.5 text-slate-700 hover:bg-slate-50">
-                                    <i class="ph-duotone ph-gear mr-2 text-slate-500 text-sm"></i> Pengaturan Akun
+                                <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-slate-900 font-bold hover:bg-slate-50">
+                                    <i class="ph-duotone ph-gauge mr-2 text-slate-700 text-sm"></i> Dashboard
                                 </a>
-
                                 <div class="border-t border-slate-100 my-1"></div>
 
                                 <form method="POST" action="{{ route('logout') }}">
