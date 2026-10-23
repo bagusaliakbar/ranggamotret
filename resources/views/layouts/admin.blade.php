@@ -284,10 +284,6 @@
                 <button @click="sidebarOpen = true" class="md:hidden p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200">
                     <i class="ph-duotone ph-list text-base"></i>
                 </button>
-                <div class="hidden sm:block">
-                    <span class="text-xs font-bold text-slate-400">Selamat datang,</span>
-                    <span class="text-xs font-extrabold text-slate-900 ml-1">{{ Auth::user()->name }}</span>
-                </div>
             </div>
 
             <div class="flex items-center gap-3 text-xs font-bold">
