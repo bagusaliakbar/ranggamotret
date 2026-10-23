@@ -12,34 +12,22 @@
                 <span>/</span>
                 <span class="text-slate-900 font-extrabold">Ringkasan Studio &amp; Akademi</span>
             </div>
-            <div class="flex items-center gap-3">
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Panel Owner Studio</h1>
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-extrabold uppercase tracking-wide">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Studio Aktif</span>
-                </span>
-            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Dashboard</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">
                 Selamat datang kembali, <strong class="text-slate-800">{{ Auth::user()->name }}</strong>. Pantau metrik performa reservasi pemotretan, arus kas pendapatan, dan progres akademi fotografi secara real-time.
             </p>
         </div>
 
         <!-- Quick Summary Action Badges -->
-        <div class="flex flex-wrap items-center gap-2 sm:self-auto">
-            @if($pembayaranPending > 0)
+        @if($pembayaranPending > 0)
+            <div class="flex flex-wrap items-center gap-2 sm:self-auto">
                 <a href="{{ route('admin.payments.index', ['status' => 'Menunggu Verifikasi']) }}" 
                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-xs hover:shadow-md transition-all">
                     <i class="ph-duotone ph-warning-circle text-sm animate-pulse"></i>
                     <span>{{ $pembayaranPending }} Pembayaran Perlu Dicek</span>
                 </a>
-            @endif
-
-            <a href="{{ route('admin.bookings.index') }}" 
-               class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs hover:shadow-md transition-all">
-                <i class="ph-duotone ph-calendar-check text-sm text-slate-300"></i>
-                <span>Kelola Reservasi</span>
-            </a>
-        </div>
+            </div>
+        @endif
     </div>
 
     <!-- 4 Main Metric KPI Cards -->
