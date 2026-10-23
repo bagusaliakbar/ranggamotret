@@ -263,282 +263,288 @@
     <!-- ============================================================== -->
     <!-- MODAL 1: TAMBAH KATEGORI BARU                                  -->
     <!-- ============================================================== -->
-    <div x-show="openAddModal" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
-         style="display: none;">
-        
-        <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
-             @click.away="openAddModal = false">
+    <template x-teleport="body">
+        <div x-show="openAddModal" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" 
+             style="display: none;">
             
-            <!-- Modal Header -->
-            <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm">
-                        <i class="fa-solid fa-layer-group"></i>
+            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
+                 @click.away="openAddModal = false">
+                
+                <!-- Modal Header -->
+                <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm">
+                            <i class="ph-duotone ph-squares-four text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-900">Tambah Kategori Layanan Baru</h3>
+                            <p class="text-[11px] text-slate-500">Buat master kelompok jenis fotografi baru.</p>
+                        </div>
                     </div>
+                    <button @click="openAddModal = false" class="text-slate-400 hover:text-slate-900 transition-colors p-1">
+                        <i class="ph-duotone ph-x text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Form -->
+                <form method="POST" action="{{ route('admin.kategori-layanan.store') }}" class="p-6 space-y-4 text-xs">
+                    @csrf
+
+                    <!-- Nama Kategori -->
                     <div>
-                        <h3 class="font-extrabold text-base text-slate-900">Tambah Kategori Layanan Baru</h3>
-                        <p class="text-[11px] text-slate-500">Buat master kelompok jenis fotografi baru.</p>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Nama Kategori <span class="text-rose-500">*</span></label>
+                        <input type="text" name="nama" x-model="addForm.nama" @input="addForm.slug = generateSlug(addForm.nama)" required placeholder="Contoh: Maternity & Newborn"
+                               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all font-medium">
                     </div>
-                </div>
-                <button @click="openAddModal = false" class="text-slate-400 hover:text-slate-900 transition-colors p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+
+                    <!-- Slug URL -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Slug URL (Otomatis)</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-[11px]">/</span>
+                            <input type="text" name="slug" x-model="addForm.slug" placeholder="maternity-newborn"
+                                   class="w-full pl-7 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-[11px] focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Ikon FontAwesome -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Pilih Ikon Visual</label>
+                        <div class="grid grid-cols-4 gap-2 mb-2">
+                            @foreach($iconPresets as $iconClass => $iconLabel)
+                                <button type="button" @click="addForm.icon = '{{ $iconClass }}'"
+                                        :class="addForm.icon === '{{ $iconClass }}' ? 'bg-slate-900 text-white border-slate-900 shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'"
+                                        class="p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-center">
+                                    <i class="fa-solid {{ $iconClass }} text-sm"></i>
+                                    <span class="text-[9px] font-semibold truncate w-full">{{ explode(' / ', $iconLabel)[0] }}</span>
+                                </button>
+                            @endforeach
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-slate-500 shrink-0">Ikon Terpilih:</span>
+                            <input type="text" name="icon" x-model="addForm.icon" placeholder="fa-camera"
+                                   class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:bg-white focus:border-slate-900 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Deskripsi Kategori -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Deskripsi Ringkas</label>
+                        <textarea name="deskripsi" x-model="addForm.deskripsi" rows="2" placeholder="Jelaskan secara singkat cakupan fotografi kategori ini..."
+                                  class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all"></textarea>
+                    </div>
+
+                    <!-- Status Kategori -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Status Kategori</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
+                                <input type="radio" name="status" value="aktif" x-model="addForm.status" class="text-slate-900 focus:ring-slate-900">
+                                <div>
+                                    <div class="font-bold text-slate-900">Aktif</div>
+                                    <div class="text-[10px] text-slate-500">Tersedia di form layanan</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
+                                <input type="radio" name="status" value="nonaktif" x-model="addForm.status" class="text-slate-900 focus:ring-slate-900">
+                                <div>
+                                    <div class="font-bold text-slate-900">Nonaktif</div>
+                                    <div class="text-[10px] text-slate-500">Disembunyikan</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button Group -->
+                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+                        <button type="button" @click="openAddModal = false" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-md transition-all">
+                            Simpan Kategori
+                        </button>
+                    </div>
+                </form>
+
             </div>
-
-            <!-- Modal Form -->
-            <form method="POST" action="{{ route('admin.kategori-layanan.store') }}" class="p-6 space-y-4 text-xs">
-                @csrf
-
-                <!-- Nama Kategori -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Nama Kategori <span class="text-rose-500">*</span></label>
-                    <input type="text" name="nama" x-model="addForm.nama" @input="addForm.slug = generateSlug(addForm.nama)" required placeholder="Contoh: Maternity & Newborn"
-                           class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all font-medium">
-                </div>
-
-                <!-- Slug URL -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Slug URL (Otomatis)</label>
-                    <div class="relative">
-                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-[11px]">/</span>
-                        <input type="text" name="slug" x-model="addForm.slug" placeholder="maternity-newborn"
-                               class="w-full pl-7 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-[11px] focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
-                    </div>
-                </div>
-
-                <!-- Pilihan Ikon FontAwesome -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Pilih Ikon Visual</label>
-                    <div class="grid grid-cols-4 gap-2 mb-2">
-                        @foreach($iconPresets as $iconClass => $iconLabel)
-                            <button type="button" @click="addForm.icon = '{{ $iconClass }}'"
-                                    :class="addForm.icon === '{{ $iconClass }}' ? 'bg-slate-900 text-white border-slate-900 shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'"
-                                    class="p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-center">
-                                <i class="fa-solid {{ $iconClass }} text-sm"></i>
-                                <span class="text-[9px] font-semibold truncate w-full">{{ explode(' / ', $iconLabel)[0] }}</span>
-                            </button>
-                        @endforeach
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[11px] text-slate-500 shrink-0">Ikon Terpilih:</span>
-                        <input type="text" name="icon" x-model="addForm.icon" placeholder="fa-camera"
-                               class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:bg-white focus:border-slate-900 focus:outline-none">
-                    </div>
-                </div>
-
-                <!-- Deskripsi Kategori -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Deskripsi Ringkas</label>
-                    <textarea name="deskripsi" x-model="addForm.deskripsi" rows="2" placeholder="Jelaskan secara singkat cakupan fotografi kategori ini..."
-                              class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all"></textarea>
-                </div>
-
-                <!-- Status Kategori -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Status Kategori</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
-                            <input type="radio" name="status" value="aktif" x-model="addForm.status" class="text-slate-900 focus:ring-slate-900">
-                            <div>
-                                <div class="font-bold text-slate-900">Aktif</div>
-                                <div class="text-[10px] text-slate-500">Tersedia di form layanan</div>
-                            </div>
-                        </label>
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
-                            <input type="radio" name="status" value="nonaktif" x-model="addForm.status" class="text-slate-900 focus:ring-slate-900">
-                            <div>
-                                <div class="font-bold text-slate-900">Nonaktif</div>
-                                <div class="text-[10px] text-slate-500">Disembunyikan</div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Submit Button Group -->
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
-                    <button type="button" @click="openAddModal = false" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all">
-                        Batal
-                    </button>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-md transition-all">
-                        Simpan Kategori
-                    </button>
-                </div>
-            </form>
-
         </div>
-    </div>
+    </template>
 
     <!-- ============================================================== -->
     <!-- MODAL 2: EDIT KATEGORI                                         -->
     <!-- ============================================================== -->
-    <div x-show="openEditModal" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4 overflow-y-auto" 
-         style="display: none;">
-        
-        <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
-             @click.away="openEditModal = false">
+    <template x-teleport="body">
+        <div x-show="openEditModal" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" 
+             style="display: none;">
             
-            <!-- Modal Header -->
-            <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm">
-                        <i class="fa-solid fa-pen-to-square"></i>
+            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
+                 @click.away="openEditModal = false">
+                
+                <!-- Modal Header -->
+                <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm">
+                            <i class="ph-duotone ph-pencil-simple text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-900">Ubah Data Kategori Layanan</h3>
+                            <p class="text-[11px] text-slate-500">Perbarui nama, ikon, deskripsi, atau status kategori.</p>
+                        </div>
                     </div>
+                    <button @click="openEditModal = false" class="text-slate-400 hover:text-slate-900 transition-colors p-1">
+                        <i class="ph-duotone ph-x text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Form -->
+                <form method="POST" :action="'/admin/kategori-layanan/' + editForm.id" class="p-6 space-y-4 text-xs">
+                    @csrf
+                    @method('PUT')
+
+                    <!-- Nama Kategori -->
                     <div>
-                        <h3 class="font-extrabold text-base text-slate-900">Ubah Data Kategori Layanan</h3>
-                        <p class="text-[11px] text-slate-500">Perbarui nama, ikon, deskripsi, atau status kategori.</p>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Nama Kategori <span class="text-rose-500">*</span></label>
+                        <input type="text" name="nama" x-model="editForm.nama" required
+                               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all font-medium">
                     </div>
-                </div>
-                <button @click="openEditModal = false" class="text-slate-400 hover:text-slate-900 transition-colors p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+
+                    <!-- Slug URL -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Slug URL</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-[11px]">/</span>
+                            <input type="text" name="slug" x-model="editForm.slug"
+                                   class="w-full pl-7 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-[11px] focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Ikon FontAwesome -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Pilih Ikon Visual</label>
+                        <div class="grid grid-cols-4 gap-2 mb-2">
+                            @foreach($iconPresets as $iconClass => $iconLabel)
+                                <button type="button" @click="editForm.icon = '{{ $iconClass }}'"
+                                        :class="editForm.icon === '{{ $iconClass }}' ? 'bg-slate-900 text-white border-slate-900 shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'"
+                                        class="p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-center">
+                                    <i class="fa-solid {{ $iconClass }} text-sm"></i>
+                                    <span class="text-[9px] font-semibold truncate w-full">{{ explode(' / ', $iconLabel)[0] }}</span>
+                                </button>
+                            @endforeach
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-slate-500 shrink-0">Ikon Terpilih:</span>
+                            <input type="text" name="icon" x-model="editForm.icon" placeholder="fa-camera"
+                                   class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:bg-white focus:border-slate-900 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Deskripsi Kategori -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Deskripsi Ringkas</label>
+                        <textarea name="deskripsi" x-model="editForm.deskripsi" rows="2"
+                                  class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all"></textarea>
+                    </div>
+
+                    <!-- Status Kategori -->
+                    <div>
+                        <label class="block text-slate-700 font-extrabold mb-1.5">Status Kategori</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
+                                <input type="radio" name="status" value="aktif" x-model="editForm.status" class="text-slate-900 focus:ring-slate-900">
+                                <div>
+                                    <div class="font-bold text-slate-900">Aktif</div>
+                                    <div class="text-[10px] text-slate-500">Tersedia di form layanan</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
+                                <input type="radio" name="status" value="nonaktif" x-model="editForm.status" class="text-slate-900 focus:ring-slate-900">
+                                <div>
+                                    <div class="font-bold text-slate-900">Nonaktif</div>
+                                    <div class="text-[10px] text-slate-500">Disembunyikan</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button Group -->
+                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
+                        <button type="button" @click="openEditModal = false" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-md transition-all">
+                            Perbarui Kategori
+                        </button>
+                    </div>
+                </form>
+
             </div>
-
-            <!-- Modal Form -->
-            <form method="POST" :action="'/admin/kategori-layanan/' + editForm.id" class="p-6 space-y-4 text-xs">
-                @csrf
-                @method('PUT')
-
-                <!-- Nama Kategori -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Nama Kategori <span class="text-rose-500">*</span></label>
-                    <input type="text" name="nama" x-model="editForm.nama" required
-                           class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all font-medium">
-                </div>
-
-                <!-- Slug URL -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Slug URL</label>
-                    <div class="relative">
-                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-[11px]">/</span>
-                        <input type="text" name="slug" x-model="editForm.slug"
-                               class="w-full pl-7 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-[11px] focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
-                    </div>
-                </div>
-
-                <!-- Pilihan Ikon FontAwesome -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Pilih Ikon Visual</label>
-                    <div class="grid grid-cols-4 gap-2 mb-2">
-                        @foreach($iconPresets as $iconClass => $iconLabel)
-                            <button type="button" @click="editForm.icon = '{{ $iconClass }}'"
-                                    :class="editForm.icon === '{{ $iconClass }}' ? 'bg-slate-900 text-white border-slate-900 shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'"
-                                    class="p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all text-center">
-                                <i class="fa-solid {{ $iconClass }} text-sm"></i>
-                                <span class="text-[9px] font-semibold truncate w-full">{{ explode(' / ', $iconLabel)[0] }}</span>
-                            </button>
-                        @endforeach
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[11px] text-slate-500 shrink-0">Ikon Terpilih:</span>
-                        <input type="text" name="icon" x-model="editForm.icon" placeholder="fa-camera"
-                               class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-xs focus:bg-white focus:border-slate-900 focus:outline-none">
-                    </div>
-                </div>
-
-                <!-- Deskripsi Kategori -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Deskripsi Ringkas</label>
-                    <textarea name="deskripsi" x-model="editForm.deskripsi" rows="2"
-                              class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all"></textarea>
-                </div>
-
-                <!-- Status Kategori -->
-                <div>
-                    <label class="block text-slate-700 font-extrabold mb-1.5">Status Kategori</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
-                            <input type="radio" name="status" value="aktif" x-model="editForm.status" class="text-slate-900 focus:ring-slate-900">
-                            <div>
-                                <div class="font-bold text-slate-900">Aktif</div>
-                                <div class="text-[10px] text-slate-500">Tersedia di form layanan</div>
-                            </div>
-                        </label>
-                        <label class="flex items-center gap-2 p-3 rounded-xl border border-slate-200 cursor-pointer bg-slate-50 hover:bg-white transition-colors has-checked:border-slate-900 has-checked:bg-slate-900/5">
-                            <input type="radio" name="status" value="nonaktif" x-model="editForm.status" class="text-slate-900 focus:ring-slate-900">
-                            <div>
-                                <div class="font-bold text-slate-900">Nonaktif</div>
-                                <div class="text-[10px] text-slate-500">Disembunyikan</div>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Submit Button Group -->
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
-                    <button type="button" @click="openEditModal = false" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all">
-                        Batal
-                    </button>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-md transition-all">
-                        Perbarui Kategori
-                    </button>
-                </div>
-            </form>
-
         </div>
-    </div>
+    </template>
 
     <!-- ============================================================== -->
     <!-- MODAL 3: KONFIRMASI HAPUS                                      -->
     <!-- ============================================================== -->
-    <div x-show="openDeleteModal" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4" 
-         style="display: none;">
-        
-        <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 space-y-5 text-xs" 
-             @click.away="openDeleteModal = false">
+    <template x-teleport="body">
+        <div x-show="openDeleteModal" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" 
+             style="display: none;">
             
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-base shrink-0">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 space-y-5 text-xs" 
+                 @click.away="openDeleteModal = false">
+                
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-base shrink-0">
+                        <i class="ph-duotone ph-warning text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-slate-900" x-text="deleteTitle"></h3>
+                        <p class="text-slate-500 mt-0.5" x-text="deleteMessage"></p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="font-extrabold text-base text-slate-900" x-text="deleteTitle"></h3>
-                    <p class="text-slate-500 mt-0.5" x-text="deleteMessage"></p>
+
+                <div class="p-3 rounded-2xl text-[11px] leading-relaxed"
+                     :class="canDelete ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-rose-50 border border-rose-200 text-rose-900'">
+                    <i class="ph-duotone ph-info mr-1"></i>
+                    <span x-text="deleteWarning"></span>
                 </div>
-            </div>
 
-            <div class="p-3 rounded-2xl text-[11px] leading-relaxed"
-                 :class="canDelete ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-rose-50 border border-rose-200 text-rose-900'">
-                <i class="fa-solid fa-circle-exclamation mr-1"></i>
-                <span x-text="deleteWarning"></span>
-            </div>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-                <button type="button" @click="openDeleteModal = false" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all">
-                    <span x-text="canDelete ? 'Batal' : 'Tutup'"></span>
-                </button>
-                <template x-if="canDelete">
-                    <form method="POST" :action="deleteUrl">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold shadow-md transition-all">
-                            Ya, Hapus Sekarang
-                        </button>
-                    </form>
-                </template>
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <button type="button" @click="openDeleteModal = false" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-all">
+                        <span x-text="canDelete ? 'Batal' : 'Tutup'"></span>
+                    </button>
+                    <template x-if="canDelete">
+                        <form method="POST" :action="deleteUrl">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold shadow-md transition-all">
+                                Ya, Hapus Sekarang
+                            </button>
+                        </form>
+                    </template>
+                </div>
             </div>
         </div>
-    </div>
+    </template>
 
 </div>
 @endsection
