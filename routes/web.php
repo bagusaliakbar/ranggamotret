@@ -56,6 +56,7 @@ Route::get('/consultation', [KonsultasiController::class, 'index'])->name('publi
 Route::post('/consultation', [KonsultasiController::class, 'store'])->name('public.consultation.store');
 
 Route::get('/verify-certificate/{code?}', [PublicController::class, 'verifyCertificate'])->name('public.verify-certificate');
+Route::get('/certificate/verify/{code?}', [PublicController::class, 'verifyCertificate'])->name('public.certificate.verify');
 
 // ==========================================
 // 2. AUTHENTICATION ROUTES (Boundary: Login, Registrasi)

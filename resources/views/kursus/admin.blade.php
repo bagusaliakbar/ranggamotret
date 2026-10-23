@@ -669,10 +669,6 @@
                                 <span class="text-xs font-black text-slate-800 uppercase tracking-wide">
                                     Daftar Pertanyaan (<span x-text="quizQuestions.length"></span> Soal)
                                 </span>
-                                <button type="button" @click="addQuizQuestion()"
-                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5">
-                                    <i class="ph-duotone ph-plus-circle text-sm"></i> Tambah Soal
-                                </button>
                             </div>
 
                             <template x-for="(q, idx) in quizQuestions" :key="idx">
