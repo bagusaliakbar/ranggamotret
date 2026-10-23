@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
     // Notifikasi
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
 
     // Boundary: Pembayaran & Invoice
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');

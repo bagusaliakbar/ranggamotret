@@ -256,7 +256,7 @@
                         <!-- 2. Menu Kursus (Terpadu: Kelas Belajar, Progres Materi & Riwayat Pendaftaran) -->
                         <a href="{{ route('student.dashboard') }}" class="sidebar-link {{ request()->routeIs('student.dashboard') || request()->routeIs('student.courses') || request()->routeIs('customer.courses.index') || request()->routeIs('customer.courses.reservations') || request()->routeIs('reservasi.kursus.*') ? 'active' : '' }}">
                             <i class="ph-duotone ph-graduation-cap text-base w-5"></i>
-                            <span>Kursus</span>
+                            <span>Layanan Kursus</span>
                         </a>
 
                         <!-- 5. Menu Riwayat Konsultasi -->
@@ -291,14 +291,118 @@
                     <i class="ph-duotone ph-globe text-base"></i>
                 </a>
 
-                <a href="{{ route('notifications.index') }}" class="relative p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors" title="Notifikasi">
-                    <i class="ph-duotone ph-bell text-base"></i>
-                    @if(Auth::user()->unreadNotificationsCount() > 0)
-                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-slate-900 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                            {{ Auth::user()->unreadNotificationsCount() }}
-                        </span>
-                    @endif
-                </a>
+                <!-- Notification Dropdown Preview -->
+                <div x-data="{ notifOpen: false }" class="relative">
+                    <button @click="notifOpen = !notifOpen" 
+                            type="button"
+                            class="relative p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400" 
+                            title="Notifikasi">
+                        <i class="ph-duotone ph-bell text-base"></i>
+                        @if(Auth::user()->unreadNotificationsCount() > 0)
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs animate-pulse">
+                                {{ Auth::user()->unreadNotificationsCount() }}
+                            </span>
+                        @endif
+                    </button>
+
+                    <!-- Preview Dropdown Panel -->
+                    <div x-show="notifOpen" 
+                         @click.outside="notifOpen = false" 
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 scale-95 -translate-y-1"
+                         class="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-3xl shadow-2xl z-50 overflow-hidden"
+                         style="display: none;">
+                        
+                        <!-- Header Preview -->
+                        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                            <div class="flex items-center gap-2">
+                                <i class="ph-duotone ph-bell-ringing text-slate-800 text-base"></i>
+                                <h4 class="font-extrabold text-slate-900 text-xs tracking-tight">Pemberitahuan</h4>
+                                @if(Auth::user()->unreadNotificationsCount() > 0)
+                                    <span class="px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black">
+                                        {{ Auth::user()->unreadNotificationsCount() }} Baru
+                                    </span>
+                                @endif
+                            </div>
+
+                            @if(Auth::user()->unreadNotificationsCount() > 0)
+                                <form action="{{ route('notifications.read-all') }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit" class="text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-colors">
+                                        Tandai Semua Dibaca
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+
+                        <!-- Notification List Preview (Top 5) -->
+                        @php
+                            $previewNotifs = Auth::user()->notifikasis()->latest()->take(5)->get();
+                        @endphp
+
+                        <div class="max-h-[340px] overflow-y-auto divide-y divide-slate-100 no-scrollbar">
+                            @forelse($previewNotifs as $n)
+                                <a href="{{ route('notifications.read', $n->id) }}" 
+                                   class="p-4 block transition-colors hover:bg-slate-50 group {{ !$n->is_read ? 'bg-amber-50/40' : 'bg-white opacity-80' }}">
+                                    <div class="flex items-start gap-3">
+                                        <!-- Category Icon Avatar -->
+                                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-sm {{ !$n->is_read ? 'bg-slate-900 text-emerald-400 shadow-2xs' : 'bg-slate-100 text-slate-500' }}">
+                                            @if(str_contains(strtolower($n->judul), 'pembayaran') || str_contains(strtolower($n->judul), 'transaksi'))
+                                                <i class="ph-duotone ph-receipt"></i>
+                                            @elseif(str_contains(strtolower($n->judul), 'booking') || str_contains(strtolower($n->judul), 'reservasi') || str_contains(strtolower($n->judul), 'jadwal'))
+                                                <i class="ph-duotone ph-calendar-check"></i>
+                                            @elseif(str_contains(strtolower($n->judul), 'kursus') || str_contains(strtolower($n->judul), 'materi'))
+                                                <i class="ph-duotone ph-graduation-cap"></i>
+                                            @else
+                                                <i class="ph-duotone ph-bell-simple"></i>
+                                            @endif
+                                        </div>
+
+                                        <!-- Content -->
+                                        <div class="space-y-1 flex-1 min-w-0">
+                                            <div class="flex items-center justify-between gap-2">
+                                                <h5 class="text-xs font-black text-slate-900 truncate group-hover:text-black">
+                                                    {{ $n->judul }}
+                                                </h5>
+                                                @if(!$n->is_read)
+                                                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                                @endif
+                                            </div>
+                                            <p class="text-[11px] text-slate-600 font-medium leading-relaxed line-clamp-2">
+                                                {{ $n->pesan }}
+                                            </p>
+                                            <div class="text-[10px] text-slate-400 font-semibold pt-0.5 flex items-center gap-1">
+                                                <i class="ph-duotone ph-clock text-[10px]"></i>
+                                                <span>{{ $n->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            @empty
+                                <div class="p-8 text-center space-y-2">
+                                    <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center text-lg mx-auto">
+                                        <i class="ph-duotone ph-bell-slash"></i>
+                                    </div>
+                                    <p class="text-xs font-bold text-slate-700">Belum Ada Notifikasi</p>
+                                    <p class="text-[11px] text-slate-400 font-medium">Pemberitahuan transaksi atau jadwal akan muncul di sini.</p>
+                                </div>
+                            @endforelse
+                        </div>
+
+                        <!-- Footer Link to Full Page -->
+                        <div class="p-3 bg-slate-50 border-t border-slate-100 text-center">
+                            <a href="{{ route('notifications.index') }}" 
+                               class="text-xs font-extrabold text-slate-800 hover:text-black inline-flex items-center gap-1 transition-colors">
+                                <span>Lihat Semua Notifikasi</span>
+                                <i class="ph-duotone ph-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Profile Dropdown Menu with Logout -->
                 <div x-data="{ open: false }" class="relative">
