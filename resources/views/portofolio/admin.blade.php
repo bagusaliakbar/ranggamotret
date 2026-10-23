@@ -282,26 +282,6 @@
                                 @endif
                             </div>
 
-                            <!-- Hover Overlay Action Buttons -->
-                            <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                <a href="{{ route('admin.portofolio.show', $item->id) }}"
-                                   class="w-9 h-9 rounded-xl bg-white/95 hover:bg-white text-slate-900 flex items-center justify-center text-sm shadow-md transition-transform hover:scale-110"
-                                   title="Buka & Kelola Isi Album">
-                                    <i class="ph-duotone ph-folder-open text-base text-indigo-600"></i>
-                                </a>
-                                <button type="button" 
-                                        @click="openEdit({{ json_encode($item) }})"
-                                        class="w-9 h-9 rounded-xl bg-slate-900/90 hover:bg-slate-900 text-white flex items-center justify-center text-sm shadow-md transition-transform hover:scale-110"
-                                        title="Ubah Portofolio">
-                                    <i class="ph-duotone ph-pencil-simple"></i>
-                                </button>
-                                <button type="button" 
-                                        @click="confirmDelete('{{ route('admin.portofolio.destroy', $item->id) }}', '{{ addslashes($item->judul) }}')"
-                                        class="w-9 h-9 rounded-xl bg-rose-600/90 hover:bg-rose-600 text-white flex items-center justify-center text-sm shadow-md transition-transform hover:scale-110"
-                                        title="Hapus Portofolio">
-                                    <i class="ph-duotone ph-trash"></i>
-                                </button>
-                            </div>
                         </div>
 
                         <!-- Card Content Information -->
