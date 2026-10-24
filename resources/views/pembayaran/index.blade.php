@@ -13,7 +13,7 @@
                 <span class="text-slate-700">Riwayat Pembayaran</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Riwayat Transaksi Pembayaran</h1>
-            <p class="text-xs text-slate-500 font-medium mt-1">Daftar transaksi pembayaran sesi foto dan kursus akademi Anda secara instan atau transfer manual.</p>
+            <p class="text-xs text-slate-500 font-medium mt-1">Daftar transaksi pembayaran sesi foto dan kursus akademi Anda melalui Midtrans Payment Gateway.</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2.5">
@@ -30,8 +30,7 @@
 
     <!-- Helpful Order Info Notice -->
     @php
-        $unpaidCount = $pembayarans->where('status', 'Belum Dibayar')->count();
-        $verifyingCount = $pembayarans->where('status', 'Menunggu Verifikasi')->count();
+        $unpaidCount = $pembayarans->whereIn('status', ['Belum Dibayar', 'Menunggu Pembayaran', 'Menunggu Verifikasi'])->count();
     @endphp
     @if($unpaidCount > 0)
         <div class="p-4 sm:p-5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
@@ -40,30 +39,16 @@
                     <i class="ph-duotone ph-warning-circle"></i>
                 </div>
                 <div class="text-xs">
-                    <h4 class="font-black text-slate-900">Ada {{ $unpaidCount }} Transaksi Belum Diselesaikan</h4>
+                    <h4 class="font-black text-slate-900">Ada {{ $unpaidCount }} Transaksi Belum Selesai</h4>
                     <p class="text-amber-900 font-medium mt-0.5 leading-relaxed">
-                        Silakan selesaikan pembayaran agar jadwal sesi foto terkunci atau akses materi kursus terbuka otomatis.
+                        Silakan selesaikan pembayaran via Midtrans Gateway agar jadwal sesi foto terkunci atau akses materi kursus terbuka otomatis.
                     </p>
                 </div>
             </div>
             <a href="{{ route('payments.create') }}" class="btn-dark px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shrink-0 shadow-xs self-start sm:self-auto">
-                <i class="ph-duotone ph-credit-card"></i>
-                <span>Selesaikan Pembayaran</span>
+                <i class="ph-duotone ph-lightning text-emerald-400"></i>
+                <span>Bayar Sekarang (Instan)</span>
             </a>
-        </div>
-    @elseif($verifyingCount > 0)
-        <div class="p-4 sm:p-5 rounded-2xl bg-sky-50/90 border border-sky-200 text-sky-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
-            <div class="flex items-start sm:items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-sky-500 text-white flex items-center justify-center text-lg shrink-0 shadow-xs">
-                    <i class="ph-duotone ph-hourglass-medium"></i>
-                </div>
-                <div class="text-xs">
-                    <h4 class="font-black text-slate-900">Ada {{ $verifyingCount }} Transaksi Sedang Diverifikasi Owner</h4>
-                    <p class="text-sky-900 font-medium mt-0.5 leading-relaxed">
-                        Bukti pembayaran transfer manual Anda telah berhasil diterima. Owner studio sedang memverifikasi pembayaran Anda. Anda akan menerima notifikasi otomatis begitu disetujui.
-                    </p>
-                </div>
-            </div>
         </div>
     @endif
 
@@ -172,22 +157,19 @@
                                             <span>Invoice PDF</span>
                                         </a>
 
-                                    @elseif($p->status === 'Menunggu Verifikasi')
-                                        <!-- Badge Status Menunggu Verifikasi -->
-                                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-sky-50 text-sky-800 border-sky-200 inline-flex items-center gap-1">
-                                            <i class="ph-duotone ph-clock text-xs text-sky-600 animate-pulse"></i>
-                                            <span>Menunggu Verifikasi</span>
+                                    @elseif(in_array($p->status, ['Menunggu Verifikasi', 'Menunggu Pembayaran']))
+                                        <!-- Badge Status Menunggu -->
+                                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-amber-50 text-amber-900 border-amber-300 inline-flex items-center gap-1">
+                                            <i class="ph-duotone ph-clock text-xs text-amber-600 animate-pulse"></i>
+                                            <span>Menunggu Pembayaran</span>
                                         </span>
 
-                                        <!-- Aksi Lihat Bukti Transfer -->
-                                        @if($p->bukti_pembayaran)
-                                            <a href="{{ asset($p->bukti_pembayaran) }}" target="_blank" 
-                                               class="px-2.5 py-1 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-2xs inline-flex items-center gap-1 transition-all hover:border-slate-300"
-                                               title="Buka Foto Bukti Transfer yang Diunggah">
-                                                <i class="ph-duotone ph-image text-xs text-indigo-600"></i>
-                                                <span>Bukti Struk</span>
-                                            </a>
-                                        @endif
+                                        <a href="{{ route('payments.sync', $p->id) }}" 
+                                           class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-2xs inline-flex items-center gap-1 transition-all" 
+                                           title="Periksa status transaksi ke server Midtrans">
+                                            <i class="ph-duotone ph-arrows-clockwise text-xs text-indigo-600"></i>
+                                            <span>Cek Status</span>
+                                        </a>
 
                                     @elseif($p->status === 'Belum Dibayar')
                                         <!-- Badge Status Belum Dibayar -->

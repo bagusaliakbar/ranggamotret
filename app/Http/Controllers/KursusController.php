@@ -104,7 +104,7 @@ class KursusController extends Controller
         // Ambil data transaksi kursus yang pembayarannya belum selesai
         $pendingCoursePayments = Pembayaran::where('user_id', $user->id)
             ->whereNotNull('kursus_id')
-            ->whereIn('status', ['Belum Dibayar', 'Menunggu Verifikasi'])
+            ->whereIn('status', ['Belum Dibayar', 'Menunggu Pembayaran', 'Menunggu Verifikasi', 'pending'])
             ->with(['kursus.instruktur'])
             ->latest()
             ->get();
@@ -364,7 +364,7 @@ class KursusController extends Controller
         // Metrik statistik pendaftaran kursus
         $totalReservations = Pembayaran::whereNotNull('kursus_id')->count();
         $totalLunas = Pembayaran::whereNotNull('kursus_id')->where('status', 'Dibayar')->count();
-        $totalMenunggu = Pembayaran::whereNotNull('kursus_id')->where('status', 'Menunggu Verifikasi')->count();
+        $totalMenunggu = Pembayaran::whereNotNull('kursus_id')->whereIn('status', ['Menunggu Pembayaran', 'Menunggu Verifikasi', 'pending'])->count();
         $totalPendapatanKursus = Pembayaran::whereNotNull('kursus_id')->where('status', 'Dibayar')->sum('jumlah');
 
         $allCourses = Kursus::orderBy('nama')->get();
@@ -388,7 +388,7 @@ class KursusController extends Controller
     public function adminUpdateReservationStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:Dibayar,Menunggu Verifikasi,Belum Dibayar,Ditolak,Dibatalkan',
+            'status' => 'required|in:Dibayar,Menunggu Pembayaran,Menunggu Verifikasi,Belum Dibayar,Ditolak,Dibatalkan',
         ]);
 
         $pembayaran = Pembayaran::whereNotNull('kursus_id')->findOrFail($id);

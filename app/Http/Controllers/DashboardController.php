@@ -48,7 +48,7 @@ class DashboardController extends Controller
         $totalBooking = Reservasi::count();
         $bookingPending = Reservasi::where('status', 'Menunggu Konfirmasi')->count();
         $totalPendapatan = Pembayaran::where('status', 'Dibayar')->sum('jumlah');
-        $pembayaranPending = Pembayaran::where('status', 'Menunggu Verifikasi')->count();
+        $pembayaranPending = Pembayaran::whereIn('status', ['Menunggu Pembayaran', 'Menunggu Verifikasi', 'pending', 'Belum Dibayar'])->count();
         $totalKursus = Kursus::count();
         $totalPeserta = User::where('role', 'peserta')->count();
         $totalCustomers = User::where('role', 'customer')->count();
@@ -56,7 +56,7 @@ class DashboardController extends Controller
         $pendingTestimonials = Testimoni::where('status', 'pending')->count();
 
         $recentBookings = Reservasi::with(['customer', 'layanan'])->latest()->take(5)->get();
-        $recentPayments = Pembayaran::with('user')->where('status', 'Menunggu Verifikasi')->latest()->take(5)->get();
+        $recentPayments = Pembayaran::with(['user', 'booking.layanan', 'kursus'])->latest()->take(5)->get();
 
         return view('dashboard.admin', compact(
             'totalBooking',

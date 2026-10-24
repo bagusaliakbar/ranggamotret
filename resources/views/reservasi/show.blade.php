@@ -110,11 +110,12 @@
                 @if(!$booking->pembayaran || $booking->pembayaran->status !== 'Dibayar')
                     <div class="pt-3 space-y-2">
                         <a href="{{ route('payments.create', ['booking_id' => $booking->id]) }}" class="btn-dark w-full py-3.5 rounded-xl text-center text-xs font-bold block shadow-md flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-credit-card"></i> Bayar Tagihan (QRIS / VA / Transfer)
+                            <i class="ph-duotone ph-credit-card text-emerald-400 text-base"></i>
+                            <span>Bayar Online via Midtrans (QRIS / VA / E-Wallet)</span>
                         </a>
-                        @if($booking->pembayaran && $booking->pembayaran->status === 'Menunggu Verifikasi')
+                        @if($booking->pembayaran && in_array($booking->pembayaran->status, ['Menunggu Pembayaran', 'pending']))
                             <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-medium text-center">
-                                <i class="fa-solid fa-clock mr-1"></i> Bukti transfer manual sedang diverifikasi admin.
+                                <i class="ph-duotone ph-clock mr-1"></i> Menunggu penyelesaian transaksi di Midtrans.
                             </div>
                         @endif
                     </div>
@@ -123,7 +124,7 @@
                         <div class="flex items-center justify-between">
                             <span class="text-slate-600 font-medium">Status:</span>
                             <span class="font-extrabold text-emerald-800 uppercase px-2 py-0.5 rounded bg-emerald-100 border border-emerald-300 text-[10px]">
-                                <i class="fa-solid fa-circle-check mr-1"></i> Lunas / Terverifikasi
+                                <i class="ph-duotone ph-check-circle mr-1 text-emerald-600"></i> Lunas / Terverifikasi
                             </span>
                         </div>
                         <div class="flex justify-between text-slate-600 font-medium">

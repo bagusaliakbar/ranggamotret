@@ -272,32 +272,34 @@
     <!-- ========================================== -->
     <!-- MODAL: KONFIRMASI HAPUS FOTO TERTENTU      -->
     <!-- ========================================== -->
-    <div x-show="openDeleteModal" 
-         x-cloak
-         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-200"
-             @click.away="openDeleteModal = false">
-            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl mx-auto border border-rose-100">
-                <i class="ph-duotone ph-trash"></i>
+    <template x-teleport="body">
+        <div x-show="openDeleteModal" 
+             x-cloak
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-200"
+                 @click.away="openDeleteModal = false">
+                <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl mx-auto border border-rose-100">
+                    <i class="ph-duotone ph-trash"></i>
+                </div>
+                <div class="text-center space-y-1">
+                    <h3 class="text-sm font-extrabold text-slate-900">Hapus Foto dari Album?</h3>
+                    <p class="text-xs text-slate-500 font-medium">
+                        Foto <span class="font-bold text-slate-700" x-text="`#${deleteIndex}`"></span> akan dihapus secara permanen dari album ini.
+                    </p>
+                </div>
+                <form method="POST" :action="deleteUrl" class="flex items-center justify-center gap-3 pt-2">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" @click="openDeleteModal = false" class="w-1/2 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md transition-all">
+                        Ya, Hapus
+                    </button>
+                </form>
             </div>
-            <div class="text-center space-y-1">
-                <h3 class="text-sm font-extrabold text-slate-900">Hapus Foto dari Album?</h3>
-                <p class="text-xs text-slate-500 font-medium">
-                    Foto <span class="font-bold text-slate-700" x-text="`#${deleteIndex}`"></span> akan dihapus secara permanen dari album ini.
-                </p>
-            </div>
-            <form method="POST" :action="deleteUrl" class="flex items-center justify-center gap-3 pt-2">
-                @csrf
-                @method('DELETE')
-                <button type="button" @click="openDeleteModal = false" class="w-1/2 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">
-                    Batal
-                </button>
-                <button type="submit" class="w-1/2 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md transition-all">
-                    Ya, Hapus
-                </button>
-            </form>
         </div>
-    </div>
+    </template>
 
 </div>
 @endsection

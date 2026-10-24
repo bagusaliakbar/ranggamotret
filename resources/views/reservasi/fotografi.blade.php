@@ -79,15 +79,12 @@
                 <span>Layanan Fotografi yang Dipesan</span>
             </h2>
             <span class="text-xs text-slate-500 font-semibold">{{ $bookings->count() }} Layanan Terdaftar</span>
-        </div>
-
-        @php
-            $trulyUnpaidBookings = $bookings->filter(fn($b) => (!$b->pembayaran || $b->pembayaran->status === 'Belum Dibayar') && !in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai', 'Dibatalkan']));
-            $verifyingBookings = $bookings->filter(fn($b) => $b->pembayaran && $b->pembayaran->status === 'Menunggu Verifikasi');
+        </div>        @php
+            $unpaidBookings = $bookings->filter(fn($b) => (!$b->pembayaran || $b->pembayaran->status !== 'Dibayar') && !in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai', 'Dibatalkan']));
         @endphp
 
         <!-- Alert Notification for Unpaid Bookings -->
-        @if($trulyUnpaidBookings->isNotEmpty())
+        @if($unpaidBookings->isNotEmpty())
             <div class="p-4 sm:p-5 rounded-3xl bg-amber-50/90 border-2 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
                 <div class="flex items-start sm:items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-xl shrink-0 shadow-xs">
@@ -96,38 +93,19 @@
                     <div>
                         <h3 class="font-black text-sm text-slate-900">Perhatian: Pembayaran Sesi Foto Belum Selesai</h3>
                         <p class="text-xs text-amber-900 font-medium mt-0.5 leading-relaxed">
-                            Anda memiliki <strong>{{ $trulyUnpaidBookings->count() }} pemesanan</strong> yang pembayarannya belum selesai. Harap selesaikan pembayaran agar jadwal pemotretan Anda dikonfirmasi oleh studio.
+                            Anda memiliki <strong>{{ $unpaidBookings->count() }} pemesanan</strong> yang pembayarannya belum selesai. Harap selesaikan pembayaran online via Midtrans agar jadwal pemotretan Anda terkonfirmasi otomatis.
                         </p>
                     </div>
                 </div>
-                @if($trulyUnpaidBookings->count() === 1)
-                    <a href="{{ route('payments.create', ['booking_id' => $trulyUnpaidBookings->first()->id]) }}" 
+                @if($unpaidBookings->count() === 1)
+                    <a href="{{ route('payments.create', ['booking_id' => $unpaidBookings->first()->id]) }}" 
                        class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
                         <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                        <span>Bayar Sekarang (Rp {{ number_format($trulyUnpaidBookings->first()->paket->harga ?? 0, 0, ',', '.') }})</span>
+                        <span>Bayar via Midtrans (Rp {{ number_format($unpaidBookings->first()->paket->harga ?? 0, 0, ',', '.') }})</span>
                     </a>
                 @endif
             </div>
-        @elseif($verifyingBookings->isNotEmpty())
-            <div class="p-4 sm:p-5 rounded-3xl bg-sky-50/90 border-2 border-sky-300 text-sky-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                <div class="flex items-start sm:items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">
-                        <i class="ph-duotone ph-hourglass-medium"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-black text-sm text-slate-900">Bukti Pembayaran Sedang Diverifikasi Owner</h3>
-                        <p class="text-xs text-sky-900 font-medium mt-0.5 leading-relaxed">
-                            Anda memiliki <strong>{{ $verifyingBookings->count() }} pemesanan</strong> dengan bukti transfer yang sedang ditinjau oleh Owner studio.
-                        </p>
-                    </div>
-                </div>
-                <a href="{{ route('payments.index') }}" 
-                   class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
-                    <i class="ph-duotone ph-clock"></i>
-                    <span>Cek Riwayat Pembayaran</span>
-                </a>
-            </div>
-        @endif
+        @endifif
 
         @if($bookings->isNotEmpty())
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -178,17 +156,15 @@
 
                                 <!-- Payment Status Warning for Unpaid Booking -->
                                 @if(!$isPaid)
-                                    <div class="p-3.5 rounded-2xl border text-xs {{ $b->pembayaran && $b->pembayaran->status === 'Menunggu Verifikasi' ? 'bg-sky-50 border-sky-200 text-sky-900' : 'bg-amber-50 border-amber-200 text-amber-900' }}">
+                                    <div class="p-3.5 rounded-2xl border text-xs bg-amber-50 border-amber-200 text-amber-900">
                                         <div class="flex items-start gap-2.5">
-                                            <i class="ph-duotone {{ $b->pembayaran && $b->pembayaran->status === 'Menunggu Verifikasi' ? 'ph-clock text-sky-600' : 'ph-warning-circle text-amber-600' }} text-lg shrink-0 mt-0.5"></i>
+                                            <i class="ph-duotone ph-warning-circle text-amber-600 text-lg shrink-0 mt-0.5"></i>
                                             <div>
                                                 <span class="font-black block text-xs">
-                                                    {{ $b->pembayaran && $b->pembayaran->status === 'Menunggu Verifikasi' ? 'Bukti Transfer Sedang Diverifikasi' : 'Pembayaran Belum Diselesaikan' }}
+                                                    Pembayaran Belum Diselesaikan
                                                 </span>
                                                 <p class="text-[11px] mt-0.5 font-medium leading-relaxed">
-                                                    {{ $b->pembayaran && $b->pembayaran->status === 'Menunggu Verifikasi' 
-                                                        ? 'Struk pembayaran Anda telah diunggah dan sedang ditinjau oleh Owner studio.' 
-                                                        : 'Harap selesaikan pembayaran agar jadwal sesi foto ini terkonfirmasi resmi.' }}
+                                                    Harap selesaikan pembayaran online via Midtrans agar jadwal pemotretan Anda terkonfirmasi otomatis.
                                                 </p>
                                             </div>
                                         </div>
@@ -223,17 +199,10 @@
                             @endif
 
                             @if(!$isPaid)
-                                @if($b->pembayaran && $b->pembayaran->status === 'Menunggu Verifikasi')
-                                    <a href="{{ route('payments.index') }}" class="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
-                                        <i class="ph-duotone ph-clock text-base"></i>
-                                        <span>Cek Status Verifikasi Pembayaran</span>
-                                    </a>
-                                @else
-                                    <a href="{{ route('payments.create', ['booking_id' => $b->id]) }}" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
-                                        <i class="ph-duotone ph-credit-card text-base"></i>
-                                        <span>Selesaikan Pembayaran Sekarang (Rp {{ number_format($b->paket->harga ?? 0, 0, ',', '.') }})</span>
-                                    </a>
-                                @endif
+                                <a href="{{ route('payments.create', ['booking_id' => $b->id]) }}" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
+                                    <i class="ph-duotone ph-credit-card text-emerald-400 text-base"></i>
+                                    <span>Bayar via Midtrans (Rp {{ number_format($b->paket->harga ?? 0, 0, ',', '.') }})</span>
+                                </a>
                             @endif
 
                             <a href="{{ route('customer.bookings.show', $b->id) }}" class="btn-dark w-full py-2.5 rounded-xl text-center text-xs font-bold flex items-center justify-center gap-2 shadow-sm hover:scale-[1.01] active:scale-95 transition-all">

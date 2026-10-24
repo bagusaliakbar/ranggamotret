@@ -71,11 +71,10 @@
     <!-- Pending Unpaid Courses Alert & Cards -->
     @if(isset($pendingCoursePayments) && $pendingCoursePayments->isNotEmpty())
         @php
-            $trulyUnpaidCourses = $pendingCoursePayments->where('status', 'Belum Dibayar');
-            $verifyingCourses = $pendingCoursePayments->where('status', 'Menunggu Verifikasi');
+            $unpaidCourses = $pendingCoursePayments->filter(fn($p) => $p->status !== 'Dibayar');
         @endphp
         <div class="space-y-4">
-            @if($trulyUnpaidCourses->isNotEmpty())
+            @if($unpaidCourses->isNotEmpty())
                 <div class="p-4 sm:p-5 rounded-3xl bg-amber-50/90 border-2 border-amber-300 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
                     <div class="flex items-start sm:items-center gap-3">
                         <div class="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-xl shrink-0 shadow-xs">
@@ -84,36 +83,17 @@
                         <div>
                             <h3 class="font-black text-sm text-slate-900">Perhatian: Pendaftaran Kursus Belum Selesai</h3>
                             <p class="text-xs text-amber-900 font-medium mt-0.5 leading-relaxed">
-                                Anda memiliki <strong>{{ $trulyUnpaidCourses->count() }} kursus</strong> yang pembayarannya belum selesai. Selesaikan pembayaran untuk membuka akses materi video, modul belajar, dan tugas praktik.
+                                Anda memiliki <strong>{{ $unpaidCourses->count() }} kursus</strong> yang pembayarannya belum selesai. Selesaikan pembayaran online via Midtrans untuk langsung membuka akses materi video, modul belajar, dan tugas praktik.
                             </p>
                         </div>
                     </div>
-                    @if($trulyUnpaidCourses->count() === 1)
-                        <a href="{{ route('payments.create', ['kursus_id' => $trulyUnpaidCourses->first()->kursus_id]) }}" 
+                    @if($unpaidCourses->count() === 1)
+                        <a href="{{ route('payments.create', ['kursus_id' => $unpaidCourses->first()->kursus_id]) }}" 
                            class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
                             <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                            <span>Bayar Sekarang (Rp {{ number_format($trulyUnpaidCourses->first()->jumlah ?? 0, 0, ',', '.') }})</span>
+                            <span>Bayar via Midtrans (Rp {{ number_format($unpaidCourses->first()->jumlah ?? 0, 0, ',', '.') }})</span>
                         </a>
                     @endif
-                </div>
-            @elseif($verifyingCourses->isNotEmpty())
-                <div class="p-4 sm:p-5 rounded-3xl bg-sky-50/90 border-2 border-sky-300 text-sky-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-                    <div class="flex items-start sm:items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-sky-500 text-white flex items-center justify-center text-xl shrink-0 shadow-xs">
-                            <i class="ph-duotone ph-hourglass-medium"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-black text-sm text-slate-900">Bukti Transfer Kursus Sedang Diverifikasi Owner</h3>
-                            <p class="text-xs text-sky-900 font-medium mt-0.5 leading-relaxed">
-                                Anda memiliki <strong>{{ $verifyingCourses->count() }} pendaftaran kursus</strong> yang bukti transfernya sedang ditinjau. Akses materi belajar akan aktif otomatis setelah disetujui.
-                            </p>
-                        </div>
-                    </div>
-                    <a href="{{ route('payments.index') }}" 
-                       class="px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
-                        <i class="ph-duotone ph-clock"></i>
-                        <span>Cek Riwayat Pembayaran</span>
-                    </a>
                 </div>
             @endif
 
@@ -138,8 +118,8 @@
                                 </div>
 
                                 <div class="absolute top-3 right-3">
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm {{ $pay->status === 'Menunggu Verifikasi' ? 'bg-sky-500 text-white' : 'bg-amber-500 text-slate-950' }}">
-                                        {{ $pay->status === 'Menunggu Verifikasi' ? 'Verifikasi Admin' : 'Belum Selesai' }}
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm bg-amber-500 text-slate-950">
+                                        Menunggu Bayar
                                     </span>
                                 </div>
                             </div>
@@ -156,17 +136,15 @@
                                 </div>
 
                                 <!-- Status Box -->
-                                <div class="p-3.5 rounded-2xl border text-xs {{ $pay->status === 'Menunggu Verifikasi' ? 'bg-sky-50 border-sky-200 text-sky-900' : 'bg-amber-50 border-amber-200 text-amber-900' }}">
+                                <div class="p-3.5 rounded-2xl border text-xs bg-amber-50 border-amber-200 text-amber-900">
                                     <div class="flex items-start gap-2">
-                                        <i class="ph-duotone {{ $pay->status === 'Menunggu Verifikasi' ? 'ph-clock text-sky-600' : 'ph-warning-circle text-amber-600' }} text-base mt-0.5 shrink-0"></i>
+                                        <i class="ph-duotone ph-warning-circle text-amber-600 text-base mt-0.5 shrink-0"></i>
                                         <div>
                                             <span class="font-black block text-xs">
-                                                {{ $pay->status === 'Menunggu Verifikasi' ? 'Menunggu Verifikasi Owner' : 'Pembayaran Belum Diselesaikan' }}
+                                                Pembayaran Belum Diselesaikan
                                             </span>
                                             <p class="text-[11px] mt-0.5 font-medium leading-relaxed">
-                                                {{ $pay->status === 'Menunggu Verifikasi' 
-                                                    ? 'Struk transfer manual sedang diverifikasi admin. Ruang belajar akan terbuka setelah disetujui.' 
-                                                    : 'Selesaikan transaksi agar kelas dan materi pembelajaran langsung aktif.' }}
+                                                Selesaikan transaksi via Midtrans agar kelas dan materi pembelajaran langsung aktif otomatis.
                                             </p>
                                         </div>
                                     </div>
@@ -176,17 +154,10 @@
 
                         <!-- Action Button -->
                         <div class="p-6 pt-0 space-y-2">
-                            @if($pay->status === 'Menunggu Verifikasi')
-                                <a href="{{ route('payments.index') }}" class="w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
-                                    <i class="ph-duotone ph-clock text-base"></i>
-                                    <span>Cek Status Verifikasi</span>
-                                </a>
-                            @else
-                                <a href="{{ route('payments.create', ['kursus_id' => $pay->kursus_id]) }}" class="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
-                                    <i class="ph-duotone ph-credit-card text-base"></i>
-                                    <span>Selesaikan Pembayaran Sekarang</span>
-                                </a>
-                            @endif
+                            <a href="{{ route('payments.create', ['kursus_id' => $pay->kursus_id]) }}" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
+                                <i class="ph-duotone ph-credit-card text-emerald-400 text-base"></i>
+                                <span>Bayar via Midtrans (Rp {{ number_format($pay->jumlah, 0, ',', '.') }})</span>
+                            </a>
                         </div>
                     </div>
                 @endforeach

@@ -135,56 +135,20 @@ class PembayaranController extends Controller
     }
 
     /**
-     * Unggah bukti transfer manual oleh pelanggan
+     * Redirect untuk pembayaran instan via Midtrans Gateway
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'booking_id' => 'nullable|exists:booking,id',
-            'kursus_id' => 'nullable|exists:kursus,id',
-            'jumlah' => 'required|numeric|min:1000',
-            'metode_pembayaran' => 'required|string',
-            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'catatan' => 'nullable|string',
-        ]);
-
-        $trxNumber = 'TRX-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
-
-        $buktiPath = null;
-        if ($request->hasFile('bukti_pembayaran')) {
-            $file = $request->file('bukti_pembayaran');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/pembayaran'), $filename);
-            $buktiPath = 'uploads/pembayaran/' . $filename;
+        if ($request->filled('booking_id')) {
+            return redirect()->route('payments.create', ['booking_id' => $request->booking_id])
+                ->with('info', 'Pembayaran diproses secara otomatis melalui Midtrans Gateway.');
+        } elseif ($request->filled('kursus_id')) {
+            return redirect()->route('payments.create', ['kursus_id' => $request->kursus_id])
+                ->with('info', 'Pembayaran diproses secara otomatis melalui Midtrans Gateway.');
         }
 
-        $pembayaran = Pembayaran::create([
-            'nomor_transaksi' => $trxNumber,
-            'user_id' => Auth::id(),
-            'booking_id' => $validated['booking_id'] ?? null,
-            'kursus_id' => $validated['kursus_id'] ?? null,
-            'jumlah' => $validated['jumlah'],
-            'metode_pembayaran' => $validated['metode_pembayaran'],
-            'tanggal_pembayaran' => Carbon::now(),
-            'bukti_pembayaran' => $buktiPath,
-            'catatan' => $validated['catatan'] ?? null,
-            'status' => 'Menunggu Verifikasi',
-        ]);
-
-        if (!empty($validated['booking_id'])) {
-            $booking = Reservasi::find($validated['booking_id']);
-            $booking->status = 'Menunggu Pembayaran';
-            $booking->save();
-        }
-
-        Notifikasi::create([
-            'user_id' => 1,
-            'judul' => 'Konfirmasi Pembayaran Masuk',
-            'pesan' => 'Pembayaran ' . $trxNumber . ' sebesar Rp ' . number_format($pembayaran->jumlah, 0, ',', '.') . ' menunggu verifikasi.',
-            'link' => '/admin/payments',
-        ]);
-
-        return redirect()->route('payments.index')->with('success', 'Bukti pembayaran Anda berhasil dikirim dan sedang diverifikasi oleh admin.');
+        return redirect()->route('payments.index')
+            ->with('info', 'Pembayaran diproses secara instan melalui Midtrans Gateway.');
     }
 
     /**
@@ -390,49 +354,54 @@ class PembayaranController extends Controller
     }
 
     /**
-     * Daftar pembayaran di panel Admin
+     * Daftar pembayaran di panel Admin (Midtrans Gateway)
      */
     public function adminIndex(Request $request)
     {
         $status = $request->query('status');
-        $metode = $request->query('metode');
+        $search = $request->query('search');
 
         $query = Pembayaran::with(['user', 'booking.layanan', 'booking.paket', 'kursus']);
 
-        if ($status) {
-            $query->where('status', $status);
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nomor_transaksi', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('booking', function($bq) use ($search) {
+                      $bq->where('nomor_booking', 'like', "%{$search}%");
+                  });
+            });
         }
 
-        if ($metode === 'manual') {
-            $query->where(function($q) {
-                $q->where('metode_pembayaran', 'like', '%Transfer%')
-                  ->orWhereNotNull('bukti_pembayaran');
-            });
-        } elseif ($metode === 'gateway') {
-            $query->where('metode_pembayaran', 'like', '%Midtrans%');
+        if ($status) {
+            if ($status === 'pending') {
+                $query->whereIn('status', ['Menunggu Pembayaran', 'Menunggu Verifikasi', 'Belum Dibayar']);
+            } elseif ($status === 'failed') {
+                $query->whereIn('status', ['Ditolak', 'Dibatalkan', 'Kadaluarsa']);
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         $pembayarans = $query->latest()->paginate(15)->withQueryString();
 
-        // Hitung statistik untuk badge & filter tab
-        $countManualPending = Pembayaran::where('status', 'Menunggu Verifikasi')->count();
-        $countGateway = Pembayaran::where('metode_pembayaran', 'like', '%Midtrans%')->count();
-        $countManual = Pembayaran::where(function($q) {
-            $q->where('metode_pembayaran', 'like', '%Transfer%')
-              ->orWhereNotNull('bukti_pembayaran');
-        })->count();
-        $countLunas = Pembayaran::where('status', 'Dibayar')->count();
+        // Hitung statistik transaksi Midtrans
         $countTotal = Pembayaran::count();
+        $countLunas = Pembayaran::where('status', 'Dibayar')->count();
+        $countPending = Pembayaran::whereIn('status', ['Menunggu Pembayaran', 'Menunggu Verifikasi', 'Belum Dibayar'])->count();
+        $countFailed = Pembayaran::whereIn('status', ['Ditolak', 'Dibatalkan', 'Kadaluarsa'])->count();
 
         return view('pembayaran.admin', compact(
             'pembayarans', 
             'status', 
-            'metode',
-            'countManualPending',
-            'countGateway',
-            'countManual',
+            'search',
+            'countTotal',
             'countLunas',
-            'countTotal'
+            'countPending',
+            'countFailed'
         ));
     }
 

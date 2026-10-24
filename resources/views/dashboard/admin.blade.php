@@ -90,10 +90,10 @@
             </div>
         </div>
 
-        <!-- 4. Antrean Verifikasi Pembayaran -->
+        <!-- 4. Status Transaksi Pending Midtrans -->
         <div class="clean-card p-5 sm:p-6 rounded-3xl bg-white border {{ $pembayaranPending > 0 ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200/80' }} shadow-2xs space-y-3 relative overflow-hidden group hover:border-amber-400 transition-all">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-extrabold {{ $pembayaranPending > 0 ? 'text-amber-800' : 'text-slate-400' }} uppercase tracking-wider">Verifikasi Manual</span>
+                <span class="text-[10px] sm:text-xs font-extrabold {{ $pembayaranPending > 0 ? 'text-amber-800' : 'text-slate-400' }} uppercase tracking-wider">Menunggu Bayar</span>
                 <div class="w-10 h-10 rounded-2xl {{ $pembayaranPending > 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600' }} flex items-center justify-center text-lg shadow-2xs group-hover:scale-110 transition-transform">
                     <i class="ph-duotone ph-receipt"></i>
                 </div>
@@ -105,10 +105,10 @@
                 <div class="flex items-center gap-1.5 mt-1.5 text-[11px] font-bold {{ $pembayaranPending > 0 ? 'text-amber-700' : 'text-slate-500' }}">
                     @if($pembayaranPending > 0)
                         <i class="ph-duotone ph-clock text-xs animate-spin"></i>
-                        <span>Perlu verifikasi Owner</span>
+                        <span>Menunggu penyelesaian Midtrans</span>
                     @else
                         <i class="ph-duotone ph-check-circle text-xs text-emerald-600"></i>
-                        <span class="text-emerald-700">Semua transfer terverifikasi</span>
+                        <span class="text-emerald-700">Semua transaksi tuntas</span>
                     @endif
                 </div>
             </div>
@@ -228,56 +228,62 @@
             </div>
         </div>
 
-        <!-- 2. Recent Payments (Verifikasi Pembayaran Masuk) -->
+        <!-- 2. Recent Payments (Transaksi Pembayaran Masuk) -->
         <div class="clean-card p-6 sm:p-7 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-5">
             <div class="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-sm">
+                    <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-2xs">
                         <i class="ph-duotone ph-receipt"></i>
                     </div>
                     <div>
-                        <h2 class="font-black text-slate-900 text-base">Verifikasi Pembayaran</h2>
-                        <p class="text-[11px] text-slate-400 font-medium">Antrean konfirmasi transfer bank manual klien.</p>
+                        <h2 class="font-black text-slate-900 text-base">Transaksi Pembayaran</h2>
+                        <p class="text-[11px] text-slate-400 font-medium">Monitoring transaksi online otomatis via Midtrans Gateway.</p>
                     </div>
                 </div>
-                <a href="{{ route('admin.payments.index', ['status' => 'Menunggu Verifikasi']) }}" 
+                <a href="{{ route('admin.payments.index') }}" 
                    class="inline-flex items-center gap-1 text-xs font-bold text-slate-900 hover:text-slate-600 transition-colors group">
-                    <span>Lihat Antrean</span>
+                    <span>Lihat Semua</span>
                     <i class="ph-duotone ph-arrow-right text-xs group-hover:translate-x-0.5 transition-transform"></i>
                 </a>
             </div>
 
             <div class="space-y-3">
                 @forelse($recentPayments as $rp)
-                    <div class="p-3.5 sm:p-4 rounded-2xl bg-amber-50/40 hover:bg-amber-50/70 border border-amber-200/70 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group">
+                    @php
+                        $isLunas = $rp->status === 'Dibayar';
+                    @endphp
+                    <div class="p-3.5 sm:p-4 rounded-2xl {{ $isLunas ? 'bg-emerald-50/30 border-emerald-200/60' : 'bg-amber-50/40 border-amber-200/70' }} hover:shadow-xs border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group">
                         <div class="flex items-start gap-3 min-w-0">
-                            <div class="w-10 h-10 rounded-xl bg-amber-100/70 text-amber-800 flex items-center justify-center text-base shrink-0 shadow-2xs font-bold">
-                                <i class="ph-duotone ph-bank"></i>
+                            <div class="w-10 h-10 rounded-xl {{ $isLunas ? 'bg-emerald-100/70 text-emerald-800' : 'bg-amber-100/70 text-amber-800' }} flex items-center justify-center text-base shrink-0 shadow-2xs font-bold">
+                                <i class="ph-duotone {{ $isLunas ? 'ph-check-circle' : 'ph-credit-card' }}"></i>
                             </div>
                             <div class="min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <span class="font-mono text-xs font-black text-slate-900">
                                         {{ $rp->nomor_transaksi }}
                                     </span>
-                                    <span class="text-xs font-extrabold text-emerald-700">
+                                    <span class="text-xs font-extrabold {{ $isLunas ? 'text-emerald-700' : 'text-amber-800' }}">
                                         Rp {{ number_format($rp->jumlah, 0, ',', '.') }}
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider {{ $isLunas ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200' }}">
+                                        {{ $rp->status }}
                                     </span>
                                 </div>
                                 <div class="flex items-center gap-2 mt-1 text-[11px] text-slate-500 font-medium">
                                     <span class="text-slate-800 font-semibold">{{ $rp->user->name ?? 'Pelanggan' }}</span>
                                     <span>&bull;</span>
-                                    <span>{{ $rp->metode_pembayaran }}</span>
+                                    <span>{{ $rp->metode_pembayaran ?: 'Midtrans Snap' }}</span>
                                     <span>&bull;</span>
                                     <span>{{ date('d M, H:i', strtotime($rp->tanggal_pembayaran ?? $rp->created_at)) }}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between sm:justify-end gap-2.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-amber-200/40">
-                            <a href="{{ route('admin.payments.index', ['status' => 'Menunggu Verifikasi']) }}" 
+                        <div class="flex items-center justify-between sm:justify-end gap-2.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                            <a href="{{ route('admin.payments.index', ['search' => $rp->nomor_transaksi]) }}" 
                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-black text-white font-extrabold text-[11px] shadow-2xs transition-all hover:scale-[1.02]">
-                                <i class="ph-duotone ph-check-circle text-xs text-emerald-400"></i>
-                                <span>Verifikasi</span>
+                                <i class="ph-duotone ph-arrow-square-out text-xs text-emerald-400"></i>
+                                <span>Detail</span>
                             </a>
                         </div>
                     </div>
@@ -286,8 +292,8 @@
                         <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mx-auto">
                             <i class="ph-duotone ph-check-circle"></i>
                         </div>
-                        <p class="text-xs font-bold text-slate-900">Tidak Ada Antrean Verifikasi</p>
-                        <p class="text-[11px] text-slate-400 font-medium">Seluruh bukti transfer pembayaran dari klien telah berhasil diverifikasi.</p>
+                        <p class="text-xs font-bold text-slate-900">Belum Ada Transaksi Masuk</p>
+                        <p class="text-[11px] text-slate-400 font-medium">Seluruh transaksi online akan muncul otomatis di sini.</p>
                     </div>
                 @endforelse
             </div>

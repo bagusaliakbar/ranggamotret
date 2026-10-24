@@ -3,17 +3,7 @@
 @section('title', 'Kelola Reservasi Kursus — Owner RanggaMotret.id')
 
 @section('content')
-<div class="space-y-8"
-     x-data="{
-        showBuktiModal: false,
-        buktiSrc: '',
-        buktiTitle: '',
-        openBukti(src, title) {
-            this.buktiSrc = src;
-            this.buktiTitle = title;
-            this.showBuktiModal = true;
-        }
-     }">
+<div class="space-y-8">
 
     <!-- Page Header & Action Toolbar -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-6">
@@ -87,16 +77,16 @@
             <div class="text-[11px] text-emerald-700 font-medium">Bisa langsung belajar LMS</div>
         </div>
 
-        <!-- 3. Menunggu Verifikasi Manual -->
+        <!-- 3. Menunggu Pembayaran Midtrans -->
         <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-xs">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Menunggu Verifikasi</span>
-                <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-sm border border-sky-100">
-                    <i class="ph-duotone ph-clock animate-pulse"></i>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Menunggu Pembayaran</span>
+                <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm border border-amber-100">
+                    <i class="ph-duotone ph-hourglass-medium animate-pulse"></i>
                 </div>
             </div>
-            <div class="text-2xl font-black text-sky-600">{{ number_format($totalMenunggu) }}</div>
-            <div class="text-[11px] text-sky-700 font-medium">Perlu dicek bukti transfernya</div>
+            <div class="text-2xl font-black text-amber-600">{{ number_format($totalMenunggu) }}</div>
+            <div class="text-[11px] text-amber-700 font-medium">Transaksi belum lunas di Midtrans</div>
         </div>
 
         <!-- 4. Total Omset Kursus -->
@@ -263,17 +253,6 @@
                             <!-- 7. Aksi / Ubah Status -->
                             <td class="p-4 text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-2">
-                                    <!-- Bukti Transfer Modal Trigger -->
-                                    @if($r->bukti_pembayaran)
-                                        <button type="button" 
-                                                @click="openBukti('{{ asset($r->bukti_pembayaran) }}', 'Bukti Transfer {{ $r->nomor_transaksi }}')"
-                                                class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-[10px] border border-slate-200 shadow-2xs inline-flex items-center gap-1 transition-all"
-                                                title="Lihat Bukti Struk Transfer">
-                                            <i class="ph-duotone ph-image text-xs text-indigo-600"></i>
-                                            <span>Bukti Struk</span>
-                                        </button>
-                                    @endif
-
                                     <!-- Quick Change Status Form -->
                                     <form method="POST" action="{{ route('admin.courses.reservations.update-status', $r->id) }}" class="inline">
                                         @csrf
@@ -319,41 +298,6 @@
                 {{ $reservations->links() }}
             </div>
         @endif
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL PREVIEW BUKTI TRANSFER               -->
-    <!-- ========================================== -->
-    <div x-show="showBuktiModal" 
-         x-cloak
-         class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200 relative"
-             @click.away="showBuktiModal = false">
-            
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                    <i class="ph-duotone ph-receipt text-lg text-indigo-600"></i>
-                    <h3 class="text-sm font-extrabold text-slate-900" x-text="buktiTitle"></h3>
-                </div>
-                <button @click="showBuktiModal = false" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg">
-                    <i class="ph-bold ph-x text-base"></i>
-                </button>
-            </div>
-
-            <div class="rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 max-h-[70vh] flex items-center justify-center">
-                <img :src="buktiSrc" class="max-w-full max-h-[70vh] object-contain">
-            </div>
-
-            <div class="flex justify-between items-center pt-2">
-                <a :href="buktiSrc" target="_blank" class="text-xs font-bold text-indigo-600 hover:underline inline-flex items-center gap-1">
-                    <i class="ph-duotone ph-arrows-out"></i>
-                    <span>Buka Ukuran Penuh</span>
-                </a>
-                <button type="button" @click="showBuktiModal = false" class="px-4 py-2 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl shadow-xs">
-                    Tutup
-                </button>
-            </div>
-        </div>
     </div>
 
 </div>
