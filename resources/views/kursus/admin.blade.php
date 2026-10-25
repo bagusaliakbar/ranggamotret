@@ -209,7 +209,7 @@
                                         <span>&bull; <strong>{{ $c->enrollments->count() }}</strong> Pelanggan</span>
                                     </div>
                                     <div class="text-[11px] text-slate-400">
-                                        Pengampu (Owner): <span
+                                        Instruktur : <span
                                             class="text-slate-600 font-bold">{{ $c->instruktur->name ?? 'Owner' }}</span>
                                     </div>
                                 </div>

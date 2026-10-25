@@ -103,20 +103,6 @@
                         </span>
                     </div>
 
-                    <!-- Magnify Zoom Hover Badge -->
-                    <div class="absolute top-4 right-4 z-10 flex items-center gap-2">
-                        <a href="{{ route('portofolio.show', $p->id) }}" 
-                           class="w-9 h-9 rounded-full bg-white/95 text-slate-900 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:scale-110"
-                           title="Buka Seluruh Album">
-                            <i class="ph-duotone ph-folder-open text-indigo-600"></i>
-                        </a>
-                        <button type="button" 
-                                @click="openLightbox({{ $index }})"
-                                class="w-9 h-9 rounded-full bg-white/95 text-slate-900 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:scale-110"
-                                title="Lihat Foto HD">
-                            <i class="ph-duotone ph-arrows-out"></i>
-                        </button>
-                    </div>
 
                     <!-- Overlay Bottom Details -->
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/30 to-transparent opacity-85 group-hover:opacity-100 transition-opacity duration-300 p-6 flex flex-col justify-end text-white">
