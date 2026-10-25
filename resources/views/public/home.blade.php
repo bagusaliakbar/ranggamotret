@@ -40,51 +40,7 @@
                     </a>
                 </div>
 
-                <!-- Live Social Proof & Trust Strip -->
-                <div class="pt-6 border-t border-slate-100 flex flex-wrap items-center gap-6">
-                    <div class="flex items-center gap-3">
-                        <div class="flex -space-x-2 overflow-hidden">
-                            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Client 1">
-                            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Client 2">
-                            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=120&q=80" alt="Client 3">
-                            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" alt="Client 4">
-                        </div>
-                        <div>
-                            <div class="flex items-center text-amber-500 text-xs gap-1">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <span class="font-black text-slate-900 ml-1 text-xs">4.9 / 5.0</span>
-                            </div>
-                            <div class="text-[11px] font-medium text-slate-500">Dari 500+ Klien & Alumni Kursus</div>
-                        </div>
-                    </div>
 
-                    <div class="h-8 w-px bg-slate-200 hidden sm:block"></div>
-
-                    <div class="flex items-center gap-2 text-xs font-bold text-slate-700">
-                        <i class="ph-duotone ph-certificate text-slate-900 text-lg"></i>
-                        <span>Studio Resmi & Terakreditasi</span>
-                    </div>
-                </div>
-
-                <!-- Minimalist Stat Counters -->
-                <div class="grid grid-cols-3 gap-6 pt-6 border-t border-slate-200 max-w-lg">
-                    <div>
-                        <div class="text-3xl lg:text-4xl font-black text-slate-900">500+</div>
-                        <div class="text-xs font-semibold text-slate-500 mt-1">Sesi Foto Sukses</div>
-                    </div>
-                    <div>
-                        <div class="text-3xl lg:text-4xl font-black text-slate-900">1,200+</div>
-                        <div class="text-xs font-semibold text-slate-500 mt-1">Pelanggan Kursus</div>
-                    </div>
-                    <div>
-                        <div class="text-3xl lg:text-4xl font-black text-slate-900">99.8%</div>
-                        <div class="text-xs font-semibold text-slate-500 mt-1">Kepuasan Klien</div>
-                    </div>
-                </div>
             </div>
 
             <!-- Right Featured Image Showcase -->
@@ -93,21 +49,6 @@
                     <div class="aspect-[4/5] rounded-3xl overflow-hidden clean-card relative group shadow-2xl">
                         <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1000&q=80" alt="RanggaMotret Studio" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent"></div>
-                        
-                        <div class="absolute bottom-6 left-6 right-6 p-5 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 text-xs shadow-xl space-y-1">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] uppercase tracking-widest text-slate-500 font-extrabold">Signature Aesthetics</span>
-                                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-extrabold uppercase">Tersedia Sesi Foto</span>
-                            </div>
-                            <span class="text-base font-extrabold text-slate-900 block">RanggaMotret Studio & Production</span>
-                            <p class="text-[11px] text-slate-500 font-medium">Kamera Sony Alpha Full-Frame, G-Master Lenses & Pencahayaan Studio Profoto.</p>
-                        </div>
-                    </div>
-
-                    <!-- Floating Floating Badge -->
-                    <div class="absolute -top-4 -left-4 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-xl border border-slate-800 hidden sm:flex items-center gap-2">
-                        <i class="ph-duotone ph-lightning text-amber-400 text-base"></i>
-                        <span>Proofing Galeri Online 48 Jam</span>
                     </div>
                 </div>
             </div>
