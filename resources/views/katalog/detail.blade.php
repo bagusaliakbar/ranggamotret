@@ -146,54 +146,6 @@
         </div>
     </section>
 
-    <!-- 3. Signature Features / 4 Pillars of Quality -->
-    <section class="bg-white border-y border-slate-200/80 py-16 lg:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Keunggulan Layanan</span>
-                <h2 class="font-serif-luxury text-3xl sm:text-4xl font-bold text-slate-900">Sentuhan Eksklusif di Setiap Jepretan</h2>
-                <p class="text-xs sm:text-sm text-slate-500 font-medium">Standar kerja profesional berorientasi pada kenyamanan Anda dan hasil visual bermutu tinggi.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Pillar 1 -->
-                <div class="clean-card p-6 rounded-2xl space-y-3 hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center text-sm font-bold shadow-sm">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    </div>
-                    <h3 class="font-extrabold text-slate-900 text-sm">Grading Warna Sinematik</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Penyelarasan palet warna khas RanggaMotret dengan nuansa hangat, bersih, dan tak lekang oleh waktu (*timeless*).</p>
-                </div>
-
-                <!-- Pillar 2 -->
-                <div class="clean-card p-6 rounded-2xl space-y-3 hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center text-sm font-bold shadow-sm">
-                        <i class="fa-solid fa-camera"></i>
-                    </div>
-                    <h3 class="font-extrabold text-slate-900 text-sm">Optik & Sensor Full-Frame</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Didukung kamera beresolusi tinggi dan lensa prime ber-aperture lebar untuk ketajaman detail dan efek *depth-of-field* alami.</p>
-                </div>
-
-                <!-- Pillar 3 -->
-                <div class="clean-card p-6 rounded-2xl space-y-3 hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center text-sm font-bold shadow-sm">
-                        <i class="fa-solid fa-images"></i>
-                    </div>
-                    <h3 class="font-extrabold text-slate-900 text-sm">Portal Proofing Klien</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Pilih foto favorit Anda dari rumah via galeri digital interaktif kami sebelum proses retouch akhir dikerjakan.</p>
-                </div>
-
-                <!-- Pillar 4 -->
-                <div class="clean-card p-6 rounded-2xl space-y-3 hover:-translate-y-1 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center text-sm font-bold shadow-sm">
-                        <i class="fa-solid fa-cloud-arrow-down"></i>
-                    </div>
-                    <h3 class="font-extrabold text-slate-900 text-sm">Akses Cloud Berkecepatan Tinggi</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">Unduh semua berkas foto original dan editan beresolusi cetak tinggi kapan saja melalui penyimpanan cloud aman.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- 4. Package Pricing Tiers (Pricing Page + CTA Pattern) -->
     <section id="paket-pilihan" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 scroll-mt-24">
