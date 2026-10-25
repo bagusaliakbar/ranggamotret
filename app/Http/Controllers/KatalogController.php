@@ -136,11 +136,13 @@ class KatalogController extends Controller
             ? trim($validated['kategori_custom'])
             : $validated['kategori'];
 
+        $kategoriId = null;
         if (!empty($finalKategori)) {
-            KategoriLayanan::firstOrCreate(
+            $catRecord = KategoriLayanan::firstOrCreate(
                 ['nama' => $finalKategori],
                 ['slug' => Str::slug($finalKategori), 'icon' => 'fa-camera', 'status' => 'aktif']
             );
+            $kategoriId = $catRecord->id;
         }
 
         $thumbnailPath = null;
@@ -164,6 +166,7 @@ class KatalogController extends Controller
 
         $layanan = Katalog::create([
             'nama' => $validated['nama'],
+            'kategori_layanan_id' => $kategoriId,
             'kategori' => $finalKategori,
             'deskripsi' => $validated['deskripsi'] ?? null,
             'harga_mulai' => $validated['harga_mulai'],
@@ -196,11 +199,13 @@ class KatalogController extends Controller
             ? trim($validated['kategori_custom'])
             : $validated['kategori'];
 
+        $kategoriId = null;
         if (!empty($finalKategori)) {
-            KategoriLayanan::firstOrCreate(
+            $catRecord = KategoriLayanan::firstOrCreate(
                 ['nama' => $finalKategori],
                 ['slug' => Str::slug($finalKategori), 'icon' => 'fa-camera', 'status' => 'aktif']
             );
+            $kategoriId = $catRecord->id;
         }
 
         $thumbnailPath = $layanan->thumbnail;
@@ -229,6 +234,7 @@ class KatalogController extends Controller
 
         $layanan->update([
             'nama' => $validated['nama'],
+            'kategori_layanan_id' => $kategoriId,
             'kategori' => $finalKategori,
             'deskripsi' => $validated['deskripsi'] ?? null,
             'harga_mulai' => $validated['harga_mulai'],
@@ -485,7 +491,12 @@ class KatalogController extends Controller
         ]);
 
         if ($oldName !== $newName) {
-            Katalog::where('kategori', $oldName)->update(['kategori' => $newName]);
+            Katalog::where('kategori', $oldName)
+                ->orWhere('kategori_layanan_id', $category->id)
+                ->update([
+                    'kategori' => $newName,
+                    'kategori_layanan_id' => $category->id,
+                ]);
         }
 
         return redirect()->route('admin.kategori-layanan.index')

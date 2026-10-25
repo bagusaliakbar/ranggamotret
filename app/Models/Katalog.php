@@ -16,12 +16,18 @@ class Katalog extends Model
 
     protected $fillable = [
         'nama',
+        'kategori_layanan_id',
         'kategori',
         'deskripsi',
         'harga_mulai',
         'thumbnail',
         'status',
     ];
+
+    public function kategoriLayanan()
+    {
+        return $this->belongsTo(KategoriLayanan::class, 'kategori_layanan_id');
+    }
 
     public function pakets()
     {
@@ -96,22 +102,22 @@ class KategoriLayanan extends Model
 
     public function katalog()
     {
-        return $this->hasMany(Katalog::class, 'kategori', 'nama');
+        return $this->hasMany(Katalog::class, 'kategori_layanan_id');
     }
 
     public function layanan()
     {
-        return $this->hasMany(Katalog::class, 'kategori', 'nama');
+        return $this->hasMany(Katalog::class, 'kategori_layanan_id');
     }
 
     public function activeKatalog()
     {
-        return $this->hasMany(Katalog::class, 'kategori', 'nama')->where('status', 'aktif');
+        return $this->hasMany(Katalog::class, 'kategori_layanan_id')->where('status', 'aktif');
     }
 
     public function activeLayanan()
     {
-        return $this->hasMany(Katalog::class, 'kategori', 'nama')->where('status', 'aktif');
+        return $this->hasMany(Katalog::class, 'kategori_layanan_id')->where('status', 'aktif');
     }
 
     public function scopeActive($query)

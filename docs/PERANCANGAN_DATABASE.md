@@ -64,6 +64,7 @@ erDiagram
     users ||--o{ konsultasi : "mengajukan tiket"
     users ||--o{ notifikasi : "menerima pesan"
 
+    kategori_layanan ||--o{ layanan : "mengelompokkan"
     layanan ||--|{ paket : "memiliki paket"
     layanan ||--o{ reservasi : "dipesan pada"
 
@@ -119,6 +120,7 @@ erDiagram
 
     layanan {
         bigint id PK
+        bigint kategori_layanan_id FK
         varchar nama
         varchar kategori
         text deskripsi
@@ -371,33 +373,34 @@ Berikut adalah tabel matriks integritas relasi fisik basis data (*Foreign Key Co
 | No | Tabel Asal (Child Table) | Kolom Foreign Key | Tabel Tujuan (Parent Table) | Kolom Primary Key | Kardinalitas | On Delete | On Update | Deskripsi Relasi Bisnis |
 | :---: | :--- | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | 1 | `customers` | `user_id` | `users` | `id` | 1 : 1 | CASCADE | RESTRICT | Relasi profil detail pelanggan dengan akun pengguna autentikasi sistem. |
-| 2 | `paket` | `layanan_id` | `layanan` | `id` | 1 : N | CASCADE | RESTRICT | Penetapan paket spesifik (harga, durasi, fasilitas) ke katalog layanan foto induk. |
-| 3 | `reservasi` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pemesan sesi foto atau siswa kursus ke akun pengguna sistem. |
-| 4 | `reservasi` | `layanan_id` | `layanan` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sesi foto yang dipesan ke kategori katalog layanan foto (nullable pada kursus). |
-| 5 | `reservasi` | `paket_id` | `paket` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sesi foto ke rincian paket penawaran yang dipilih (nullable pada kursus). |
-| 6 | `reservasi` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pendaftaran kelas akademi ke program kursus yang diikuti (nullable pada foto). |
-| 7 | `pembayaran` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan transaksi pembayaran ke akun pembayar (pelanggan/siswa). |
-| 8 | `pembayaran` | `reservasi_id` | `reservasi` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan tagihan pembayaran dengan entitas reservasi foto atau kursus terkait. |
-| 9 | `pembayaran` | `kursus_id` | `kursus` | `id` | 1 : N | SET NULL | RESTRICT | Referensi langsung ke program kursus pada transaksi checkout Midtrans Snap. |
-| 10 | `invoice` | `pembayaran_id` | `pembayaran` | `id` | 1 : 1 | CASCADE | RESTRICT | Menghubungkan faktur kwitansi resmi digital ke record transaksi pembayaran lunas. |
-| 11 | `invoice` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan dokumen penagihan dan kwitansi resmi ke akun pelanggan. |
-| 12 | `invoice` | `reservasi_id` | `reservasi` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan faktur resmi dengan nomor reservasi pemesanan foto atau kelas kursus. |
-| 13 | `invoice` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Referensi program kursus pada dokumen faktur tagihan resmi (nullable pada foto). |
-| 14 | `kursus` | `instruktur_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menetapkan Owner/Admin studio sebagai pengampu materi kursus akademi. |
-| 15 | `modul` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Pengelompokan bab-bab silabus terstruktur di bawah program kursus fotografi. |
-| 16 | `materi` | `modul_id` | `modul` | `id` | 1 : N | CASCADE | RESTRICT | Pengelompokan butir materi (video pembelajaran, teks teori) ke dalam bab modul. |
-| 17 | `materi_progress` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pencatatan progres penyelesaian materi ke akun siswa. |
-| 18 | `materi_progress` | `materi_id` | `materi` | `id` | 1 : N | CASCADE | RESTRICT | Menandai centang selesai (*is_completed*) pada butir materi pelajaran tertentu. |
-| 19 | `quiz` | `modul_id` | `modul` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan paket ujian kuis evaluasi kompetensi ke bab modul silabus. |
-| 20 | `quiz_soal` | `quiz_id` | `quiz` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan butir-butir pertanyaan pilihan ganda ke dalam paket kuis. |
-| 21 | `quiz_attempt` | `quiz_id` | `quiz` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan riwayat sesi pengerjaan evaluasi ke paket kuis terkait. |
-| 22 | `quiz_attempt` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan perolehan skor nilai dan status kelulusan kuis ke akun siswa. |
-| 23 | `sertifikat` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sertifikat digital kelulusan ke akun siswa yang berhasil menuntaskan modul. |
-| 24 | `sertifikat` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sertifikat digital dengan program kursus yang telah diselesaikan. |
-| 25 | `portofolio_foto` | `portofolio_id` | `portofolio` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan koleksi multi-foto ke dalam album karya portofolio studio. |
-| 26 | `galeri_foto` | `reservasi_id` | `reservasi` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan berkas foto hasil pemotretan ke pesanan reservasi klien untuk proofing. |
-| 27 | `konsultasi` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan tiket konsultasi konsep foto ke akun pengguna pemohon (nullable jika tamu). |
-| 28 | `notifikasi` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pemberitahuan sistem real-time in-app ke akun pengguna penerima. |
+| 2 | `layanan` | `kategori_layanan_id` | `kategori_layanan` | `id` | 1 : N | SET NULL | RESTRICT | Menghubungkan katalog layanan fotografi dengan master klasifikasi kategori pemotretan. |
+| 3 | `paket` | `layanan_id` | `layanan` | `id` | 1 : N | CASCADE | RESTRICT | Penetapan paket spesifik (harga, durasi, fasilitas) ke katalog layanan foto induk. |
+| 4 | `reservasi` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pemesan sesi foto atau siswa kursus ke akun pengguna sistem. |
+| 5 | `reservasi` | `layanan_id` | `layanan` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sesi foto yang dipesan ke kategori katalog layanan foto (nullable pada kursus). |
+| 6 | `reservasi` | `paket_id` | `paket` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sesi foto ke rincian paket penawaran yang dipilih (nullable pada kursus). |
+| 7 | `reservasi` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pendaftaran kelas akademi ke program kursus yang diikuti (nullable pada foto). |
+| 8 | `pembayaran` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan transaksi pembayaran ke akun pembayar (pelanggan/siswa). |
+| 9 | `pembayaran` | `reservasi_id` | `reservasi` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan tagihan pembayaran dengan entitas reservasi foto atau kursus terkait. |
+| 10 | `pembayaran` | `kursus_id` | `kursus` | `id` | 1 : N | SET NULL | RESTRICT | Referensi langsung ke program kursus pada transaksi checkout Midtrans Snap. |
+| 11 | `invoice` | `pembayaran_id` | `pembayaran` | `id` | 1 : 1 | CASCADE | RESTRICT | Menghubungkan faktur kwitansi resmi digital ke record transaksi pembayaran lunas. |
+| 12 | `invoice` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan dokumen penagihan dan kwitansi resmi ke akun pelanggan. |
+| 13 | `invoice` | `reservasi_id` | `reservasi` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan faktur resmi dengan nomor reservasi pemesanan foto atau kelas kursus. |
+| 14 | `invoice` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Referensi program kursus pada dokumen faktur tagihan resmi (nullable pada foto). |
+| 15 | `kursus` | `instruktur_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menetapkan Owner/Admin studio sebagai pengampu materi kursus akademi. |
+| 16 | `modul` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Pengelompokan bab-bab silabus terstruktur di bawah program kursus fotografi. |
+| 17 | `materi` | `modul_id` | `modul` | `id` | 1 : N | CASCADE | RESTRICT | Pengelompokan butir materi (video pembelajaran, teks teori) ke dalam bab modul. |
+| 18 | `materi_progress` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pencatatan progres penyelesaian materi ke akun siswa. |
+| 19 | `materi_progress` | `materi_id` | `materi` | `id` | 1 : N | CASCADE | RESTRICT | Menandai centang selesai (*is_completed*) pada butir materi pelajaran tertentu. |
+| 20 | `quiz` | `modul_id` | `modul` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan paket ujian kuis evaluasi kompetensi ke bab modul silabus. |
+| 21 | `quiz_soal` | `quiz_id` | `quiz` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan butir-butir pertanyaan pilihan ganda ke dalam paket kuis. |
+| 22 | `quiz_attempt` | `quiz_id` | `quiz` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan riwayat sesi pengerjaan evaluasi ke paket kuis terkait. |
+| 23 | `quiz_attempt` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan perolehan skor nilai dan status kelulusan kuis ke akun siswa. |
+| 24 | `sertifikat` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sertifikat digital kelulusan ke akun siswa yang berhasil menuntaskan modul. |
+| 25 | `sertifikat` | `kursus_id` | `kursus` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan sertifikat digital dengan program kursus yang telah diselesaikan. |
+| 26 | `portofolio_foto` | `portofolio_id` | `portofolio` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan koleksi multi-foto ke dalam album karya portofolio studio. |
+| 27 | `galeri_foto` | `reservasi_id` | `reservasi` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan berkas foto hasil pemotretan ke pesanan reservasi klien untuk proofing. |
+| 28 | `konsultasi` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan tiket konsultasi konsep foto ke akun pengguna pemohon (nullable jika tamu). |
+| 29 | `notifikasi` | `user_id` | `users` | `id` | 1 : N | CASCADE | RESTRICT | Menghubungkan pemberitahuan sistem real-time in-app ke akun pengguna penerima. |
 
 ---
 
@@ -410,8 +413,9 @@ Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang sa
    - Setiap pengguna memiliki relasi 1:1 opsional dengan `customers` untuk data alamat domisili dan nomor WhatsApp, serta relasi 1:N dengan `notifikasi` untuk pesan sistem real-time.
 
 2. **Domain Katalog Layanan Fotografi:**
+   - Tabel `kategori_layanan` bertindak sebagai master klasifikasi tema pemotretan yang memayungi katalog `layanan` (relasi 1:N via `kategori_layanan_id`).
    - Hubungan bertingkat antara `layanan` (induk layanan) dengan `paket` (1:N), di mana satu jenis layanan seperti *Wedding Photography* memayungi paket *Silver*, *Gold Cinematic*, dan *Platinum*.
-   - Tabel `kategori_layanan` menyediakan master klasifikasi tema untuk memfilter katalog dan portofolio secara konsisten.
+   - Konsistensi relasi ini menjamin kategorisasi layanan tersinkronisasi rapi pada katalog publik, filtering portofolio, dan administrasi dashboard.
 
 3. **Domain Pemesanan & Reservasi Terpadu:**
    - Menggunakan tabel tunggal `reservasi` sebagai entitas terpadu untuk pemesanan pemotretan (`tipe = 'fotografi'`) maupun pendaftaran kursus akademi (`tipe = 'kursus'`).
@@ -479,14 +483,15 @@ Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang sa
 ### 3. Tabel: `layanan`
 - **Nama Tabel:** `layanan`
 - **Primary Key:** `id`
-- **Foreign Key:** Tidak ada
-- **Deskripsi Tabel:** Menyimpan katalog induk jenis layanan jasa fotografi yang disediakan oleh studio RanggaMotret (misal: Wedding, Prewedding, Wisuda, Studio Portrait).
+- **Foreign Key:** `kategori_layanan_id` (mengacu ke `kategori_layanan.id` dengan relasi `ON DELETE SET NULL`, Nullable)
+- **Deskripsi Tabel:** Menyimpan katalog induk jenis layanan jasa fotografi yang disediakan oleh studio RanggaMotret (misal: Wedding, Prewedding, Wisuda, Studio Portrait), yang dikelompokkan berdasarkan kategori pemotretan.
 
 | Field | Type | Size | Keterangan |
 | :--- | :--- | :--- | :--- |
 | `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik jenis layanan (Primary Key, Auto Increment) |
+| `kategori_layanan_id` | BIGINT (UNSIGNED) | 20 | Foreign Key mengacu ke `kategori_layanan.id` (Nullable) |
 | `nama` | VARCHAR | 255 | Nama layanan fotografi |
-| `kategori` | VARCHAR | 100 | Kategori layanan pemotretan |
+| `kategori` | VARCHAR | 100 | Label kategori layanan pemotretan |
 | `deskripsi` | TEXT | - | Uraian penjelasan deskriptif layanan (Nullable) |
 | `harga_mulai` | DECIMAL | 12,2 | Estimasi harga awal penawaran layanan (Rp) |
 | `thumbnail` | VARCHAR | 255 | Path atau URL gambar banner sampul layanan (Nullable) |
@@ -499,8 +504,8 @@ Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang sa
 ### 4. Tabel: `kategori_layanan`
 - **Nama Tabel:** `kategori_layanan`
 - **Primary Key:** `id`
-- **Foreign Key:** Tidak ada
-- **Deskripsi Tabel:** Menyimpan daftar master kategori untuk pengelompokan layanan fotografi serta mempermudah filtering portofolio dan pemesanan.
+- **Foreign Key:** Tidak ada (Parent Table dari `layanan` dengan relasi 1:N)
+- **Deskripsi Tabel:** Menyimpan daftar master kategori untuk pengelompokan layanan fotografi serta mempermudah filtering portofolio dan pemesanan. Memiliki relasi 1:N ke tabel `layanan` (`kategori_layanan.id` &rarr; `layanan.kategori_layanan_id`).
 
 | Field | Type | Size | Keterangan |
 | :--- | :--- | :--- | :--- |

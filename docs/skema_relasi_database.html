@@ -267,6 +267,7 @@
         </div>
         <ul class="table-body">
             <li class="table-row pk-row" id="layanan-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="layanan-kategori_layanan_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">kategori_layanan_id</span></span><span class="field-type">bigint(20)</span></li>
             <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">nama</span></span><span class="field-type">varchar(255)</span></li>
             <li class="table-row"><span class="field-info"><i class="ph-duotone ph-tag"></i><span class="field-name">kategori</span></span><span class="field-type">varchar(100)</span></li>
             <li class="table-row"><span class="field-info"><i class="ph-duotone ph-currency-dollar"></i><span class="field-name">harga_mulai</span></span><span class="field-type">decimal(12,2)</span></li>
@@ -567,6 +568,7 @@
             ['users-id', 'quiz_attempt-user_id', '#f97316'],
             ['users-id', 'sertifikat-user_id', '#a855f7'],
 
+            ['kategori_layanan-id', 'layanan-kategori_layanan_id', '#0284c7'],
             ['layanan-id', 'paket-layanan_id', '#3b82f6'],
             ['layanan-id', 'reservasi-layanan_id', '#3b82f6'],
             ['paket-id', 'reservasi-paket_id', '#059669'],
