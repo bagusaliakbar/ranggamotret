@@ -158,7 +158,7 @@
                             <span class="text-slate-500 font-medium">Mulai Dari</span>
                             <span class="text-lg font-black text-slate-900">Rp {{ number_format($item->harga_mulai, 0, ',', '.') }}</span>
                         </div>
-                        <a href="{{ route('public.services.detail', $item->id) }}" class="btn-dark w-full py-3 rounded-xl text-center text-xs font-bold block shadow-md">
+                        <a href="{{ route('public.services.detail', $item->id) }}#paket-pilihan" class="btn-dark w-full py-3 rounded-xl text-center text-xs font-bold block shadow-md hover:scale-[1.01] active:scale-95 transition-all">
                             Pilih Paket & Reservasi
                         </a>
                     </div>
