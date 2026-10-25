@@ -7,13 +7,13 @@
     <!-- Header -->
     <div class="text-center max-w-3xl mx-auto space-y-3">
         <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-[11px] font-bold uppercase tracking-wider">
-            <span class="w-2 h-2 rounded-full bg-slate-900"></span> Diskusi & Perencanaan Kreatif
+            <span class="w-2 h-2 rounded-full bg-slate-900"></span> Diskusi & Perencanaan Konsep
         </div>
         <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
             Konsultasi <span class="font-serif italic font-normal text-slate-600">Konsep Sesi</span> Pemotretan.
         </h1>
         <p class="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl mx-auto">
-            Punya ide tema spesifik, lokasi impian, atau kebutuhan anggaran khusus? Diskusikan dengan tim kreatif RanggaMotret tanpa dipungut biaya.
+            Punya ide tema spesifik, lokasi impian, atau kebutuhan anggaran khusus? Diskusikan dengan tim RanggaMotret tanpa dipungut biaya.
         </p>
     </div>
 
@@ -52,15 +52,12 @@
         </div>
     @endif
 
-    <!-- 2 Columns Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        
-        <!-- Left: Consultation Form (7 Cols) -->
-        <div class="lg:col-span-7 clean-card p-8 sm:p-10 rounded-3xl space-y-6 shadow-sm border border-slate-200">
-            <div class="border-b border-slate-100 pb-4">
-                <h3 class="text-lg font-black text-slate-900">Formulir Pengajuan Diskusi Konsep</h3>
-                <p class="text-xs text-slate-500 font-medium mt-0.5">Tim kami akan meninjau dan merespons dalam waktu 1x24 jam kerja.</p>
-            </div>
+    <!-- Form Konsultasi Konsep (Centered Luxury Card) -->
+    <div class="max-w-3xl mx-auto clean-card p-8 sm:p-10 rounded-3xl space-y-6 shadow-sm border border-slate-200">
+        <div class="border-b border-slate-100 pb-4">
+            <h3 class="text-lg font-black text-slate-900">Formulir Pengajuan Diskusi Konsep</h3>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Tim kami akan meninjau dan merespons dalam waktu 1x24 jam kerja.</p>
+        </div>
 
             <form method="POST" action="{{ route('public.consultation.store') }}" class="space-y-5 text-xs">
                 @csrf
@@ -169,53 +166,6 @@
                     <i class="ph-duotone ph-paper-plane-tilt text-emerald-400 text-base"></i> Kirim Permintaan Konsultasi
                 </button>
             </form>
-        </div>
-
-        <!-- Right: Fast Response WhatsApp & FAQ Guide (5 Cols) -->
-        <div class="lg:col-span-5 space-y-6">
-            <!-- Fast Response Card -->
-            <div class="clean-card p-6 sm:p-8 rounded-3xl bg-slate-900 text-white space-y-5 shadow-2xl relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-emerald-500/10 rounded-full blur-2xl"></div>
-
-                <div class="space-y-2">
-                    <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider inline-flex items-center gap-1.5 border border-emerald-500/30">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Respons Cepat 5-15 Menit
-                    </span>
-                    <h3 class="text-2xl font-black text-white tracking-tight">Butuh Tanya Cepat via WhatsApp?</h3>
-                    <p class="text-xs text-slate-300 leading-relaxed font-medium">
-                        Langsung terhubung dengan creative consultant kami untuk memeriksa ketersediaan tanggal atau estimasi biaya sesi foto Anda.
-                    </p>
-                </div>
-
-                <a href="https://wa.me/628123456789?text=Halo%20Studio%20RanggaMotret,%20saya%20ingin%20konsultasi%20mengenai%20layanan%20foto" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 px-6 rounded-2xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-900/40 transition-all hover:scale-[1.02]">
-                    <i class="ph-duotone ph-whatsapp-logo text-xl"></i> Chat Tim via WhatsApp
-                </a>
-            </div>
-
-            <!-- Consultation Steps Card -->
-            <div class="clean-card p-6 rounded-3xl border border-slate-200 bg-white space-y-4">
-                <h4 class="font-extrabold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="ph-duotone ph-path text-slate-700 text-base"></i> Alur Konsultasi Klien:
-                </h4>
-                
-                <div class="space-y-3 text-xs text-slate-600 font-medium">
-                    <div class="flex items-start gap-3">
-                        <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-900 font-black text-[11px] flex items-center justify-center shrink-0 border border-slate-200">1</span>
-                        <span>Isi formulir atau chat WhatsApp dengan gambaran konsep Anda.</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-900 font-black text-[11px] flex items-center justify-center shrink-0 border border-slate-200">2</span>
-                        <span>Fotografer kami mengirimkan *Moodboard* referensi visual & penawaran paket.</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <span class="w-6 h-6 rounded-lg bg-slate-100 text-slate-900 font-black text-[11px] flex items-center justify-center shrink-0 border border-slate-200">3</span>
-                        <span>Kunci tanggal pemotretan & jadwal sesi melalui portal reservasi Anda.</span>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
