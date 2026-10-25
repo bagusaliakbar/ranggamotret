@@ -40,8 +40,8 @@
                 <div>
                     <h1 class="font-bold text-2xl tracking-wider text-slate-900">RANGGAMOTRET.ID</h1>
                     <p class="text-xs text-slate-500 mt-1">Layanan & Edukasi Fotografi</p>
-                    <p class="text-xs text-slate-500">Jl. Studio Fotografi No. 1, Jakarta South</p>
-                    <p class="text-xs text-slate-500">Email: info@ranggamotret.id | WA: +62 812-3456-7890</p>
+                    <p class="text-xs text-slate-500">Perumahan RSS Sidodadi Blok A No 78, Pasirkareumbi, Subang</p>
+                    <p class="text-xs text-slate-500">Email: ranggaakbarwibawa@gmail.com | WA: +62895631983766</p>
                 </div>
             </div>
             <div class="sm:text-right">

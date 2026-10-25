@@ -417,10 +417,10 @@
                 </div>
 
                 <div class="space-y-3 text-xs text-slate-400">
-                    <h4 class="font-bold text-white uppercase tracking-wider text-[11px]">Kontak Studio</h4>
-                    <p class="flex items-center gap-2"><i class="ph-duotone ph-map-pin text-slate-300"></i> Jl. Studio Fotografi No. 1, Jakarta</p>
-                    <p class="flex items-center gap-2"><i class="ph-duotone ph-phone text-slate-300"></i> +62 812-3456-7890</p>
-                    <p class="flex items-center gap-2"><i class="ph-duotone ph-envelope text-slate-300"></i> info@ranggamotret.id</p>
+                    <h4 class="font-bold text-white uppercase tracking-wider text-[11px]">Kontak</h4>
+                    <p class="flex items-center gap-2"><i class="ph-duotone ph-map-pin text-slate-300"></i> Perumahan RSS Sidodadi Blok A No 78, Pasirkareumbi, Subang</p>
+                    <p class="flex items-center gap-2"><i class="ph-duotone ph-phone text-slate-300"></i> +62895631983766</p>
+                    <p class="flex items-center gap-2"><i class="ph-duotone ph-envelope text-slate-300"></i> ranggaakbarwibawa@gmail.com</p>
                 </div>
             </div>
 
