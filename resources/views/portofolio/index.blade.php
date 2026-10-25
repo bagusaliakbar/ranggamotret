@@ -125,76 +125,76 @@
                 </div>
             @endforeach
         </div>
-    @endif
+    @endif    <!-- Full-Screen Studio Lightbox Modal -->
+    <template x-teleport="body">
+        <div x-show="showLightbox" 
+             x-cloak
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6 lg:p-8"
+             style="display: none;">
+            
+            <!-- Top Toolbar -->
+            <div class="flex items-center justify-between text-white border-b border-white/10 pb-4">
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-mono font-bold"
+                          x-text="`${currentIndex + 1} / ${photos.length}`">
+                    </span>
+                    <div class="text-xs">
+                        <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]" x-text="photos[currentIndex]?.kategori"></span>
+                        <h4 class="text-sm font-extrabold text-white truncate max-w-xs sm:max-w-md" x-text="photos[currentIndex]?.judul"></h4>
+                    </div>
+                </div>
 
-    <!-- Full-Screen Studio Lightbox Modal -->
-    <div x-show="showLightbox" 
-         x-cloak
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6 lg:p-8"
-         style="display: none;">
-        
-        <!-- Top Toolbar -->
-        <div class="flex items-center justify-between text-white border-b border-white/10 pb-4">
-            <div class="flex items-center gap-3">
-                <span class="px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-mono font-bold"
-                      x-text="`${currentIndex + 1} / ${photos.length}`">
-                </span>
-                <div class="text-xs">
-                    <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]" x-text="photos[currentIndex]?.kategori"></span>
-                    <h4 class="text-sm font-extrabold text-white truncate max-w-xs sm:max-w-md" x-text="photos[currentIndex]?.judul"></h4>
+                <div class="flex items-center gap-3">
+                    <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-base" title="Tutup (Esc)">
+                        <i class="ph ph-x"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-base" title="Tutup (Esc)">
-                    <i class="ph ph-x"></i>
+            <!-- Center Image Display with Nav Arrows -->
+            <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
+                <!-- Prev Button -->
+                <button @click="prev()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Sebelumnya (Panah Kiri)">
+                    <i class="ph ph-caret-left"></i>
+                </button>
+
+                <!-- Image View -->
+                <div class="max-w-5xl max-h-[70vh] flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-white/10">
+                    <img :src="photos[currentIndex]?.foto" 
+                         :alt="photos[currentIndex]?.judul" 
+                         class="max-w-full max-h-[70vh] object-contain rounded-2xl transition-all duration-300">
+                </div>
+
+                <!-- Next Button -->
+                <button @click="next()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Selanjutnya (Panah Kanan)">
+                    <i class="ph ph-caret-right"></i>
                 </button>
             </div>
-        </div>
 
-        <!-- Center Image Display with Nav Arrows -->
-        <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
-            <!-- Prev Button -->
-            <button @click="prev()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Sebelumnya (Panah Kiri)">
-                <i class="ph ph-caret-left"></i>
-            </button>
+            <!-- Bottom Description & Conversion CTA -->
+            <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="space-y-1 max-w-2xl">
+                    <p class="text-xs text-slate-300 font-medium leading-relaxed" x-text="photos[currentIndex]?.deskripsi"></p>
+                    <div class="flex items-center gap-4 text-[11px] text-slate-400 font-medium">
+                        <span><i class="ph-duotone ph-calendar mr-1"></i> Tanggal: <span class="text-white" x-text="photos[currentIndex]?.tanggal"></span></span>
+                        <span>•</span>
+                        <span><i class="ph-duotone ph-camera mr-1"></i> Sony Alpha G-Master Optics</span>
+                    </div>
+                </div>
 
-            <!-- Image View -->
-            <div class="max-w-5xl max-h-[70vh] flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-white/10">
-                <img :src="photos[currentIndex]?.foto" 
-                     :alt="photos[currentIndex]?.judul" 
-                     class="max-w-full max-h-[70vh] object-contain rounded-2xl transition-all duration-300">
-            </div>
-
-            <!-- Next Button -->
-            <button @click="next()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Selanjutnya (Panah Kanan)">
-                <i class="ph ph-caret-right"></i>
-            </button>
-        </div>
-
-        <!-- Bottom Description & Conversion CTA -->
-        <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="space-y-1 max-w-2xl">
-                <p class="text-xs text-slate-300 font-medium leading-relaxed" x-text="photos[currentIndex]?.deskripsi"></p>
-                <div class="flex items-center gap-4 text-[11px] text-slate-400 font-medium">
-                    <span><i class="ph-duotone ph-calendar mr-1"></i> Tanggal: <span class="text-white" x-text="photos[currentIndex]?.tanggal"></span></span>
-                    <span>•</span>
-                    <span><i class="ph-duotone ph-camera mr-1"></i> Sony Alpha G-Master Optics</span>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <a href="{{ route('customer.bookings.create') }}" class="btn-dark bg-white hover:bg-slate-100 text-slate-900 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg flex-1 sm:flex-initial">
+                        <i class="ph-duotone ph-calendar-plus"></i> Reservasi Sesi
+                    </a>
                 </div>
             </div>
-
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <a href="{{ route('customer.bookings.create') }}" class="btn-dark bg-white hover:bg-slate-100 text-slate-900 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg flex-1 sm:flex-initial">
-                    <i class="ph-duotone ph-calendar-plus"></i> Reservasi Sesi
-                </a>
-            </div>
         </div>
-    </div>
+    </template>
 </div>
 @endsection
