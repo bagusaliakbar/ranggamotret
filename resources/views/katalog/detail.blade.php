@@ -286,47 +286,6 @@
         @endif
     </section>
 
-    <!-- 5. The Workflow Experience (How It Works) -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="clean-card p-8 sm:p-12 rounded-3xl space-y-10 bg-slate-900 text-white border-slate-800">
-            <div class="text-center max-w-2xl mx-auto space-y-2">
-                <span class="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">Alur Kerja Profesional</span>
-                <h2 class="font-serif-luxury text-3xl sm:text-4xl font-bold">Proses Dari Reservasi Hingga Hasil Jadi</h2>
-                <p class="text-xs sm:text-sm text-slate-400 font-medium">Langkah terstruktur agar sesi dokumentasi Anda berjalan santai, tepat waktu, dan menyenangkan.</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Step 1 -->
-                <div class="space-y-3 relative">
-                    <div class="font-serif-luxury text-4xl font-black text-slate-700">01</div>
-                    <h3 class="font-bold text-white text-base">Reservasi & Konsep</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed font-medium">Pilih paket dan tentukan tanggal sesi pemotretan. Tim kami akan menghubungi Anda untuk menyelaraskan konsep & *moodboard*.</p>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="space-y-3 relative">
-                    <div class="font-serif-luxury text-4xl font-black text-slate-700">02</div>
-                    <h3 class="font-bold text-white text-base">Hari Pemotretan</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed font-medium">Fotografer kami memandu pose secara natural dengan pencahayaan profesional, tanpa rasa kaku atau canggung.</p>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="space-y-3 relative">
-                    <div class="font-serif-luxury text-4xl font-black text-slate-700">03</div>
-                    <h3 class="font-bold text-white text-base">Client Proofing</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed font-medium">Kami mengunggah preview foto ke akun Anda. Anda bebas memilih foto terbaik dan memberikan catatan editing secara online.</p>
-                </div>
-
-                <!-- Step 4 -->
-                <div class="space-y-3 relative">
-                    <div class="font-serif-luxury text-4xl font-black text-slate-700">04</div>
-                    <h3 class="font-bold text-white text-base">Master Delivery</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed font-medium">Hasil akhir di-retouch dengan teliti dan dikirimkan dalam resolusi maksimal, siap dicetak maupun dibagikan ke media sosial.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- 6. Related Portfolio Showcase (If Available) -->
     @if(isset($relatedPortofolio) && $relatedPortofolio->isNotEmpty())
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -353,84 +312,6 @@
             </div>
         </section>
     @endif
-
-    <!-- 7. Interactive Service FAQ (Alpine.js Accordion) -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8" x-data="{ activeFaq: null }">
-        <div class="text-center space-y-2">
-            <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Pertanyaan Umum</span>
-            <h2 class="font-serif-luxury text-3xl font-bold text-slate-900">Hal yang Kerap Ditanyakan Klien</h2>
-            <p class="text-xs text-slate-500 font-medium">Segala hal yang perlu Anda ketahui mengenai sesi pemotretan di RanggaMotret.</p>
-        </div>
-
-        <div class="space-y-3">
-            <!-- FAQ 1 -->
-            <div class="clean-card rounded-2xl overflow-hidden border border-slate-200">
-                <button @click="activeFaq = activeFaq === 1 ? null : 1" class="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 text-xs sm:text-sm hover:bg-slate-50 transition-colors">
-                    <span>Berapa lama proses editing hingga hasil foto final diterima?</span>
-                    <i class="fa-solid text-slate-400 text-xs" :class="activeFaq === 1 ? 'fa-minus' : 'fa-plus'"></i>
-                </button>
-                <div x-show="activeFaq === 1" x-collapse class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-                    Pratinjau foto mentah (*preview*) untuk sesi proofing akan diunggah ke akun Anda maksimal <strong>2-3 hari kerja</strong> setelah pemotretan. Setelah Anda memilih foto favorit, proses *master retouching* memerlukan waktu <strong>7 hingga 14 hari kerja</strong> tergantung pada varian paket yang Anda pilih.
-                </div>
-            </div>
-
-            <!-- FAQ 2 -->
-            <div class="clean-card rounded-2xl overflow-hidden border border-slate-200">
-                <button @click="activeFaq = activeFaq === 2 ? null : 2" class="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 text-xs sm:text-sm hover:bg-slate-50 transition-colors">
-                    <span>Apakah seluruh berkas foto mentah (original) akan diberikan?</span>
-                    <i class="fa-solid text-slate-400 text-xs" :class="activeFaq === 2 ? 'fa-minus' : 'fa-plus'"></i>
-                </button>
-                <div x-show="activeFaq === 2" x-collapse class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-                    <strong>Ya, 100%!</strong> Kami memberikan seluruh file foto asli (*high-resolution JPEG*) melalui tautan cloud storage eksklusif yang dapat Anda unduh dan simpan selamanya, selain foto-foto yang di-retouch secara khusus.
-                </div>
-            </div>
-
-            <!-- FAQ 3 -->
-            <div class="clean-card rounded-2xl overflow-hidden border border-slate-200">
-                <button @click="activeFaq = activeFaq === 3 ? null : 3" class="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 text-xs sm:text-sm hover:bg-slate-50 transition-colors">
-                    <span>Bagaimana jika kami perlu menjadwalkan ulang (reschedule)?</span>
-                    <i class="fa-solid text-slate-400 text-xs" :class="activeFaq === 3 ? 'fa-minus' : 'fa-plus'"></i>
-                </button>
-                <div x-show="activeFaq === 3" x-collapse class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-                    Penjadwalan ulang dapat dilakukan tanpa biaya tambahan jika dikonfirmasikan minimal <strong>5 hari sebelum tanggal sesi</strong> (atau karena faktor cuaca buruk mendadak untuk sesi outdoor). Tim kami akan membantu mencocokkan kembali dengan ketersediaan kalender studio.
-                </div>
-            </div>
-
-            <!-- FAQ 4 -->
-            <div class="clean-card rounded-2xl overflow-hidden border border-slate-200">
-                <button @click="activeFaq = activeFaq === 4 ? null : 4" class="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 text-xs sm:text-sm hover:bg-slate-50 transition-colors">
-                    <span>Apakah RanggaMotret melayani pemotretan di luar kota?</span>
-                    <i class="fa-solid text-slate-400 text-xs" :class="activeFaq === 4 ? 'fa-minus' : 'fa-plus'"></i>
-                </button>
-                <div x-show="activeFaq === 4" x-collapse class="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-                    Tentu saja! Kami berpengalaman meliput acara pernikahan dan prewedding di berbagai kota di Indonesia. Untuk sesi di luar area utama, terdapat penyesuaian biaya akomodasi dan transportasi yang akan dibahas transparan pada sesi konsultasi.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 8. VIP Climax Call to Action Banner -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="rounded-3xl p-8 sm:p-14 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white relative overflow-hidden shadow-2xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div class="space-y-3 max-w-xl text-center md:text-left z-10">
-                <span class="text-[10px] font-extrabold uppercase tracking-widest text-amber-400">Konsultasi Pribadi</span>
-                <h3 class="font-serif-luxury text-3xl sm:text-4xl font-bold leading-tight">Punya Konsep Khusus yang Ingin Diwujudkan?</h3>
-                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed font-medium">Diskusikan referensi moodboard, busana, atau kebutuhan unik dokumentasi Anda bersama tim profesional kami secara gratis.</p>
-            </div>
-
-            <div class="flex flex-col sm:flex-row items-center gap-4 shrink-0 z-10 w-full md:w-auto">
-                <a href="{{ route('public.consultation') }}" class="btn-dark bg-white text-slate-900 hover:bg-slate-100 px-7 py-4 rounded-xl text-xs font-bold uppercase tracking-wider w-full sm:w-auto text-center shadow-lg">
-                    <i class="fa-solid fa-paper-plane mr-2 text-slate-800"></i> Kirim Form Konsultasi
-                </a>
-                <a href="#paket-pilihan" class="px-7 py-4 rounded-xl text-xs font-bold uppercase tracking-wider w-full sm:w-auto text-center border border-white/20 hover:bg-white/10 text-white transition-colors">
-                    Lihat Paket Sesi
-                </a>
-            </div>
-
-            <!-- Background subtle ornament -->
-            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        </div>
-    </section>
 
 </div>
 @endsection
