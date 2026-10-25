@@ -30,8 +30,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 22. [galeri_foto](#22-tabel-galeri_foto) — Galeri foto hasil sesi klien (proofing)
 23. [konsultasi](#23-tabel-konsultasi) — Tiket konsultasi konsep foto klien
 24. [testimoni](#24-tabel-testimoni) — Ulasan dan rating kepuasan pelanggan
-25. [promo](#25-tabel-promo) — Kupon kode diskon promosi
-26. [notifikasi](#26-tabel-notifikasi) — Notifikasi sistem real-time internal
+25. [notifikasi](#25-tabel-notifikasi) — Notifikasi sistem real-time internal
 
 ---
 
@@ -182,11 +181,10 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 | `booking_id` | BIGINT (UNSIGNED) | 20 | Foreign Key referensi sesi foto (`booking.id`, Nullable) |
 | `kursus_id` | BIGINT (UNSIGNED) | 20 | Foreign Key referensi kursus (`kursus.id`, Nullable) |
 | `jumlah` | DECIMAL | 12,2 | Total nominal uang pembayaran (Rp) |
-| `metode_pembayaran` | VARCHAR | 100 | Saluran bayar (Midtrans Snap, Transfer Bank, QRIS) |
+| `metode_pembayaran` | VARCHAR | 100 | Saluran bayar online Midtrans Snap (QRIS, VA, E-Wallet, CC) |
 | `tanggal_pembayaran` | TIMESTAMP | - | Waktu penyelesaian pembayaran (Nullable) |
-| `bukti_pembayaran` | VARCHAR | 255 | Path berkas slip/bukti transfer manual (Nullable) |
 | `catatan` | TEXT | - | Catatan keterangan transaksi (Nullable) |
-| `status` | VARCHAR | 50 | Status pembayaran ('Belum Dibayar', 'Menunggu Verifikasi', 'Dibayar', 'Ditolak', 'Dikembalikan') |
+| `status` | VARCHAR | 50 | Status pembayaran ('Belum Dibayar', 'Menunggu Pembayaran', 'Dibayar', 'Ditolak', 'Dibatalkan') |
 | `snap_token` | VARCHAR | 255 | Token transaksi Midtrans Snap untuk popup checkout (Nullable) |
 | `payment_type` | VARCHAR | 50 | Jenis metode bayar Midtrans (qris, bank_transfer, dll) (Nullable) |
 | `payload_response` | JSON | - | Payload utuh respon callback webhook Midtrans (Nullable) |
@@ -555,28 +553,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 25. Tabel: `promo`
-- **Nama Tabel:** `promo`
-- **Primary Key:** `id`
-- **Foreign Key:** Tidak ada
-- **Deskripsi Tabel:** Menyimpan kupon kode diskon promosi untuk pemotongan biaya tagihan reservasi jasa foto maupun pendaftaran kelas kursus.
-
-| Field | Type | Size | Keterangan |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik kupon promo (Primary Key, Auto Increment) |
-| `kode_promo` | VARCHAR | 50 | Kode kupon unik yang diinputkan pengguna (Unique, e.g. DISKON50) |
-| `deskripsi` | TEXT | - | Uraian syarat dan ketentuan pemakaian kupon (Nullable) |
-| `diskon_persen` | INT | 11 | Besaran persentase diskon potongan harga (%) (Default 0) |
-| `diskon_nominal` | DECIMAL | 12,2 | Besaran nominal potongan langsung (Rp) (Default 0) |
-| `berlaku_dari` | DATE | - | Tanggal awal kupon promo dapat digunakan |
-| `berlaku_sampai` | DATE | - | Tanggal masa kedaluwarsa kupon promo |
-| `status` | VARCHAR | 20 | Status keaktifan kupon ('aktif', 'nonaktif') |
-| `created_at` | TIMESTAMP | - | Waktu kupon promo dibuat |
-| `updated_at` | TIMESTAMP | - | Waktu kupon promo diperbarui |
-
----
-
-### 26. Tabel: `notifikasi`
+### 25. Tabel: `notifikasi`
 - **Nama Tabel:** `notifikasi`
 - **Primary Key:** `id`
 - **Foreign Key:** `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)

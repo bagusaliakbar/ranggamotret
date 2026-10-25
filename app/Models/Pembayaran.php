@@ -16,7 +16,6 @@ class Pembayaran extends Model
         'jumlah',
         'metode_pembayaran',
         'tanggal_pembayaran',
-        'bukti_pembayaran',
         'catatan',
         'status',
         'snap_token',

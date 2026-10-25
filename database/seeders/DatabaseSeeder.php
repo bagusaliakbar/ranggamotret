@@ -165,10 +165,9 @@ class DatabaseSeeder extends Seeder
             'user_id' => $customer1->id,
             'booking_id' => $booking1->id,
             'jumlah' => 7800000,
-            'metode_pembayaran' => 'Transfer Bank BCA',
+            'metode_pembayaran' => 'Midtrans Snap (BCA Virtual Account)',
             'tanggal_pembayaran' => Carbon::now()->subDays(1),
-            'bukti_pembayaran' => 'bukti_bca_wedding.jpg',
-            'catatan' => 'Pembayaran lunas via BCA',
+            'catatan' => 'Pembayaran lunas via Midtrans Snap',
             'status' => 'Dibayar',
         ]);
 
@@ -363,19 +362,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'replied',
         ]);
 
-        // 8. Seed Promo & Notifications
-        DB::table('promo')->insert([
-            'kode_promo' => 'RANGGANEW2026',
-            'deskripsi' => 'Diskon 10% untuk pendaftaran kursus fotografi pertama Anda.',
-            'diskon_persen' => 10,
-            'diskon_nominal' => 0,
-            'berlaku_dari' => Carbon::now()->subDays(5),
-            'berlaku_sampai' => Carbon::now()->addDays(30),
-            'status' => 'aktif',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
+        // 8. Seed Notifikasi Sistem
         Notifikasi::create([
             'user_id' => $customer1->id,
             'judul' => 'Pembayaran Dikirim & Disetujui',
