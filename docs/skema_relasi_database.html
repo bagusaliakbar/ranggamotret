@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skema Relasi Basis Data — RanggaMotret.id (phpMyAdmin Designer Style)</title>
+    <!-- Google Fonts & Phosphor Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            overflow: auto;
+            min-width: 2800px;
+            min-height: 2200px;
+            position: relative;
+            background-image: 
+                linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Top Bar Floating Header */
+        .top-navbar {
+            position: fixed;
+            top: 16px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 12px 24px;
+            border-radius: 16px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .top-navbar h1 {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .top-navbar .badge {
+            background: #2563eb;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+        }
+        .legend {
+            display: flex;
+            gap: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            align-items: center;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .key-icon { color: #f59e0b; }
+        .fk-icon { color: #3b82f6; }
+
+        /* SVG Connections Canvas */
+        #relation-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        path.connector {
+            fill: none;
+            stroke-width: 2.2px;
+            stroke-linecap: round;
+            opacity: 0.85;
+            transition: stroke-width 0.2s, opacity 0.2s;
+        }
+        path.connector:hover {
+            stroke-width: 4px;
+            opacity: 1;
+        }
+
+        /* Database Table Card (phpMyAdmin Designer Replica) */
+        .db-table {
+            position: absolute;
+            width: 250px;
+            background: #ffffff;
+            border: 1px solid #94a3b8;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            z-index: 20;
+            cursor: grab;
+            transition: box-shadow 0.2s;
+            font-size: 11px;
+        }
+        .db-table:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.16);
+            z-index: 50;
+        }
+        .table-header {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            color: #ffffff;
+            padding: 6px 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            user-select: none;
+            border-bottom: 1px solid #0369a1;
+        }
+        .table-header .table-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 11.5px;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .table-header i {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Rows list */
+        .table-body {
+            list-style: none;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+        .table-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+            border-bottom: 1px solid #f1f5f9;
+            font-family: 'Fira Code', monospace;
+            font-size: 10.5px;
+            color: #1e293b;
+        }
+        .table-row:nth-child(even) {
+            background: #f8fafc;
+        }
+        .table-row.pk-row {
+            background: #fef3c7;
+            font-weight: 700;
+            color: #92400e;
+        }
+        .table-row.fk-row {
+            background: #eff6ff;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .field-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow: hidden;
+        }
+        .field-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .field-type {
+            color: #64748b;
+            font-size: 9.5px;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Navbar -->
+    <div class="top-navbar">
+        <h1>
+            <i class="ph-duotone ph-database text-sky-400"></i>
+            <span>RanggaMotret.id — Skema Relasi Basis Data</span>
+        </h1>
+        <span class="badge">21 Tabel • MySQL InnoDB</span>
+        <div class="legend">
+            <span class="legend-item"><i class="ph-fill ph-key key-icon"></i> Primary Key (PK)</span>
+            <span class="legend-item"><i class="ph-bold ph-hash fk-icon"></i> Foreign Key (FK)</span>
+            <span class="legend-item" style="color:#64748b;"><i class="ph-duotone ph-article"></i> Kolom Data</span>
+        </div>
+    </div>
+
+    <!-- SVG Relation Lines Canvas -->
+    <svg id="relation-svg"></svg>
+
+    <!-- ========================================================
+         TABLES CONTAINER (Positions matched logically like DB Designer)
+         ======================================================== -->
+
+    <!-- 1. USERS (Center-Left Anchor) -->
+    <div class="db-table" id="tbl-users" style="top: 100px; left: 520px;">
+        <div class="table-header">
+            <i class="ph-fill ph-gear"></i>
+            <span class="table-name">ranggamotret users</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="users-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">name</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-envelope"></i><span class="field-name">email</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-lock"></i><span class="field-name">password</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-user-gear"></i><span class="field-name">role</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-phone"></i><span class="field-name">phone</span></span><span class="field-type">varchar(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-map-pin"></i><span class="field-name">address</span></span><span class="field-type">text</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-clock"></i><span class="field-name">created_at</span></span><span class="field-type">timestamp</span></li>
+        </ul>
+    </div>
+
+    <!-- 2. CUSTOMERS -->
+    <div class="db-table" id="tbl-customers" style="top: 100px; left: 160px;">
+        <div class="table-header">
+            <i class="ph-fill ph-user"></i>
+            <span class="table-name">ranggamotret customers</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="customers-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="customers-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-phone"></i><span class="field-name">phone</span></span><span class="field-type">varchar(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-map-pin"></i><span class="field-name">address</span></span><span class="field-type">text</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-article"></i><span class="field-name">bio</span></span><span class="field-type">text</span></li>
+        </ul>
+    </div>
+
+    <!-- 3. KATEGORI_LAYANAN -->
+    <div class="db-table" id="tbl-kategori_layanan" style="top: 480px; left: 160px;">
+        <div class="table-header">
+            <i class="ph-fill ph-tag"></i>
+            <span class="table-name">ranggamotret kategori_layanan</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="kategori_layanan-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">nama</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-link"></i><span class="field-name">slug</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-image"></i><span class="field-name">icon</span></span><span class="field-type">varchar(255)</span></li>
+        </ul>
+    </div>
+
+    <!-- 4. LAYANAN -->
+    <div class="db-table" id="tbl-layanan" style="top: 480px; left: 520px;">
+        <div class="table-header">
+            <i class="ph-fill ph-camera"></i>
+            <span class="table-name">ranggamotret layanan</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="layanan-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">nama</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-tag"></i><span class="field-name">kategori</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-currency-dollar"></i><span class="field-name">harga_mulai</span></span><span class="field-type">decimal(12,2)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-image"></i><span class="field-name">thumbnail</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-check-circle"></i><span class="field-name">status</span></span><span class="field-type">varchar(20)</span></li>
+        </ul>
+    </div>
+
+    <!-- 5. PAKET -->
+    <div class="db-table" id="tbl-paket" style="top: 480px; left: 880px;">
+        <div class="table-header">
+            <i class="ph-fill ph-package"></i>
+            <span class="table-name">ranggamotret paket</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="paket-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="paket-layanan_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">layanan_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">nama_paket</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-currency-dollar"></i><span class="field-name">harga</span></span><span class="field-type">decimal(12,2)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-clock"></i><span class="field-name">durasi</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-users"></i><span class="field-name">jumlah_fotografer</span></span><span class="field-type">int(11)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-images"></i><span class="field-name">jumlah_foto</span></span><span class="field-type">int(11)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-list-plus"></i><span class="field-name">fasilitas</span></span><span class="field-type">text</span></li>
+        </ul>
+    </div>
+
+    <!-- 6. RESERVASI (Central Hub) -->
+    <div class="db-table" id="tbl-reservasi" style="top: 860px; left: 880px; width: 270px;">
+        <div class="table-header" style="background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%); border-bottom-color: #b45309;">
+            <i class="ph-fill ph-calendar-check"></i>
+            <span class="table-name">ranggamotret reservasi</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="reservasi-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-barcode"></i><span class="field-name">nomor_reservasi</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-tag"></i><span class="field-name">tipe</span></span><span class="field-type">varchar(20)</span></li>
+            <li class="table-row fk-row" id="reservasi-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="reservasi-layanan_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">layanan_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="reservasi-paket_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">paket_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="reservasi-kursus_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">kursus_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-calendar"></i><span class="field-name">tanggal</span></span><span class="field-type">date</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-clock"></i><span class="field-name">waktu</span></span><span class="field-type">time</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-map-pin"></i><span class="field-name">lokasi</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-info"></i><span class="field-name">status</span></span><span class="field-type">varchar(50)</span></li>
+        </ul>
+    </div>
+
+    <!-- 7. PEMBAYARAN -->
+    <div class="db-table" id="tbl-pembayaran" style="top: 860px; left: 1260px;">
+        <div class="table-header" style="background: linear-gradient(180deg, #10b981 0%, #059669 100%); border-bottom-color: #047857;">
+            <i class="ph-fill ph-credit-card"></i>
+            <span class="table-name">ranggamotret pembayaran</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="pembayaran-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-receipt"></i><span class="field-name">nomor_transaksi</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row fk-row" id="pembayaran-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="pembayaran-reservasi_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">reservasi_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="pembayaran-kursus_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">kursus_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-currency-dollar"></i><span class="field-name">jumlah</span></span><span class="field-type">decimal(12,2)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-wallet"></i><span class="field-name">metode_pembayaran</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-check-circle"></i><span class="field-name">status</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-qr-code"></i><span class="field-name">snap_token</span></span><span class="field-type">varchar(255)</span></li>
+        </ul>
+    </div>
+
+    <!-- 8. INVOICE -->
+    <div class="db-table" id="tbl-invoice" style="top: 860px; left: 1610px;">
+        <div class="table-header">
+            <i class="ph-fill ph-file-text"></i>
+            <span class="table-name">ranggamotret invoice</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="invoice-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-barcode"></i><span class="field-name">nomor_invoice</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row fk-row" id="invoice-pembayaran_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">pembayaran_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="invoice-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="invoice-reservasi_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">reservasi_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="invoice-kursus_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">kursus_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-currency-dollar"></i><span class="field-name">total</span></span><span class="field-type">decimal(12,2)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-seal-check"></i><span class="field-name">status_pembayaran</span></span><span class="field-type">varchar(30)</span></li>
+        </ul>
+    </div>
+
+    <!-- 9. GALERI_FOTO (Photo Proofing) -->
+    <div class="db-table" id="tbl-galeri_foto" style="top: 1300px; left: 880px;">
+        <div class="table-header">
+            <i class="ph-fill ph-images"></i>
+            <span class="table-name">ranggamotret galeri_foto</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="galeri_foto-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="galeri_foto-reservasi_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">reservasi_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-image"></i><span class="field-name">foto_path</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-star"></i><span class="field-name">is_selected</span></span><span class="field-type">tinyint(1)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-chat-text"></i><span class="field-name">catatan</span></span><span class="field-type">text</span></li>
+        </ul>
+    </div>
+
+    <!-- 10. KURSUS (LMS Akademi Root) -->
+    <div class="db-table" id="tbl-kursus" style="top: 100px; left: 1260px; width: 260px;">
+        <div class="table-header" style="background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%); border-bottom-color: #4338ca;">
+            <i class="ph-fill ph-graduation-cap"></i>
+            <span class="table-name">ranggamotret kursus</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="kursus-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-book-open"></i><span class="field-name">nama</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-currency-dollar"></i><span class="field-name">harga</span></span><span class="field-type">decimal(12,2)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-clock"></i><span class="field-name">durasi</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-chart-bar"></i><span class="field-name">level</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row fk-row" id="kursus-instruktur_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">instruktur_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-image"></i><span class="field-name">thumbnail</span></span><span class="field-type">varchar(255)</span></li>
+        </ul>
+    </div>
+
+    <!-- 11. MODUL -->
+    <div class="db-table" id="tbl-modul" style="top: 100px; left: 1610px;">
+        <div class="table-header">
+            <i class="ph-fill ph-folders"></i>
+            <span class="table-name">ranggamotret modul</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="modul-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="modul-kursus_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">kursus_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">judul</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-sort-ascending"></i><span class="field-name">urutan</span></span><span class="field-type">int(11)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-article"></i><span class="field-name">deskripsi</span></span><span class="field-type">text</span></li>
+        </ul>
+    </div>
+
+    <!-- 12. MATERI -->
+    <div class="db-table" id="tbl-materi" style="top: 100px; left: 1960px;">
+        <div class="table-header">
+            <i class="ph-fill ph-video"></i>
+            <span class="table-name">ranggamotret materi</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="materi-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="materi-modul_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">modul_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">judul</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-film-strip"></i><span class="field-name">tipe</span></span><span class="field-type">varchar(50)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-link"></i><span class="field-name">video_url</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-article"></i><span class="field-name">isi</span></span><span class="field-type">text</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-sort-ascending"></i><span class="field-name">urutan</span></span><span class="field-type">int(11)</span></li>
+        </ul>
+    </div>
+
+    <!-- 13. MATERI_PROGRESS -->
+    <div class="db-table" id="tbl-materi_progress" style="top: 100px; left: 2310px;">
+        <div class="table-header">
+            <i class="ph-fill ph-check-square"></i>
+            <span class="table-name">ranggamotret materi_progress</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="materi_progress-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="materi_progress-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="materi_progress-materi_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">materi_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-check"></i><span class="field-name">is_completed</span></span><span class="field-type">tinyint(1)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-clock"></i><span class="field-name">completed_at</span></span><span class="field-type">timestamp</span></li>
+        </ul>
+    </div>
+
+    <!-- 14. QUIZ -->
+    <div class="db-table" id="tbl-quiz" style="top: 480px; left: 1610px;">
+        <div class="table-header">
+            <i class="ph-fill ph-question"></i>
+            <span class="table-name">ranggamotret quiz</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="quiz-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="quiz-modul_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">modul_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">judul</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-clock"></i><span class="field-name">durasi_menit</span></span><span class="field-type">int(11)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-chart-line"></i><span class="field-name">passing_grade</span></span><span class="field-type">int(11)</span></li>
+        </ul>
+    </div>
+
+    <!-- 15. QUIZ_SOAL -->
+    <div class="db-table" id="tbl-quiz_soal" style="top: 480px; left: 1960px;">
+        <div class="table-header">
+            <i class="ph-fill ph-list-checks"></i>
+            <span class="table-name">ranggamotret quiz_soal</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="quiz_soal-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="quiz_soal-quiz_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">quiz_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-article"></i><span class="field-name">pertanyaan</span></span><span class="field-type">text</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-check-circle"></i><span class="field-name">jawaban_benar</span></span><span class="field-type">enum(A,B,C,D)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-scales"></i><span class="field-name">bobot_nilai</span></span><span class="field-type">int(11)</span></li>
+        </ul>
+    </div>
+
+    <!-- 16. QUIZ_ATTEMPT -->
+    <div class="db-table" id="tbl-quiz_attempt" style="top: 480px; left: 2310px;">
+        <div class="table-header">
+            <i class="ph-fill ph-certificate"></i>
+            <span class="table-name">ranggamotret quiz_attempt</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="quiz_attempt-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="quiz_attempt-quiz_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">quiz_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="quiz_attempt-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-exam"></i><span class="field-name">nilai</span></span><span class="field-type">int(11)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-seal-check"></i><span class="field-name">is_passed</span></span><span class="field-type">tinyint(1)</span></li>
+        </ul>
+    </div>
+
+    <!-- 17. SERTIFIKAT -->
+    <div class="db-table" id="tbl-sertifikat" style="top: 860px; left: 1960px;">
+        <div class="table-header" style="background: linear-gradient(180deg, #ec4899 0%, #db2777 100%); border-bottom-color: #be185d;">
+            <i class="ph-fill ph-seal"></i>
+            <span class="table-name">ranggamotret sertifikat</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="sertifikat-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="sertifikat-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="sertifikat-kursus_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">kursus_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-barcode"></i><span class="field-name">nomor_sertifikat</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-shield-check"></i><span class="field-name">kode_verifikasi</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-calendar"></i><span class="field-name">tanggal_terbit</span></span><span class="field-type">date</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-star"></i><span class="field-name">nilai_akhir</span></span><span class="field-type">decimal(5,2)</span></li>
+        </ul>
+    </div>
+
+    <!-- 18. PORTOFOLIO -->
+    <div class="db-table" id="tbl-portofolio" style="top: 1300px; left: 160px;">
+        <div class="table-header">
+            <i class="ph-fill ph-image"></i>
+            <span class="table-name">ranggamotret portofolio</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="portofolio-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">judul</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-tag"></i><span class="field-name">kategori</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-image"></i><span class="field-name">foto</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-check-circle"></i><span class="field-name">status_publikasi</span></span><span class="field-type">varchar(20)</span></li>
+        </ul>
+    </div>
+
+    <!-- 19. PORTOFOLIO_FOTO -->
+    <div class="db-table" id="tbl-portofolio_foto" style="top: 1300px; left: 520px;">
+        <div class="table-header">
+            <i class="ph-fill ph-film-strip"></i>
+            <span class="table-name">ranggamotret portofolio_foto</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="portofolio_foto-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="portofolio_foto-portofolio_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">portofolio_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-image"></i><span class="field-name">foto</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-sort-ascending"></i><span class="field-name">urutan</span></span><span class="field-type">int(11)</span></li>
+        </ul>
+    </div>
+
+    <!-- 20. KONSULTASI -->
+    <div class="db-table" id="tbl-konsultasi" style="top: 860px; left: 160px;">
+        <div class="table-header">
+            <i class="ph-fill ph-chat-centered-text"></i>
+            <span class="table-name">ranggamotret konsultasi</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="konsultasi-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="konsultasi-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-user"></i><span class="field-name">nama</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-camera"></i><span class="field-name">jenis_layanan</span></span><span class="field-type">varchar(100)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-currency-dollar"></i><span class="field-name">budget</span></span><span class="field-type">decimal(12,2)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-info"></i><span class="field-name">status</span></span><span class="field-type">varchar(20)</span></li>
+        </ul>
+    </div>
+
+    <!-- 21. NOTIFIKASI -->
+    <div class="db-table" id="tbl-notifikasi" style="top: 860px; left: 520px;">
+        <div class="table-header">
+            <i class="ph-fill ph-bell"></i>
+            <span class="table-name">ranggamotret notifikasi</span>
+        </div>
+        <ul class="table-body">
+            <li class="table-row pk-row" id="notifikasi-id"><span class="field-info"><i class="ph-fill ph-key key-icon"></i><span class="field-name">id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row fk-row" id="notifikasi-user_id"><span class="field-info"><i class="ph-bold ph-hash fk-icon"></i><span class="field-name">user_id</span></span><span class="field-type">bigint(20)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-text-t"></i><span class="field-name">judul</span></span><span class="field-type">varchar(255)</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-article"></i><span class="field-name">pesan</span></span><span class="field-type">text</span></li>
+            <li class="table-row"><span class="field-info"><i class="ph-duotone ph-check"></i><span class="field-name">is_read</span></span><span class="field-type">tinyint(1)</span></li>
+        </ul>
+    </div>
+
+    <!-- JavaScript to Draw phpMyAdmin Style Connection Lines -->
+    <script>
+        const connections = [
+            // [fromRowId, toRowId, color]
+            ['users-id', 'customers-user_id', '#10b981'],
+            ['users-id', 'reservasi-user_id', '#f59e0b'],
+            ['users-id', 'pembayaran-user_id', '#3b82f6'],
+            ['users-id', 'invoice-user_id', '#8b5cf6'],
+            ['users-id', 'kursus-instruktur_id', '#6366f1'],
+            ['users-id', 'konsultasi-user_id', '#06b6d4'],
+            ['users-id', 'notifikasi-user_id', '#ec4899'],
+            ['users-id', 'materi_progress-user_id', '#14b8a6'],
+            ['users-id', 'quiz_attempt-user_id', '#f97316'],
+            ['users-id', 'sertifikat-user_id', '#a855f7'],
+
+            ['layanan-id', 'paket-layanan_id', '#3b82f6'],
+            ['layanan-id', 'reservasi-layanan_id', '#3b82f6'],
+            ['paket-id', 'reservasi-paket_id', '#059669'],
+
+            ['kursus-id', 'reservasi-kursus_id', '#6366f1'],
+            ['kursus-id', 'pembayaran-kursus_id', '#4f46e5'],
+            ['kursus-id', 'invoice-kursus_id', '#4338ca'],
+            ['kursus-id', 'modul-kursus_id', '#6366f1'],
+            ['kursus-id', 'sertifikat-kursus_id', '#ec4899'],
+
+            ['modul-id', 'materi-modul_id', '#8b5cf6'],
+            ['modul-id', 'quiz-modul_id', '#8b5cf6'],
+            ['materi-id', 'materi_progress-materi_id', '#14b8a6'],
+            ['quiz-id', 'quiz_soal-quiz_id', '#f59e0b'],
+            ['quiz-id', 'quiz_attempt-quiz_id', '#f97316'],
+
+            ['reservasi-id', 'pembayaran-reservasi_id', '#10b981'],
+            ['reservasi-id', 'invoice-reservasi_id', '#8b5cf6'],
+            ['reservasi-id', 'galeri_foto-reservasi_id', '#0284c7'],
+            ['pembayaran-id', 'invoice-pembayaran_id', '#10b981'],
+
+            ['portofolio-id', 'portofolio_foto-portofolio_id', '#0284c7']
+        ];
+
+        function getCenter(element) {
+            const rect = element.getBoundingClientRect();
+            return {
+                x: rect.left + window.scrollX + (rect.width / 2),
+                y: rect.top + window.scrollY + (rect.height / 2),
+                left: rect.left + window.scrollX,
+                right: rect.right + window.scrollX
+            };
+        }
+
+        function drawLines() {
+            const svg = document.getElementById('relation-svg');
+            svg.innerHTML = '';
+
+            connections.forEach(([fromId, toId, color]) => {
+                const fromEl = document.getElementById(fromId);
+                const toEl = document.getElementById(toId);
+                if (!fromEl || !toEl) return;
+
+                const fromPt = getCenter(fromEl);
+                const toPt = getCenter(toEl);
+
+                // Determine start and end points (left/right)
+                let startX = fromPt.right;
+                let startY = fromPt.y;
+                let endX = toPt.left;
+                let endY = toPt.y;
+
+                if (fromPt.x > toPt.x) {
+                    startX = fromPt.left;
+                    endX = toPt.right;
+                }
+
+                const deltaX = Math.abs(endX - startX) * 0.5;
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const d = `M ${startX} ${startY} C ${startX + (startX < endX ? deltaX : -deltaX)} ${startY}, ${endX - (startX < endX ? deltaX : -deltaX)} ${endY}, ${endX} ${endY}`;
+                
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'connector');
+                path.setAttribute('stroke', color);
+                svg.appendChild(path);
+
+                // End-point circle marker (Foreign Key target node)
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', endX);
+                circle.setAttribute('cy', endY);
+                circle.setAttribute('r', '4');
+                circle.setAttribute('fill', color);
+                svg.appendChild(circle);
+            });
+        }
+
+        // Dragging tables support (Interactive like phpMyAdmin Designer)
+        let activeTable = null;
+        let offset = { x: 0, y: 0 };
+
+        document.querySelectorAll('.db-table').forEach(tbl => {
+            const header = tbl.querySelector('.table-header');
+            header.addEventListener('mousedown', (e) => {
+                activeTable = tbl;
+                offset.x = e.clientX - tbl.offsetLeft;
+                offset.y = e.clientY - tbl.offsetTop;
+                tbl.style.cursor = 'grabbing';
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (activeTable) {
+                activeTable.style.left = (e.clientX - offset.x) + 'px';
+                activeTable.style.top = (e.clientY - offset.y) + 'px';
+                drawLines();
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (activeTable) {
+                activeTable.style.cursor = 'grab';
+                activeTable = null;
+            }
+        });
+
+        window.addEventListener('load', drawLines);
+        window.addEventListener('resize', drawLines);
+    </script>
+</body>
+</html>

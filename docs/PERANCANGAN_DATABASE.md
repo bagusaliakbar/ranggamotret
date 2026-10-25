@@ -43,13 +43,19 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 Bagian ini menyajikan arsitektur relasi antar tabel (*Entity-Relationship*) pada basis data **RanggaMotret.id**, yang mencakup visualisasi diagram relasi entitas (*ERD*), matriks rujukan kunci asing (*Foreign Key Constraints*), kardinalitas (*multiplicity*), aturan integritas referensial (*referential integrity actions*), serta pengelompokan domain bisnis relasional.
 
+> [!TIP]
+> **Skema Visual Interaktif (phpMyAdmin Designer Style):**
+> Anda dapat membuka berkas visual interaktif [**`skema_relasi_database.html`**](file:///c:/Users/Bagus%20Ali%20Akbar/Herd/ranggamotret/docs/skema_relasi_database.html) langsung pada web browser untuk melihat tampilan grafis kotak tabel dengan header biru, penanda Primary Key (*kunci emas*), Foreign Key (*hash biru*), tipe data field, dan garis konektor relasi dinamis yang dapat digeser (*drag-and-drop*) persis seperti pada phpMyAdmin Designer / MySQL Workbench.
+
 ### 1. Diagram Relasi Entitas (Entity-Relationship Diagram / ERD)
+
+Berikut adalah diagram relasi fisik basis data (*Physical Database Relational Schema*) lengkap dengan pemetaan atribut kolom, tipe data, kunci primer (*PK*), kunci unik (*UK*), dan kunci asing (*FK*):
 
 ```mermaid
 erDiagram
     users ||--o| customers : "memiliki profil"
-    users ||--o{ reservasi : "membuat pemesanan"
-    users ||--o{ pembayaran : "melakukan transaksi"
+    users ||--o{ reservasi : "membuat reservasi"
+    users ||--o{ pembayaran : "melakukan pembayaran"
     users ||--o{ invoice : "menerima faktur"
     users ||--o{ kursus : "mengampu (Owner)"
     users ||--o{ materi_progress : "mencatat progres"
@@ -84,6 +90,276 @@ erDiagram
     pembayaran ||--|| invoice : "menghasilkan faktur"
 
     portofolio ||--|{ portofolio_foto : "berisi multi-foto"
+
+    users {
+        bigint id PK
+        varchar name
+        varchar email UK
+        timestamp email_verified_at
+        varchar password
+        varchar role
+        varchar status
+        varchar phone
+        text address
+        varchar avatar
+        varchar remember_token
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    customers {
+        bigint id PK
+        bigint user_id FK
+        varchar phone
+        text address
+        text bio
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    layanan {
+        bigint id PK
+        varchar nama
+        varchar kategori
+        text deskripsi
+        decimal harga_mulai
+        varchar thumbnail
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    kategori_layanan {
+        bigint id PK
+        varchar nama
+        varchar slug UK
+        text deskripsi
+        varchar icon
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    paket {
+        bigint id PK
+        bigint layanan_id FK
+        varchar nama_paket
+        decimal harga
+        varchar durasi
+        int jumlah_fotografer
+        int jumlah_foto
+        text fasilitas
+        text deskripsi
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    reservasi {
+        bigint id PK
+        varchar nomor_reservasi UK
+        varchar tipe
+        bigint user_id FK
+        bigint layanan_id FK
+        bigint paket_id FK
+        bigint kursus_id FK
+        date tanggal
+        time waktu
+        varchar lokasi
+        text kebutuhan_khusus
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    pembayaran {
+        bigint id PK
+        varchar nomor_transaksi UK
+        bigint user_id FK
+        bigint reservasi_id FK
+        bigint kursus_id FK
+        decimal jumlah
+        varchar metode_pembayaran
+        timestamp tanggal_pembayaran
+        text catatan
+        varchar status
+        varchar snap_token
+        varchar payment_type
+        json payload_response
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    invoice {
+        bigint id PK
+        varchar nomor_invoice UK
+        bigint pembayaran_id FK
+        bigint user_id FK
+        bigint reservasi_id FK
+        bigint kursus_id FK
+        decimal subtotal
+        decimal diskon
+        decimal total
+        varchar status_pembayaran
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    kursus {
+        bigint id PK
+        varchar nama
+        text deskripsi
+        decimal harga
+        varchar durasi
+        varchar level
+        bigint instruktur_id FK
+        varchar thumbnail
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    modul {
+        bigint id PK
+        bigint kursus_id FK
+        varchar judul
+        int urutan
+        text deskripsi
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    materi {
+        bigint id PK
+        bigint modul_id FK
+        varchar judul
+        varchar tipe
+        varchar video_url
+        varchar file_path
+        text isi
+        int durasi_menit
+        int urutan
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    materi_progress {
+        bigint id PK
+        bigint user_id FK
+        bigint materi_id FK
+        boolean is_completed
+        timestamp completed_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    quiz {
+        bigint id PK
+        bigint modul_id FK
+        varchar judul
+        int durasi_menit
+        int passing_grade
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    quiz_soal {
+        bigint id PK
+        bigint quiz_id FK
+        text pertanyaan
+        varchar pilihan_a
+        varchar pilihan_b
+        varchar pilihan_c
+        varchar pilihan_d
+        enum jawaban_benar
+        text pembahasan
+        int bobot_nilai
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    quiz_attempt {
+        bigint id PK
+        bigint quiz_id FK
+        bigint user_id FK
+        int nilai
+        boolean is_passed
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    sertifikat {
+        bigint id PK
+        bigint user_id FK
+        bigint kursus_id FK
+        varchar nomor_sertifikat UK
+        varchar kode_verifikasi UK
+        date tanggal_terbit
+        decimal nilai_akhir
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    portofolio {
+        bigint id PK
+        varchar judul
+        varchar kategori
+        varchar foto
+        text deskripsi
+        date tanggal
+        varchar status_publikasi
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    portofolio_foto {
+        bigint id PK
+        bigint portofolio_id FK
+        varchar foto
+        varchar caption
+        int urutan
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    galeri_foto {
+        bigint id PK
+        bigint reservasi_id FK
+        varchar foto_path
+        boolean is_selected
+        text catatan
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    konsultasi {
+        bigint id PK
+        bigint user_id FK
+        varchar nama
+        varchar email
+        varchar phone
+        varchar jenis_layanan
+        varchar konsep
+        varchar lokasi
+        date tanggal
+        decimal budget
+        text kebutuhan
+        varchar referensi_foto
+        text tanggapan_admin
+        varchar status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    notifikasi {
+        bigint id PK
+        bigint user_id FK
+        varchar judul
+        text pesan
+        varchar link
+        boolean is_read
+        timestamp created_at
+        timestamp updated_at
+    }
 ```
 
 ---
