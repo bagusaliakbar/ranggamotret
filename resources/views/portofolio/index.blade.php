@@ -136,7 +136,7 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6 lg:p-8"
+         class="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6 lg:p-8"
          style="display: none;">
         
         <!-- Top Toolbar -->
@@ -152,9 +152,6 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('customer.bookings.create') }}" class="hidden sm:inline-flex bg-white hover:bg-slate-100 text-slate-900 px-4 py-2 rounded-xl text-xs font-bold items-center gap-2">
-                    <i class="ph-duotone ph-calendar-plus text-slate-700"></i> Pesan Sesi Serupa
-                </a>
                 <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-base" title="Tutup (Esc)">
                     <i class="ph ph-x"></i>
                 </button>
@@ -193,9 +190,6 @@
             </div>
 
             <div class="flex items-center gap-3 w-full sm:w-auto">
-                <a :href="photos[currentIndex]?.foto" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors flex-1 sm:flex-initial">
-                    <i class="ph-duotone ph-arrows-out"></i> Buka Fullscreen
-                </a>
                 <a href="{{ route('customer.bookings.create') }}" class="btn-dark bg-white hover:bg-slate-100 text-slate-900 px-5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg flex-1 sm:flex-initial">
                     <i class="ph-duotone ph-calendar-plus"></i> Reservasi Sesi
                 </a>
