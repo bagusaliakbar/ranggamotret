@@ -7,7 +7,6 @@ use App\Models\Kursus;
 use App\Models\Pembayaran;
 use App\Models\Invoice;
 use App\Models\Notifikasi;
-use App\Models\Enrollment;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -44,7 +43,7 @@ class MidtransService
         $this->initMidtrans();
 
         $grossAmount = (int) round($booking->paket->harga ?? 0);
-        $orderId = $booking->nomor_booking;
+        $orderId = $booking->nomor_reservasi ?? $booking->nomor_booking;
 
         $params = [
             'transaction_details' => [
@@ -71,7 +70,7 @@ class MidtransService
         } catch (\Exception $e) {
             // If order_id was already used in Midtrans, auto-retry with unique transaction attempt suffix
             if (str_contains(strtolower($e->getMessage()), 'taken') || str_contains(strtolower($e->getMessage()), 'sudah digunakan')) {
-                $orderId = $booking->nomor_booking . '-T' . time();
+                $orderId = ($booking->nomor_reservasi ?? $booking->nomor_booking) . '-T' . time();
                 $params['transaction_details']['order_id'] = $orderId;
                 $snapToken = \Midtrans\Snap::getSnapToken($params);
             } else {
@@ -80,9 +79,6 @@ class MidtransService
             }
         }
 
-        // Catatan: Record transaksi lokal 'Pembayaran' HANYA dibuat saat pembayaran diselesaikan
-        // (melalui Webhook / paymentFinish) atau saat formulir transfer manual dikirim.
-        // Token Snap di sini semata-mata disiapkan agar modal pembayaran instan dapat dibuka jika dipilih.
         return $snapToken;
     }
 
@@ -118,8 +114,6 @@ class MidtransService
 
         try {
             $snapToken = \Midtrans\Snap::getSnapToken($params);
-
-            // Token Snap disiapkan untuk checkout tanpa membuat record transaksi liar di database
             return $snapToken;
         } catch (\Exception $e) {
             Log::error('Midtrans Snap Kursus Error: ' . $e->getMessage());
@@ -175,15 +169,17 @@ class MidtransService
             $isFailed = true;
         }
 
-        // Find associated Booking (strip potential retry timestamp suffix)
+        // 1. Handle Reservasi Fotografi (Strip potential retry timestamp suffix)
         $baseBookingNumber = explode('-T', $orderId)[0];
-        $booking = Reservasi::where('nomor_booking', $orderId)
-            ->orWhere('nomor_booking', $baseBookingNumber)
+        $booking = Reservasi::where('nomor_reservasi', $orderId)
+            ->orWhere('nomor_reservasi', $baseBookingNumber)
             ->first();
+
         if ($booking) {
-            $pembayaran = Pembayaran::firstOrNew(['booking_id' => $booking->id]);
-            $pembayaran->nomor_transaksi = 'TRX-' . str_replace('BK-', '', $orderId);
+            $pembayaran = Pembayaran::firstOrNew(['reservasi_id' => $booking->id]);
+            $pembayaran->nomor_transaksi = 'TRX-' . str_replace(['BK-', 'RSV-'], '', $orderId);
             $pembayaran->user_id = $booking->user_id;
+            $pembayaran->reservasi_id = $booking->id;
             $pembayaran->jumlah = (float) $grossAmount;
             $pembayaran->metode_pembayaran = 'Midtrans (' . strtoupper($paymentType) . ')';
             $pembayaran->payment_type = $paymentType;
@@ -198,12 +194,12 @@ class MidtransService
                 $booking->save();
 
                 // Create official Invoice if not exists
-                $invoice = Invoice::firstOrCreate(
+                Invoice::firstOrCreate(
                     ['pembayaran_id' => $pembayaran->id],
                     [
                         'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT),
                         'user_id' => $booking->user_id,
-                        'booking_id' => $booking->id,
+                        'reservasi_id' => $booking->id,
                         'subtotal' => $grossAmount,
                         'diskon' => 0,
                         'total' => $grossAmount,
@@ -214,7 +210,7 @@ class MidtransService
                 // Notify Admin
                 Notifikasi::create([
                     'user_id' => 1,
-                    'judul' => 'Pembayaran Booking Berhasil!',
+                    'judul' => 'Pembayaran Reservasi Berhasil!',
                     'pesan' => 'Pembayaran ' . $orderId . ' sebesar Rp ' . number_format($grossAmount, 0, ',', '.') . ' telah lunas via Midtrans (' . $paymentType . ').',
                     'link' => '/admin/bookings/' . $booking->id,
                 ]);
@@ -223,7 +219,7 @@ class MidtransService
                 Notifikasi::create([
                     'user_id' => $booking->user_id,
                     'judul' => 'Pembayaran Berhasil Dikonfirmasi!',
-                    'pesan' => 'Pembayaran sesi pemotretan ' . $booking->layanan->nama . ' telah berhasil diverifikasi. Jadwal sesi Anda telah terkonfirmasi.',
+                    'pesan' => 'Pembayaran sesi pemotretan ' . ($booking->layanan->nama ?? 'Fotografi') . ' telah berhasil diverifikasi. Jadwal sesi Anda telah terkonfirmasi.',
                     'link' => '/customer/bookings/' . $booking->id,
                 ]);
 
@@ -241,7 +237,7 @@ class MidtransService
             }
         }
 
-        // Handle Course Payment (Order ID starts with KRS-)
+        // 2. Handle Course Payment (Order ID starts with KRS-)
         if (str_starts_with($orderId, 'KRS-')) {
             $parts = explode('-', $orderId);
             $kursusId = $parts[1] ?? null;
@@ -249,8 +245,27 @@ class MidtransService
 
             if ($kursusId && $userId) {
                 $kursus = Kursus::find($kursusId);
+
+                // Buat / Ambil entitas Reservasi Kursus
+                $reservasiKursus = Reservasi::firstOrCreate(
+                    [
+                        'user_id' => $userId,
+                        'kursus_id' => $kursusId,
+                        'tipe' => 'kursus',
+                    ],
+                    [
+                        'nomor_reservasi' => 'RSV-' . $orderId,
+                        'tanggal' => Carbon::now()->format('Y-m-d'),
+                        'waktu' => Carbon::now()->format('H:i:s'),
+                        'lokasi' => 'Online Classroom LMS',
+                        'kebutuhan_khusus' => 'Pendaftaran Kursus Akademi',
+                        'status' => 'Menunggu Pembayaran',
+                    ]
+                );
+
                 $pembayaran = Pembayaran::firstOrNew(['nomor_transaksi' => 'TRX-' . $orderId]);
                 $pembayaran->user_id = $userId;
+                $pembayaran->reservasi_id = $reservasiKursus->id;
                 $pembayaran->kursus_id = $kursusId;
                 $pembayaran->jumlah = (float) $grossAmount;
                 $pembayaran->metode_pembayaran = 'Midtrans (' . strtoupper($paymentType) . ')';
@@ -262,11 +277,8 @@ class MidtransService
                     $pembayaran->tanggal_pembayaran = Carbon::now();
                     $pembayaran->save();
 
-                    // Enroll student
-                    Enrollment::firstOrCreate(
-                        ['user_id' => $userId, 'kursus_id' => $kursusId],
-                        ['status' => 'aktif', 'progress_persen' => 0]
-                    );
+                    $reservasiKursus->status = 'Dibayar';
+                    $reservasiKursus->save();
 
                     // Create Invoice
                     Invoice::firstOrCreate(
@@ -274,6 +286,8 @@ class MidtransService
                         [
                             'nomor_invoice' => 'INV-KRS-' . date('Ymd') . '-' . str_pad($pembayaran->id, 4, '0', STR_PAD_LEFT),
                             'user_id' => $userId,
+                            'reservasi_id' => $reservasiKursus->id,
+                            'kursus_id' => $kursusId,
                             'subtotal' => $grossAmount,
                             'diskon' => 0,
                             'total' => $grossAmount,
@@ -297,6 +311,8 @@ class MidtransService
                 } elseif ($isFailed) {
                     $pembayaran->status = 'Ditolak';
                     $pembayaran->save();
+                    $reservasiKursus->status = 'Dibatalkan';
+                    $reservasiKursus->save();
                     return ['status' => 'failed', 'message' => 'Course payment expired or cancelled'];
                 }
             }
@@ -329,15 +345,16 @@ class MidtransService
             }
 
             $baseBookingNumber = explode('-T', $orderId)[0];
-            $booking = Reservasi::where('nomor_booking', $orderId)
-                ->orWhere('nomor_booking', $baseBookingNumber)
+            $booking = Reservasi::where('nomor_reservasi', $orderId)
+                ->orWhere('nomor_reservasi', $baseBookingNumber)
                 ->first();
 
             if ($booking) {
-                $pembayaran = Pembayaran::firstOrNew(['booking_id' => $booking->id]);
-                $pembayaran->nomor_transaksi = 'TRX-' . str_replace('BK-', '', $orderId);
+                $pembayaran = Pembayaran::firstOrNew(['reservasi_id' => $booking->id]);
+                $pembayaran->nomor_transaksi = 'TRX-' . str_replace(['BK-', 'RSV-'], '', $orderId);
                 $pembayaran->user_id = $booking->user_id;
-                $pembayaran->jumlah = (float) ($grossAmount ?: $booking->paket->harga);
+                $pembayaran->reservasi_id = $booking->id;
+                $pembayaran->jumlah = (float) ($grossAmount ?: ($booking->paket->harga ?? 0));
                 $pembayaran->metode_pembayaran = 'Midtrans (' . strtoupper($paymentType) . ')';
                 $pembayaran->payment_type = $paymentType;
                 $pembayaran->payload_response = $payload;
@@ -355,7 +372,7 @@ class MidtransService
                         [
                             'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT),
                             'user_id' => $booking->user_id,
-                            'booking_id' => $booking->id,
+                            'reservasi_id' => $booking->id,
                             'subtotal' => $pembayaran->jumlah,
                             'diskon' => 0,
                             'total' => $pembayaran->jumlah,
@@ -378,4 +395,3 @@ class MidtransService
         }
     }
 }
-

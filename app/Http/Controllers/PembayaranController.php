@@ -8,7 +8,6 @@ use App\Models\Pembayaran;
 use App\Models\Reservasi;
 use App\Models\Kursus;
 use App\Models\Invoice;
-use App\Models\Enrollment;
 use App\Models\Notifikasi;
 use App\Services\MidtransService;
 use Carbon\Carbon;
@@ -34,12 +33,12 @@ class PembayaranController extends Controller
         // Auto-sinkronisasi jika reservasi sudah lunas namun status pembayaran belum terupdate
         $unpaidBookings = Pembayaran::where('user_id', $userId)
             ->where('status', '!=', 'Dibayar')
-            ->whereNotNull('booking_id')
-            ->with('booking')
+            ->whereNotNull('reservasi_id')
+            ->with('reservasi')
             ->get();
 
         foreach ($unpaidBookings as $p) {
-            if ($p->booking && in_array($p->booking->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai'])) {
+            if ($p->reservasi && in_array($p->reservasi->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai'])) {
                 $p->status = 'Dibayar';
                 $p->tanggal_pembayaran = $p->tanggal_pembayaran ?: Carbon::now();
                 $p->save();
@@ -47,9 +46,9 @@ class PembayaranController extends Controller
                 Invoice::firstOrCreate(
                     ['pembayaran_id' => $p->id],
                     [
-                        'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($p->booking_id, 4, '0', STR_PAD_LEFT),
+                        'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($p->reservasi_id, 4, '0', STR_PAD_LEFT),
                         'user_id' => $userId,
-                        'booking_id' => $p->booking_id,
+                        'reservasi_id' => $p->reservasi_id,
                         'kursus_id' => $p->kursus_id,
                         'subtotal' => $p->jumlah,
                         'diskon' => 0,
@@ -75,7 +74,7 @@ class PembayaranController extends Controller
                 [
                     'nomor_invoice' => $invNum,
                     'user_id' => $paid->user_id,
-                    'booking_id' => $paid->booking_id,
+                    'reservasi_id' => $paid->reservasi_id,
                     'kursus_id' => $paid->kursus_id,
                     'subtotal' => $paid->jumlah,
                     'diskon' => 0,
@@ -86,7 +85,7 @@ class PembayaranController extends Controller
         }
 
         $pembayarans = Pembayaran::where('user_id', $userId)
-            ->with(['booking.layanan', 'kursus', 'invoice'])
+            ->with(['reservasi.layanan', 'kursus', 'invoice'])
             ->latest()
             ->get();
 
@@ -178,16 +177,31 @@ class PembayaranController extends Controller
 
                 if (in_array($transactionStatus, ['settlement', 'capture'])) {
                     if ($kursusId && $userId) {
-                        Enrollment::firstOrCreate(
-                            ['user_id' => $userId, 'kursus_id' => $kursusId],
-                            ['status' => 'aktif', 'progress_persen' => 0]
-                        );
-
                         $kursusItem = Kursus::find($kursusId);
+
+                        // 1. Buat / Ambil Reservasi Kursus
+                        $reservasiKursus = Reservasi::firstOrCreate(
+                            [
+                                'user_id' => $userId,
+                                'kursus_id' => $kursusId,
+                                'tipe' => 'kursus',
+                            ],
+                            [
+                                'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                                'status' => 'Dibayar',
+                                'tanggal' => Carbon::now()->format('Y-m-d'),
+                                'lokasi' => 'Online Classroom LMS',
+                            ]
+                        );
+                        $reservasiKursus->status = 'Dibayar';
+                        $reservasiKursus->save();
+
+                        // 2. Pembayaran
                         $pembayaran = Pembayaran::firstOrCreate(
                             ['nomor_transaksi' => 'TRX-' . $orderId],
                             [
                                 'user_id' => $userId,
+                                'reservasi_id' => $reservasiKursus->id,
                                 'kursus_id' => $kursusId,
                                 'jumlah' => $kursusItem->harga ?? 0,
                                 'metode_pembayaran' => 'Midtrans Snap (Gateway)',
@@ -197,19 +211,22 @@ class PembayaranController extends Controller
                         );
 
                         $pembayaran->status = 'Dibayar';
+                        $pembayaran->reservasi_id = $reservasiKursus->id;
                         $pembayaran->tanggal_pembayaran = Carbon::now();
                         $pembayaran->save();
 
+                        // 3. Invoice
                         Invoice::firstOrCreate(
                             ['pembayaran_id' => $pembayaran->id],
                             [
                                 'nomor_invoice' => 'INV-KRS-' . date('Ymd') . '-' . str_pad($pembayaran->id, 4, '0', STR_PAD_LEFT),
                                 'user_id' => $userId,
+                                'reservasi_id' => $reservasiKursus->id,
                                 'kursus_id' => $kursusId,
                                 'subtotal' => $pembayaran->jumlah,
                                 'diskon' => 0,
                                 'total' => $pembayaran->jumlah,
-                                'status_pembayaran' => 'Lunas',
+                                'status_pembayaran' => 'LUNAS',
                             ]
                         );
                     }
@@ -218,10 +235,25 @@ class PembayaranController extends Controller
                 } elseif ($transactionStatus === 'pending') {
                     if ($kursusId && $userId) {
                         $kursusItem = Kursus::find($kursusId);
+                        $reservasiKursus = Reservasi::firstOrCreate(
+                            [
+                                'user_id' => $userId,
+                                'kursus_id' => $kursusId,
+                                'tipe' => 'kursus',
+                            ],
+                            [
+                                'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                                'status' => 'Menunggu Pembayaran',
+                                'tanggal' => Carbon::now()->format('Y-m-d'),
+                                'lokasi' => 'Online Classroom LMS',
+                            ]
+                        );
+
                         Pembayaran::firstOrCreate(
                             ['nomor_transaksi' => 'TRX-' . $orderId],
                             [
                                 'user_id' => $userId,
+                                'reservasi_id' => $reservasiKursus->id,
                                 'kursus_id' => $kursusId,
                                 'jumlah' => $kursusItem->harga ?? 0,
                                 'metode_pembayaran' => 'Midtrans Snap (Gateway)',
@@ -236,8 +268,8 @@ class PembayaranController extends Controller
             }
 
             $baseBookingNumber = explode('-T', $orderId)[0];
-            $booking = Reservasi::where('nomor_booking', $orderId)
-                ->orWhere('nomor_booking', $baseBookingNumber)
+            $booking = Reservasi::where('nomor_reservasi', $orderId)
+                ->orWhere('nomor_reservasi', $baseBookingNumber)
                 ->first();
             if ($booking) {
                 if (in_array($transactionStatus, ['settlement', 'capture'])) {
@@ -245,11 +277,11 @@ class PembayaranController extends Controller
                     $booking->save();
 
                     $pembayaran = Pembayaran::firstOrCreate(
-                        ['booking_id' => $booking->id],
+                        ['reservasi_id' => $booking->id],
                         [
-                            'nomor_transaksi' => 'TRX-' . str_replace('BK-', '', $orderId),
+                            'nomor_transaksi' => 'TRX-' . str_replace(['RSV-', 'BK-'], '', $orderId),
                             'user_id' => $booking->user_id,
-                            'booking_id' => $booking->id,
+                            'reservasi_id' => $booking->id,
                             'jumlah' => $booking->paket->harga ?? 0,
                             'metode_pembayaran' => 'Midtrans Snap (Gateway)',
                             'status' => 'Dibayar',
@@ -258,6 +290,7 @@ class PembayaranController extends Controller
                     );
 
                     $pembayaran->status = 'Dibayar';
+                    $pembayaran->reservasi_id = $booking->id;
                     $pembayaran->tanggal_pembayaran = Carbon::now();
                     $pembayaran->save();
 
@@ -266,11 +299,11 @@ class PembayaranController extends Controller
                         [
                             'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT),
                             'user_id' => $booking->user_id,
-                            'booking_id' => $booking->id,
+                            'reservasi_id' => $booking->id,
                             'subtotal' => $pembayaran->jumlah,
                             'diskon' => 0,
                             'total' => $pembayaran->jumlah,
-                            'status_pembayaran' => 'Lunas',
+                            'status_pembayaran' => 'LUNAS',
                         ]
                     );
 
@@ -278,11 +311,11 @@ class PembayaranController extends Controller
                         ->with('success', 'Pembayaran berhasil dikonfirmasi! Jadwal sesi pemotretan Anda telah terverifikasi.');
                 } elseif ($transactionStatus === 'pending') {
                     Pembayaran::firstOrCreate(
-                        ['booking_id' => $booking->id],
+                        ['reservasi_id' => $booking->id],
                         [
-                            'nomor_transaksi' => 'TRX-' . str_replace('BK-', '', $orderId),
+                            'nomor_transaksi' => 'TRX-' . str_replace(['RSV-', 'BK-'], '', $orderId),
                             'user_id' => $booking->user_id,
-                            'booking_id' => $booking->id,
+                            'reservasi_id' => $booking->id,
                             'jumlah' => $booking->paket->harga ?? 0,
                             'metode_pembayaran' => 'Midtrans Snap (Gateway)',
                             'status' => 'Menunggu Verifikasi',
@@ -307,14 +340,14 @@ class PembayaranController extends Controller
     {
         $pembayaran = Pembayaran::findOrFail($id);
         
-        $orderId = $pembayaran->booking ? $pembayaran->booking->nomor_booking : null;
+        $orderId = $pembayaran->reservasi ? $pembayaran->reservasi->nomor_reservasi : null;
         if (!$orderId && $pembayaran->kursus_id) {
             $orderId = 'KRS-' . $pembayaran->kursus_id . '-' . $pembayaran->user_id;
         }
 
         // Cek juga jika ada suffix transaksi
         if ($pembayaran->nomor_transaksi) {
-            $trxClean = str_replace('TRX-', 'BK-', $pembayaran->nomor_transaksi);
+            $trxClean = str_replace('TRX-', 'RSV-', $pembayaran->nomor_transaksi);
             $result = $midtransService->syncStatusFromMidtrans($trxClean);
             if ($result && ($result['is_paid'] ?? false)) {
                 return back()->with('success', 'Status pembayaran berhasil disinkronkan: DIBAYAR.');
@@ -328,8 +361,8 @@ class PembayaranController extends Controller
             }
         }
 
-        // Auto-heal fallback: jika booking sudah dibayar
-        if ($pembayaran->booking && in_array($pembayaran->booking->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai'])) {
+        // Auto-heal fallback: jika reservasi sudah dibayar
+        if ($pembayaran->reservasi && in_array($pembayaran->reservasi->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai'])) {
             $pembayaran->status = 'Dibayar';
             $pembayaran->tanggal_pembayaran = $pembayaran->tanggal_pembayaran ?: Carbon::now();
             $pembayaran->save();
@@ -337,13 +370,13 @@ class PembayaranController extends Controller
             Invoice::firstOrCreate(
                 ['pembayaran_id' => $pembayaran->id],
                 [
-                    'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($pembayaran->booking_id, 4, '0', STR_PAD_LEFT),
+                    'nomor_invoice' => 'INV-' . date('Ymd') . '-' . str_pad($pembayaran->reservasi_id, 4, '0', STR_PAD_LEFT),
                     'user_id' => $pembayaran->user_id,
-                    'booking_id' => $pembayaran->booking_id,
+                    'reservasi_id' => $pembayaran->reservasi_id,
                     'subtotal' => $pembayaran->jumlah,
                     'diskon' => 0,
                     'total' => $pembayaran->jumlah,
-                    'status_pembayaran' => 'Lunas',
+                    'status_pembayaran' => 'LUNAS',
                 ]
             );
 
@@ -429,7 +462,7 @@ class PembayaranController extends Controller
                 [
                     'nomor_invoice' => $invNumber,
                     'user_id' => $pembayaran->user_id,
-                    'booking_id' => $pembayaran->booking_id,
+                    'reservasi_id' => $pembayaran->reservasi_id,
                     'kursus_id' => $pembayaran->kursus_id,
                     'subtotal' => $pembayaran->jumlah,
                     'diskon' => 0,
@@ -438,20 +471,32 @@ class PembayaranController extends Controller
                 ]
             );
 
-            if ($pembayaran->booking_id) {
-                $booking = Reservasi::find($pembayaran->booking_id);
-                $booking->status = 'Dibayar';
-                $booking->save();
+            if ($pembayaran->reservasi_id) {
+                $booking = Reservasi::find($pembayaran->reservasi_id);
+                if ($booking) {
+                    $booking->status = 'Dibayar';
+                    $booking->save();
+                }
             }
 
             if ($pembayaran->kursus_id) {
-                Enrollment::firstOrCreate([
+                $reservasiKursus = Reservasi::firstOrCreate([
                     'user_id' => $pembayaran->user_id,
                     'kursus_id' => $pembayaran->kursus_id,
+                    'tipe' => 'kursus',
                 ], [
-                    'tanggal_daftar' => Carbon::now(),
-                    'status' => 'aktif',
+                    'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                    'status' => 'Dibayar',
+                    'tanggal' => Carbon::now()->format('Y-m-d'),
+                    'lokasi' => 'Online Classroom LMS',
                 ]);
+                $reservasiKursus->status = 'Dibayar';
+                $reservasiKursus->save();
+
+                if (empty($pembayaran->reservasi_id)) {
+                    $pembayaran->reservasi_id = $reservasiKursus->id;
+                    $pembayaran->save();
+                }
             }
         }
 
@@ -471,11 +516,11 @@ class PembayaranController extends Controller
     public function showInvoice($id)
     {
         // Cari invoice berdasarkan ID invoice atau fallback berdasarkan pembayaran_id
-        $invoice = Invoice::with(['pembayaran', 'user', 'booking.layanan', 'booking.paket', 'kursus'])->find($id);
+        $invoice = Invoice::with(['pembayaran', 'user', 'reservasi.layanan', 'reservasi.paket', 'kursus'])->find($id);
 
         if (!$invoice) {
             // Cek jika ID yang dikirim adalah ID Pembayaran
-            $pembayaran = Pembayaran::with(['invoice', 'user', 'booking.layanan', 'booking.paket', 'kursus'])->find($id);
+            $pembayaran = Pembayaran::with(['invoice', 'user', 'reservasi.layanan', 'reservasi.paket', 'kursus'])->find($id);
             if ($pembayaran) {
                 if ($pembayaran->invoice) {
                     $invoice = $pembayaran->invoice;
@@ -488,14 +533,14 @@ class PembayaranController extends Controller
                         'pembayaran_id' => $pembayaran->id,
                         'nomor_invoice' => $invNum,
                         'user_id' => $pembayaran->user_id,
-                        'booking_id' => $pembayaran->booking_id,
+                        'reservasi_id' => $pembayaran->reservasi_id,
                         'kursus_id' => $pembayaran->kursus_id,
                         'subtotal' => $pembayaran->jumlah,
                         'diskon' => 0,
                         'total' => $pembayaran->jumlah,
                         'status_pembayaran' => 'LUNAS',
                     ]);
-                    $invoice->load(['pembayaran', 'user', 'booking.layanan', 'booking.paket', 'kursus']);
+                    $invoice->load(['pembayaran', 'user', 'reservasi.layanan', 'reservasi.paket', 'kursus']);
                 }
             }
         }

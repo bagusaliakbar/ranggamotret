@@ -16,7 +16,6 @@ use App\Models\Modul;
 use App\Models\Materi;
 use App\Models\Quiz;
 use App\Models\QuizSoal;
-use App\Models\Enrollment;
 use App\Models\Sertifikat;
 use App\Models\Portofolio;
 use App\Models\GaleriFoto;
@@ -147,7 +146,8 @@ class DatabaseSeeder extends Seeder
 
         // 4. Seed Booking & Payments & Invoices (Reservasi)
         $booking1 = Reservasi::create([
-            'nomor_booking' => 'BK-' . date('Ymd') . '-001',
+            'nomor_reservasi' => 'RSV-' . date('Ymd') . '-001',
+            'tipe' => 'fotografi',
             'user_id' => $customer1->id,
             'layanan_id' => $layananWedding->id,
             'paket_id' => $paketWeddingGold->id,
@@ -161,7 +161,7 @@ class DatabaseSeeder extends Seeder
         $pembayaran1 = Pembayaran::create([
             'nomor_transaksi' => 'TRX-' . date('Ymd') . '-001',
             'user_id' => $customer1->id,
-            'booking_id' => $booking1->id,
+            'reservasi_id' => $booking1->id,
             'jumlah' => 7800000,
             'metode_pembayaran' => 'Midtrans Snap (BCA Virtual Account)',
             'tanggal_pembayaran' => Carbon::now()->subDays(1),
@@ -173,7 +173,7 @@ class DatabaseSeeder extends Seeder
             'nomor_invoice' => 'INV-' . date('Ymd') . '-001',
             'pembayaran_id' => $pembayaran1->id,
             'user_id' => $customer1->id,
-            'booking_id' => $booking1->id,
+            'reservasi_id' => $booking1->id,
             'subtotal' => 7800000,
             'diskon' => 0,
             'total' => 7800000,
@@ -182,13 +182,13 @@ class DatabaseSeeder extends Seeder
 
         // Proofing photos for booking1
         GaleriFoto::create([
-            'booking_id' => $booking1->id,
+            'reservasi_id' => $booking1->id,
             'foto_path' => 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80',
             'is_selected' => true,
             'catatan' => 'Dipilih untuk cetak album utama',
         ]);
         GaleriFoto::create([
-            'booking_id' => $booking1->id,
+            'reservasi_id' => $booking1->id,
             'foto_path' => 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80',
             'is_selected' => false,
             'catatan' => null,
@@ -282,12 +282,38 @@ class DatabaseSeeder extends Seeder
             'bobot_nilai' => 50,
         ]);
 
-        // Enroll Peserta1 in KursusDasar
-        Enrollment::create([
+        // Pendaftaran Peserta1 di KursusDasar via Reservasi tipe kursus
+        $reservasiKursus = Reservasi::create([
+            'nomor_reservasi' => 'RSV-' . date('Ymd') . '-KRS01',
+            'tipe' => 'kursus',
             'user_id' => $peserta1->id,
             'kursus_id' => $kursusDasar->id,
-            'tanggal_daftar' => Carbon::now()->subDays(10),
-            'status' => 'aktif',
+            'tanggal' => Carbon::now()->subDays(10)->format('Y-m-d'),
+            'lokasi' => 'Online Classroom LMS',
+            'status' => 'Dibayar',
+        ]);
+
+        $pembayaranKursus = Pembayaran::create([
+            'nomor_transaksi' => 'TRX-KRS-' . $kursusDasar->id . '-' . $peserta1->id,
+            'user_id' => $peserta1->id,
+            'reservasi_id' => $reservasiKursus->id,
+            'kursus_id' => $kursusDasar->id,
+            'jumlah' => $kursusDasar->harga,
+            'metode_pembayaran' => 'Midtrans Snap (Gateway)',
+            'tanggal_pembayaran' => Carbon::now()->subDays(10),
+            'status' => 'Dibayar',
+        ]);
+
+        Invoice::create([
+            'nomor_invoice' => 'INV-KRS-' . date('Ymd') . '-001',
+            'pembayaran_id' => $pembayaranKursus->id,
+            'user_id' => $peserta1->id,
+            'reservasi_id' => $reservasiKursus->id,
+            'kursus_id' => $kursusDasar->id,
+            'subtotal' => $kursusDasar->harga,
+            'diskon' => 0,
+            'total' => $kursusDasar->harga,
+            'status_pembayaran' => 'LUNAS',
         ]);
 
         // Certificate sample

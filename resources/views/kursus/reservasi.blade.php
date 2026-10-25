@@ -90,9 +90,9 @@
                         <div class="space-y-3 flex-1">
                             <div class="flex flex-wrap items-center gap-2.5">
                                 <span class="font-mono text-xs font-extrabold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
-                                    {{ $invoice ? $invoice->nomor_invoice : ($pembayaran ? $pembayaran->nomor_transaksi : ('KRS-ENROLL-' . str_pad($e->id, 4, '0', STR_PAD_LEFT))) }}
+                                    {{ $e->nomor_reservasi ?? ($invoice ? $invoice->nomor_invoice : ($pembayaran ? $pembayaran->nomor_transaksi : ('RSV-KRS-' . str_pad($e->id, 4, '0', STR_PAD_LEFT)))) }}
                                 </span>
-                                <span class="text-xs font-bold text-slate-400">• Terdaftar: {{ $e->tanggal_daftar ? date('d M Y', strtotime($e->tanggal_daftar)) : $e->created_at->format('d M Y') }}</span>
+                                <span class="text-xs font-bold text-slate-400">• Terdaftar: {{ $e->tanggal ? date('d M Y', strtotime($e->tanggal)) : $e->created_at->format('d M Y') }}</span>
                             </div>
 
                             <div>

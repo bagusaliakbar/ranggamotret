@@ -8,23 +8,49 @@ use Illuminate\Database\Eloquent\Model;
  * Model Reservasi (ICONIX Robustness: Entity Reservasi)
  * 
  * Merepresentasikan Entity Object 'Reservasi' pada Robustness Diagram.
- * Terhubung dengan tabel database 'booking'.
+ * Terhubung dengan tabel database 'reservasi' yang menaungi reservasi sesi fotografi
+ * maupun reservasi pendaftaran kursus akademi.
  */
 class Reservasi extends Model
 {
-    protected $table = 'booking';
+    protected $table = 'reservasi';
 
     protected $fillable = [
-        'nomor_booking',
+        'tipe', // 'fotografi', 'kursus'
+        'nomor_reservasi',
         'user_id',
         'layanan_id',
         'paket_id',
+        'kursus_id',
         'tanggal',
         'waktu',
         'lokasi',
         'kebutuhan_khusus',
         'status',
     ];
+
+    /**
+     * Backward-compatibility accessor untuk nomor_booking
+     */
+    public function getNomorBookingAttribute()
+    {
+        return $this->nomor_reservasi;
+    }
+
+    public function setNomorBookingAttribute($value)
+    {
+        $this->attributes['nomor_reservasi'] = $value;
+    }
+
+    public function isFotografi(): bool
+    {
+        return ($this->tipe ?? 'fotografi') === 'fotografi';
+    }
+
+    public function isKursus(): bool
+    {
+        return $this->tipe === 'kursus';
+    }
 
     public function customer()
     {
@@ -51,14 +77,29 @@ class Reservasi extends Model
         return $this->belongsTo(Paket::class, 'paket_id');
     }
 
+    public function kursus()
+    {
+        return $this->belongsTo(Kursus::class, 'kursus_id');
+    }
+
     public function pembayaran()
     {
-        return $this->hasOne(Pembayaran::class, 'booking_id');
+        return $this->hasOne(Pembayaran::class, 'reservasi_id');
     }
 
     public function galeriFotos()
     {
-        return $this->hasMany(GaleriFoto::class, 'booking_id');
+        return $this->hasMany(GaleriFoto::class, 'reservasi_id');
+    }
+
+    public function scopeFotografi($query)
+    {
+        return $query->where('tipe', 'fotografi');
+    }
+
+    public function scopeKursus($query)
+    {
+        return $query->where('tipe', 'kursus');
     }
 
     public function scopeAktif($query)
@@ -81,20 +122,30 @@ class GaleriFoto extends Model
     protected $table = 'galeri_foto';
 
     protected $fillable = [
-        'booking_id',
+        'reservasi_id',
         'foto_path',
         'is_selected',
         'catatan',
     ];
 
+    public function getBookingIdAttribute()
+    {
+        return $this->reservasi_id;
+    }
+
+    public function setBookingIdAttribute($value)
+    {
+        $this->attributes['reservasi_id'] = $value;
+    }
+
     public function booking()
     {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
+        return $this->belongsTo(Reservasi::class, 'reservasi_id');
     }
 
     public function reservasi()
     {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
+        return $this->belongsTo(Reservasi::class, 'reservasi_id');
     }
 }
 
@@ -109,13 +160,23 @@ class Invoice extends Model
         'nomor_invoice',
         'pembayaran_id',
         'user_id',
-        'booking_id',
+        'reservasi_id',
         'kursus_id',
         'subtotal',
         'diskon',
         'total',
         'status_pembayaran',
     ];
+
+    public function getBookingIdAttribute()
+    {
+        return $this->reservasi_id;
+    }
+
+    public function setBookingIdAttribute($value)
+    {
+        $this->attributes['reservasi_id'] = $value;
+    }
 
     public function pembayaran()
     {
@@ -129,12 +190,12 @@ class Invoice extends Model
 
     public function booking()
     {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
+        return $this->belongsTo(Reservasi::class, 'reservasi_id');
     }
 
     public function reservasi()
     {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
+        return $this->belongsTo(Reservasi::class, 'reservasi_id');
     }
 
     public function kursus()
@@ -142,4 +203,3 @@ class Invoice extends Model
         return $this->belongsTo(Kursus::class, 'kursus_id');
     }
 }
-

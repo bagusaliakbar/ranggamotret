@@ -9,7 +9,6 @@ use App\Models\Pembayaran;
 use App\Models\Kursus;
 use App\Models\User;
 use App\Models\Konsultasi;
-use App\Models\Enrollment;
 
 /**
  * Controller Dasbor Terpadu (Unified Adaptive Dashboard)
@@ -43,8 +42,8 @@ class DashboardController extends Controller
      */
     protected function adminDashboard(Request $request)
     {
-        $totalBooking = Reservasi::count();
-        $bookingPending = Reservasi::where('status', 'Menunggu Konfirmasi')->count();
+        $totalBooking = Reservasi::where('tipe', 'fotografi')->count();
+        $bookingPending = Reservasi::where('tipe', 'fotografi')->where('status', 'Menunggu Konfirmasi')->count();
         $totalPendapatan = Pembayaran::where('status', 'Dibayar')->sum('jumlah');
         $pembayaranPending = Pembayaran::whereIn('status', ['Menunggu Pembayaran', 'Menunggu Verifikasi', 'pending', 'Belum Dibayar'])->count();
         $totalKursus = Kursus::count();
@@ -52,8 +51,8 @@ class DashboardController extends Controller
         $totalCustomers = User::where('role', 'customer')->count();
         $pendingConsultations = Konsultasi::where('status', 'pending')->count();
 
-        $recentBookings = Reservasi::with(['customer', 'layanan'])->latest()->take(5)->get();
-        $recentPayments = Pembayaran::with(['user', 'booking.layanan', 'kursus'])->latest()->take(5)->get();
+        $recentBookings = Reservasi::where('tipe', 'fotografi')->with(['customer', 'layanan'])->latest()->take(5)->get();
+        $recentPayments = Pembayaran::with(['user', 'reservasi.layanan', 'kursus'])->latest()->take(5)->get();
 
         return view('dashboard.admin', compact(
             'totalBooking',
@@ -77,25 +76,33 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $totalBookings = Reservasi::where('user_id', $user->id)->count();
+        $totalBookings = Reservasi::where('user_id', $user->id)->where('tipe', 'fotografi')->count();
         $activeBookings = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'fotografi')
             ->whereIn('status', ['Menunggu Konfirmasi', 'Disetujui', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal'])
             ->count();
         $completedBookings = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'fotografi')
             ->where('status', 'Selesai')
             ->count();
-        $enrolledCourses = Enrollment::where('user_id', $user->id)->count();
+        $enrolledCourses = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'kursus')
+            ->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])
+            ->count();
         $pendingPayments = Pembayaran::where('user_id', $user->id)
             ->where('status', 'pending')
             ->count();
 
         $recentBookings = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'fotografi')
             ->with(['layanan', 'paket', 'pembayaran'])
             ->latest()
             ->take(5)
             ->get();
 
-        $enrolledList = Enrollment::where('user_id', $user->id)
+        $enrolledList = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'kursus')
+            ->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])
             ->with(['kursus.instruktur'])
             ->latest()
             ->take(3)

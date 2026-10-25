@@ -8,7 +8,7 @@ use App\Models\Kursus;
 use App\Models\Modul;
 use App\Models\Materi;
 use App\Models\MateriProgress;
-use App\Models\Enrollment;
+use App\Models\Reservasi;
 use App\Models\Sertifikat;
 use App\Models\Quiz;
 use App\Models\QuizSoal;
@@ -55,7 +55,7 @@ class KursusController extends Controller
     public function detail($id)
     {
         $kursus = Kursus::with(['instruktur', 'moduls.materis'])->findOrFail($id);
-        $isEnrolled = Auth::check() && Enrollment::where('user_id', Auth::id())->where('kursus_id', $id)->exists();
+        $isEnrolled = Auth::check() && Reservasi::where('user_id', Auth::id())->where('kursus_id', $id)->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])->exists();
 
         return view('kursus.detail', compact('kursus', 'isEnrolled'));
     }
@@ -71,26 +71,43 @@ class KursusController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Sinkronisasi Otomatis: Jika ada pembayaran kursus yang sudah 'Dibayar' tapi belum dibuatkan enrollment
+        // 1. Sinkronisasi Otomatis: Jika ada pembayaran kursus 'Dibayar' tapi belum tercatat di reservasi
         $paidCoursePayments = Pembayaran::where('user_id', $user->id)
             ->whereNotNull('kursus_id')
             ->where('status', 'Dibayar')
             ->get();
 
         foreach ($paidCoursePayments as $pay) {
-            Enrollment::firstOrCreate([
+            $reservasi = Reservasi::firstOrCreate([
                 'user_id' => $user->id,
                 'kursus_id' => $pay->kursus_id,
+                'tipe' => 'kursus',
             ], [
-                'tanggal_daftar' => $pay->tanggal_pembayaran ?? Carbon::now(),
-                'status' => 'aktif',
+                'nomor_reservasi' => 'RSV-KRS-' . date('Ymd') . '-' . str_pad($pay->id, 4, '0', STR_PAD_LEFT),
+                'tanggal' => date('Y-m-d', strtotime($pay->tanggal_pembayaran ?? now())),
+                'waktu' => date('H:i:s', strtotime($pay->tanggal_pembayaran ?? now())),
+                'lokasi' => 'Online Classroom LMS',
+                'kebutuhan_khusus' => 'Pendaftaran Kursus Akademi',
+                'status' => 'Dibayar',
             ]);
+
+            if (empty($pay->reservasi_id)) {
+                $pay->reservasi_id = $reservasi->id;
+                $pay->save();
+            }
         }
 
-        $enrollments = Enrollment::where('user_id', $user->id)
-            ->with(['kursus.instruktur', 'kursus.moduls.materis', 'sertifikat', 'pembayaran.invoice'])
+        $enrollments = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'kursus')
+            ->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])
+            ->with(['kursus.instruktur', 'kursus.moduls.materis', 'pembayaran.invoice'])
             ->latest()
             ->get();
+
+        foreach ($enrollments as $enr) {
+            $enr->progress_persen = $enr->kursus ? $enr->kursus->progressOfUser($user->id) : 0;
+            $enr->sertifikat = Sertifikat::where('user_id', $user->id)->where('kursus_id', $enr->kursus_id)->first();
+        }
 
         $certificates = Sertifikat::where('user_id', $user->id)->with('kursus')->latest()->get();
 
@@ -125,11 +142,16 @@ class KursusController extends Controller
     {
         $user = Auth::user();
 
-        // Data enrollment kursus beserta pembayaran & invoice
-        $enrollments = Enrollment::where('user_id', $user->id)
-            ->with(['kursus.instruktur', 'pembayaran.invoice', 'sertifikat'])
+        // Data reservasi kursus beserta pembayaran & invoice
+        $enrollments = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'kursus')
+            ->with(['kursus.instruktur', 'pembayaran.invoice'])
             ->latest()
             ->get();
+
+        foreach ($enrollments as $enr) {
+            $enr->sertifikat = Sertifikat::where('user_id', $user->id)->where('kursus_id', $enr->kursus_id)->first();
+        }
 
         // Data transaksi pembayaran kursus
         $coursePayments = Pembayaran::where('user_id', $user->id)
@@ -138,7 +160,7 @@ class KursusController extends Controller
             ->latest()
             ->get();
 
-        $totalReservasi = $enrollments->count() > 0 ? $enrollments->count() : $coursePayments->count();
+        $totalReservasi = $enrollments->count();
         $totalInvestasi = $coursePayments->where('status', 'Dibayar')->sum('jumlah');
         if ($totalInvestasi == 0 && $enrollments->count() > 0) {
             $totalInvestasi = $enrollments->sum(fn($e) => $e->kursus->harga ?? 0);
@@ -159,10 +181,22 @@ class KursusController extends Controller
     {
         $user = Auth::user();
 
-        // Pastikan pengguna terdaftar
-        $enrollment = Enrollment::where('user_id', $user->id)
+        // Pastikan pengguna terdaftar melalui reservasi kursus
+        $enrollment = Reservasi::where('user_id', $user->id)
             ->where('kursus_id', $kursusId)
-            ->firstOrFail();
+            ->where('tipe', 'kursus')
+            ->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])
+            ->first();
+
+        // Jika admin, izinkan akses preview belajar
+        if (!$enrollment && $user->isAdmin()) {
+            $enrollment = (object)[
+                'status' => 'aktif',
+                'created_at' => now(),
+            ];
+        } elseif (!$enrollment) {
+            abort(403, 'Anda belum memiliki akses atau pembayaran belum dikonfirmasi untuk kursus ini.');
+        }
 
         $kursus = Kursus::with([
             'moduls.materis',
@@ -213,7 +247,7 @@ class KursusController extends Controller
             ->count();
 
         $progressPercentage = $totalMateris > 0 ? round(($completedMateris / $totalMateris) * 100) : 0;
-        if ($enrollment->status === 'selesai') {
+        if (strtolower($enrollment->status ?? '') === 'selesai') {
             $progressPercentage = 100;
         }
 
@@ -279,7 +313,10 @@ class KursusController extends Controller
             'nilai_akhir' => 90.00,
         ]);
 
-        Enrollment::where('user_id', $user->id)->where('kursus_id', $kursusId)->update(['status' => 'selesai']);
+        Reservasi::where('user_id', $user->id)
+            ->where('kursus_id', $kursusId)
+            ->where('tipe', 'kursus')
+            ->update(['status' => 'Selesai']);
 
         Notifikasi::create([
             'user_id' => $user->id,
@@ -385,14 +422,21 @@ class KursusController extends Controller
                 $pembayaran->tanggal_pembayaran = now();
             }
 
-            // 1. Aktivasi Akses Kursus (Buat Enrollment)
-            Enrollment::firstOrCreate([
+            // 1. Aktivasi Akses Kursus (Buat/Update Reservasi Kursus)
+            $reservasiKursus = Reservasi::firstOrCreate([
                 'user_id' => $pembayaran->user_id,
                 'kursus_id' => $pembayaran->kursus_id,
+                'tipe' => 'kursus',
             ], [
-                'tanggal_daftar' => $pembayaran->tanggal_pembayaran ?? Carbon::now(),
-                'status' => 'aktif',
+                'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                'status' => 'Dibayar',
+                'tanggal' => $pembayaran->tanggal_pembayaran ? Carbon::parse($pembayaran->tanggal_pembayaran)->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
+                'lokasi' => 'Online Classroom LMS',
             ]);
+
+            if (empty($pembayaran->reservasi_id)) {
+                $pembayaran->reservasi_id = $reservasiKursus->id;
+            }
 
             // 2. Terbitkan Invoice Resmi LUNAS jika belum ada
             $invNumber = 'INV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5));
@@ -401,7 +445,7 @@ class KursusController extends Controller
                 [
                     'nomor_invoice' => $invNumber,
                     'user_id' => $pembayaran->user_id,
-                    'booking_id' => null,
+                    'reservasi_id' => $reservasiKursus->id,
                     'kursus_id' => $pembayaran->kursus_id,
                     'subtotal' => $pembayaran->jumlah,
                     'diskon' => 0,
@@ -433,7 +477,7 @@ class KursusController extends Controller
         $level = $request->query('level');
         $status = $request->query('status');
 
-        $query = Kursus::with(['instruktur', 'moduls.materis', 'moduls.quizs.soals', 'enrollments']);
+        $query = Kursus::with(['instruktur', 'moduls.materis', 'moduls.quizs.soals', 'reservasis']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -456,7 +500,7 @@ class KursusController extends Controller
         // Metrik statistik kursus
         $totalCourses = Kursus::count();
         $activeCourses = Kursus::where('status', 'aktif')->count();
-        $totalEnrollments = \App\Models\Enrollment::count();
+        $totalEnrollments = Reservasi::where('tipe', 'kursus')->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])->count();
         $totalModules = \App\Models\Modul::count();
 
         return view('kursus.admin', compact(

@@ -34,14 +34,56 @@ class Kursus extends Model
         return $this->hasMany(Modul::class, 'kursus_id')->orderBy('urutan');
     }
 
+    public function reservasis()
+    {
+        return $this->hasMany(Reservasi::class, 'kursus_id')->where('tipe', 'kursus');
+    }
+
     public function enrollments()
     {
-        return $this->hasMany(Enrollment::class, 'kursus_id');
+        return $this->reservasis();
     }
 
     public function sertifikats()
     {
         return $this->hasMany(Sertifikat::class, 'kursus_id');
+    }
+
+    public function isEnrolledBy($userId): bool
+    {
+        return $this->reservasis()
+            ->where('user_id', $userId)
+            ->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])
+            ->exists();
+    }
+
+    public function progressOfUser($userId): int
+    {
+        $hasCert = Sertifikat::where('user_id', $userId)->where('kursus_id', $this->id)->exists();
+        if ($hasCert) {
+            return 100;
+        }
+
+        $totalMateris = 0;
+        foreach ($this->moduls as $modul) {
+            $totalMateris += $modul->materis->count();
+        }
+
+        if ($totalMateris === 0) {
+            return 0;
+        }
+
+        $completedMateris = MateriProgress::where('user_id', $userId)
+            ->whereIn('materi_id', function ($q) {
+                $q->select('materi.id')
+                    ->from('materi')
+                    ->join('modul', 'materi.modul_id', '=', 'modul.id')
+                    ->where('modul.kursus_id', $this->id);
+            })
+            ->where('is_completed', true)
+            ->count();
+
+        return (int) round(($completedMateris / $totalMateris) * 100);
     }
 }
 
@@ -76,80 +118,6 @@ class Modul extends Model
 }
 
 /**
- * Sub-entity Enrollment: data pendaftaran dan progres belajar siswa
- */
-class Enrollment extends Model
-{
-    protected $table = 'enrollment';
-
-    protected $fillable = [
-        'user_id',
-        'kursus_id',
-        'tanggal_daftar',
-        'status',
-    ];
-
-    protected $appends = [
-        'progress_persen',
-    ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function kursus()
-    {
-        return $this->belongsTo(Kursus::class, 'kursus_id');
-    }
-
-    public function sertifikat()
-    {
-        return $this->hasOne(Sertifikat::class, 'kursus_id', 'kursus_id')
-            ->where('user_id', $this->user_id);
-    }
-
-    public function pembayaran()
-    {
-        return $this->hasOne(Pembayaran::class, 'kursus_id', 'kursus_id')
-            ->where('user_id', $this->user_id);
-    }
-
-    public function getProgressPersenAttribute(): int
-    {
-        if ($this->status === 'selesai' || $this->sertifikat()->exists()) {
-            return 100;
-        }
-
-        $kursus = $this->kursus;
-        if (!$kursus) {
-            return 0;
-        }
-
-        $totalMateris = 0;
-        foreach ($kursus->moduls as $modul) {
-            $totalMateris += $modul->materis->count();
-        }
-
-        if ($totalMateris === 0) {
-            return 0;
-        }
-
-        $completedMateris = MateriProgress::where('user_id', $this->user_id)
-            ->whereIn('materi_id', function ($q) {
-                $q->select('materi.id')
-                    ->from('materi')
-                    ->join('modul', 'materi.modul_id', '=', 'modul.id')
-                    ->where('modul.kursus_id', $this->kursus_id);
-            })
-            ->where('is_completed', true)
-            ->count();
-
-        return (int) round(($completedMateris / $totalMateris) * 100);
-    }
-}
-
-/**
  * Sub-entity Sertifikat: sertifikat kelulusan digital akademi
  */
 class Sertifikat extends Model
@@ -175,4 +143,3 @@ class Sertifikat extends Model
         return $this->belongsTo(Kursus::class, 'kursus_id');
     }
 }
-

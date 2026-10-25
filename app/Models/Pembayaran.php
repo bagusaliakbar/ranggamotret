@@ -11,7 +11,7 @@ class Pembayaran extends Model
     protected $fillable = [
         'nomor_transaksi',
         'user_id',
-        'booking_id',
+        'reservasi_id',
         'kursus_id',
         'jumlah',
         'metode_pembayaran',
@@ -28,19 +28,29 @@ class Pembayaran extends Model
         'tanggal_pembayaran' => 'datetime',
     ];
 
+    public function getBookingIdAttribute()
+    {
+        return $this->reservasi_id;
+    }
+
+    public function setBookingIdAttribute($value)
+    {
+        $this->attributes['reservasi_id'] = $value;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function booking()
-    {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
-    }
-
     public function reservasi()
     {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
+        return $this->belongsTo(Reservasi::class, 'reservasi_id');
+    }
+
+    public function booking()
+    {
+        return $this->belongsTo(Reservasi::class, 'reservasi_id');
     }
 
     public function kursus()

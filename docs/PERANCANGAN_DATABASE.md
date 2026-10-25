@@ -11,7 +11,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 3. [layanan](#3-tabel-layanan) — Katalog layanan fotografi studio
 4. [kategori_layanan](#4-tabel-kategori_layanan) — Master kategori tema layanan pemotretan
 5. [paket](#5-tabel-paket) — Paket harga dan fasilitas layanan foto
-6. [booking](#6-tabel-booking) — Reservasi jadwal sesi pemotretan
+6. [reservasi](#6-tabel-reservasi) — Reservasi terpadu (sesi pemotretan & pendaftaran kursus)
 7. [pembayaran](#7-tabel-pembayaran) — Transaksi keuangan & integrasi Midtrans Snap
 8. [invoice](#8-tabel-invoice) — Faktur tagihan resmi (pelunasan)
 9. [kursus](#9-tabel-kursus) — Akademi & kursus fotografi
@@ -21,13 +21,12 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 13. [quiz](#13-tabel-quiz) — Kuis evaluasi pemahaman modul
 14. [quiz_soal](#14-tabel-quiz_soal) — Bank soal pilihan ganda kuis
 15. [quiz_attempt](#15-tabel-quiz_attempt) — Hasil riwayat pengerjaan kuis siswa
-16. [enrollment](#16-tabel-enrollment) — Pendaftaran & hak akses kursus siswa
-17. [sertifikat](#17-tabel-sertifikat) — Sertifikat kelulusan digital & verifikasi
-18. [portofolio](#18-tabel-portofolio) — Galeri album karya fotografi
-19. [portofolio_foto](#19-tabel-portofolio_foto) — Rincian multi-foto dalam album karya
-20. [galeri_foto](#20-tabel-galeri_foto) — Galeri foto hasil sesi klien (proofing)
-21. [konsultasi](#21-tabel-konsultasi) — Tiket konsultasi konsep foto klien
-22. [notifikasi](#22-tabel-notifikasi) — Notifikasi sistem real-time internal
+16. [sertifikat](#16-tabel-sertifikat) — Sertifikat kelulusan digital & verifikasi
+17. [portofolio](#17-tabel-portofolio) — Galeri album karya fotografi
+18. [portofolio_foto](#18-tabel-portofolio_foto) — Rincian multi-foto dalam album karya
+19. [galeri_foto](#19-tabel-galeri_foto) — Galeri foto hasil sesi klien (proofing)
+20. [konsultasi](#20-tabel-konsultasi) — Tiket konsultasi konsep foto klien
+21. [notifikasi](#21-tabel-notifikasi) — Notifikasi sistem real-time internal
 
 ---
 
@@ -135,26 +134,29 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 6. Tabel: `booking`
-- **Nama Tabel:** `booking`
+### 6. Tabel: `reservasi`
+- **Nama Tabel:** `reservasi`
 - **Primary Key:** `id`
 - **Foreign Key:** 
   - `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)
-  - `layanan_id` (mengacu ke `layanan.id` dengan relasi `ON DELETE CASCADE`)
-  - `paket_id` (mengacu ke `paket.id` dengan relasi `ON DELETE CASCADE`)
-- **Deskripsi Tabel:** Menyimpan rekaman transaksi pemesanan (reservasi) sesi pemotretan oleh pelanggan, meliputi tanggal, waktu, lokasi, dan status operasional.
+  - `layanan_id` (mengacu ke `layanan.id` dengan relasi `ON DELETE CASCADE`, Nullable)
+  - `paket_id` (mengacu ke `paket.id` dengan relasi `ON DELETE CASCADE`, Nullable)
+  - `kursus_id` (mengacu ke `kursus.id` dengan relasi `ON DELETE CASCADE`, Nullable)
+- **Deskripsi Tabel:** Menyimpan rekaman transaksi reservasi terpadu baik untuk sesi pemotretan studio maupun pendaftaran kursus akademi oleh pelanggan/siswa, meliputi tipe reservasi, jadwal, lokasi, dan status operasional.
 
 | Field | Type | Size | Keterangan |
 | :--- | :--- | :--- | :--- |
 | `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik reservasi (Primary Key, Auto Increment) |
-| `nomor_booking` | VARCHAR | 50 | Kode booking unik pemesanan (Unique, e.g. BK-20261025-001) |
-| `user_id` | BIGINT (UNSIGNED) | 20 | Foreign Key pelanggan pemesan (`users.id`) |
-| `layanan_id` | BIGINT (UNSIGNED) | 20 | Foreign Key layanan yang dipesan (`layanan.id`) |
-| `paket_id` | BIGINT (UNSIGNED) | 20 | Foreign Key paket yang dipilih (`paket.id`) |
-| `tanggal` | DATE | - | Tanggal sesi pemotretan dijadwalkan |
-| `waktu` | TIME | - | Jam dimulainya sesi pemotretan |
-| `lokasi` | VARCHAR | 255 | Tempat atau alamat venue pemotretan |
-| `kebutuhan_khusus` | TEXT | - | Catatan permintaan khusus dari klien (Nullable) |
+| `nomor_reservasi` | VARCHAR | 50 | Kode reservasi unik pemesanan (Unique, e.g. RSV-20261025-001) |
+| `tipe` | ENUM | ('fotografi','kursus') | Klasifikasi pemesanan ('fotografi' = Sesi Foto, 'kursus' = Pendaftaran Kursus) |
+| `user_id` | BIGINT (UNSIGNED) | 20 | Foreign Key pelanggan/siswa pemesan (`users.id`) |
+| `layanan_id` | BIGINT (UNSIGNED) | 20 | Foreign Key layanan fotografi yang dipesan (`layanan.id`, Nullable) |
+| `paket_id` | BIGINT (UNSIGNED) | 20 | Foreign Key paket foto yang dipilih (`paket.id`, Nullable) |
+| `kursus_id` | BIGINT (UNSIGNED) | 20 | Foreign Key kursus akademi yang didaftar (`kursus.id`, Nullable) |
+| `tanggal` | DATE | - | Tanggal sesi pemotretan / tanggal mulai kelas (Nullable) |
+| `waktu` | TIME | - | Jam dimulainya sesi pemotretan (Nullable) |
+| `lokasi` | VARCHAR | 255 | Tempat/venue pemotretan atau 'Online Classroom LMS' (Nullable) |
+| `kebutuhan_khusus` | TEXT | - | Catatan permintaan khusus dari klien/siswa (Nullable) |
 | `status` | VARCHAR | 50 | Status proses reservasi ('Menunggu Konfirmasi', 'Disetujui', 'Ditolak', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Selesai', 'Dibatalkan') |
 | `created_at` | TIMESTAMP | - | Waktu reservasi diajukan |
 | `updated_at` | TIMESTAMP | - | Waktu status reservasi diperbarui |
@@ -166,7 +168,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 - **Primary Key:** `id`
 - **Foreign Key:** 
   - `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)
-  - `booking_id` (mengacu ke `booking.id` dengan relasi `ON DELETE CASCADE`, Nullable)
+  - `reservasi_id` (mengacu ke `reservasi.id` dengan relasi `ON DELETE CASCADE`, Nullable)
   - `kursus_id` (mengacu ke `kursus.id` dengan relasi `ON DELETE SET NULL`, Nullable)
 - **Deskripsi Tabel:** Menyimpan data transaksi finansial untuk tagihan reservasi pemotretan maupun pendaftaran kelas kursus fotografi, terintegrasi dengan Payment Gateway Midtrans.
 
@@ -175,7 +177,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 | `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik pembayaran (Primary Key, Auto Increment) |
 | `nomor_transaksi` | VARCHAR | 50 | Nomor transaksi unik (Unique, e.g. TRX-20261025-001) |
 | `user_id` | BIGINT (UNSIGNED) | 20 | Foreign Key pembayar (`users.id`) |
-| `booking_id` | BIGINT (UNSIGNED) | 20 | Foreign Key referensi sesi foto (`booking.id`, Nullable) |
+| `reservasi_id` | BIGINT (UNSIGNED) | 20 | Foreign Key referensi reservasi terpadu (`reservasi.id`, Nullable) |
 | `kursus_id` | BIGINT (UNSIGNED) | 20 | Foreign Key referensi kursus (`kursus.id`, Nullable) |
 | `jumlah` | DECIMAL | 12,2 | Total nominal uang pembayaran (Rp) |
 | `metode_pembayaran` | VARCHAR | 100 | Saluran bayar online Midtrans Snap (QRIS, VA, E-Wallet, CC) |
@@ -196,7 +198,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 - **Foreign Key:** 
   - `pembayaran_id` (mengacu ke `pembayaran.id` dengan relasi `ON DELETE CASCADE`)
   - `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)
-  - `booking_id` (mengacu ke `booking.id` dengan relasi `ON DELETE CASCADE`, Nullable)
+  - `reservasi_id` (mengacu ke `reservasi.id` dengan relasi `ON DELETE CASCADE`, Nullable)
   - `kursus_id` (mengacu ke `kursus.id` dengan relasi `ON DELETE CASCADE`, Nullable)
 - **Deskripsi Tabel:** Menyimpan faktur resmi digital sebagai bukti penagihan dan kwitansi pelunasan untuk keperluan pembukuan studio dan arsip pelanggan.
 
@@ -206,7 +208,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 | `nomor_invoice` | VARCHAR | 50 | Kode seri faktur unik (Unique, e.g. INV-20261025-001) |
 | `pembayaran_id` | BIGINT (UNSIGNED) | 20 | Foreign Key transaksi pelunasan (`pembayaran.id`) |
 | `user_id` | BIGINT (UNSIGNED) | 20 | Foreign Key pihak pembayar (`users.id`) |
-| `booking_id` | BIGINT (UNSIGNED) | 20 | Foreign Key pesanan foto terkait (`booking.id`, Nullable) |
+| `reservasi_id` | BIGINT (UNSIGNED) | 20 | Foreign Key reservasi terkait (`reservasi.id`, Nullable) |
 | `kursus_id` | BIGINT (UNSIGNED) | 20 | Foreign Key pendaftaran kursus terkait (`kursus.id`, Nullable) |
 | `subtotal` | DECIMAL | 12,2 | Jumlah biaya kotor sebelum potongan diskon |
 | `diskon` | DECIMAL | 12,2 | Potongan harga kupon promo (Default 0) |
@@ -358,27 +360,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 16. Tabel: `enrollment`
-- **Nama Tabel:** `enrollment`
-- **Primary Key:** `id`
-- **Foreign Key:** 
-  - `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)
-  - `kursus_id` (mengacu ke `kursus.id` dengan relasi `ON DELETE CASCADE`)
-- **Deskripsi Tabel:** Menyimpan status hak akses keanggotaan siswa yang telah mendaftar dan lunas pada suatu kursus fotografi.
-
-| Field | Type | Size | Keterangan |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik pendaftaran (Primary Key, Auto Increment) |
-| `user_id` | BIGINT (UNSIGNED) | 20 | Foreign Key akun siswa (`users.id`) |
-| `kursus_id` | BIGINT (UNSIGNED) | 20 | Foreign Key kelas kursus (`kursus.id`) |
-| `tanggal_daftar` | TIMESTAMP | - | Tanggal aktivasi kepesertaan siswa |
-| `status` | VARCHAR | 20 | Status kepesertaan ('aktif', 'selesai', 'pending') |
-| `created_at` | TIMESTAMP | - | Waktu data enrollment dibuat |
-| `updated_at` | TIMESTAMP | - | Waktu data enrollment diperbarui |
-
----
-
-### 17. Tabel: `sertifikat`
+### 16. Tabel: `sertifikat`
 - **Nama Tabel:** `sertifikat`
 - **Primary Key:** `id`
 - **Foreign Key:** 
@@ -400,7 +382,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 18. Tabel: `portofolio`
+### 17. Tabel: `portofolio`
 - **Nama Tabel:** `portofolio`
 - **Primary Key:** `id`
 - **Foreign Key:** Tidak ada
@@ -420,7 +402,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 19. Tabel: `portofolio_foto`
+### 18. Tabel: `portofolio_foto`
 - **Nama Tabel:** `portofolio_foto`
 - **Primary Key:** `id`
 - **Foreign Key:** `portofolio_id` (mengacu ke `portofolio.id` dengan relasi `ON DELETE CASCADE`)
@@ -438,16 +420,16 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 20. Tabel: `galeri_foto`
+### 19. Tabel: `galeri_foto`
 - **Nama Tabel:** `galeri_foto`
 - **Primary Key:** `id`
-- **Foreign Key:** `booking_id` (mengacu ke `booking.id` dengan relasi `ON DELETE CASCADE`)
+- **Foreign Key:** `reservasi_id` (mengacu ke `reservasi.id` dengan relasi `ON DELETE CASCADE`)
 - **Deskripsi Tabel:** Menyimpan foto-foto hasil sesi pemotretan pesanan klien untuk proses seleksi (*photo proofing*), revisi retouching, dan pengunduhan hasil akhir.
 
 | Field | Type | Size | Keterangan |
 | :--- | :--- | :--- | :--- |
 | `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik foto hasil sesi (Primary Key, Auto Increment) |
-| `booking_id` | BIGINT (UNSIGNED) | 20 | Foreign Key nomor pemesanan pemotretan (`booking.id`) |
+| `reservasi_id` | BIGINT (UNSIGNED) | 20 | Foreign Key nomor pemesanan pemotretan (`reservasi.id`) |
 | `foto_path` | VARCHAR | 255 | Path berkas foto pada media penyimpanan server |
 | `is_selected` | TINYINT (BOOLEAN) | 1 | Penanda pilihan foto yang disukai/dipilih klien untuk dicetak (1 = Ya, 0 = Tidak) |
 | `catatan` | TEXT | - | Permintaan khusus klien pada foto terkait (Nullable) |
@@ -456,7 +438,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 21. Tabel: `konsultasi`
+### 20. Tabel: `konsultasi`
 - **Nama Tabel:** `konsultasi`
 - **Primary Key:** `id`
 - **Foreign Key:** `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`, Nullable)
@@ -483,7 +465,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 22. Tabel: `notifikasi`
+### 21. Tabel: `notifikasi`
 - **Nama Tabel:** `notifikasi`
 - **Primary Key:** `id`
 - **Foreign Key:** `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)

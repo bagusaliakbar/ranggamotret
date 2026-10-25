@@ -7,7 +7,6 @@ use App\Models\Reservasi;
 use App\Models\Pembayaran;
 use App\Models\Katalog;
 use App\Models\Kursus;
-use App\Models\Enrollment;
 use App\Models\QuizAttempt;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;

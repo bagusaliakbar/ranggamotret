@@ -10,7 +10,7 @@ namespace App\Models;
  */
 class Jadwal extends Reservasi
 {
-    protected $table = 'booking';
+    protected $table = 'reservasi';
 
     /**
      * Scope untuk jadwal sesi terkonfirmasi
