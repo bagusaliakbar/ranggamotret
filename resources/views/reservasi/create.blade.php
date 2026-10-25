@@ -434,7 +434,7 @@
                     <div class="space-y-2 text-[11px] text-slate-500 font-medium pt-2 border-t border-slate-100">
                         <div class="flex items-center gap-2">
                             <i class="ph-duotone ph-check-circle text-emerald-600"></i>
-                            <span>Konfirmasi Cepat Admin 1x24 Jam</span>
+                            <span>Konfirmasi Cepat Owner 1x24 Jam</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <i class="ph-duotone ph-check-circle text-emerald-600"></i>

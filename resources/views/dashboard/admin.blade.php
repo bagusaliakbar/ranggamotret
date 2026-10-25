@@ -73,19 +73,19 @@
             </div>
         </div>
 
-        <!-- 3. Siswa Akademi & Program -->
-        <div class="clean-card p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-3 relative overflow-hidden group hover:border-blue-300 transition-all">
+        <!-- 3. Pelanggan Terdaftar -->
+        <div class="clean-card p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-3 relative overflow-hidden group hover:border-emerald-300 transition-all">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Peserta Akademi</span>
-                <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shadow-2xs group-hover:scale-110 transition-transform">
-                    <i class="ph-duotone ph-graduation-cap"></i>
+                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Total Pelanggan</span>
+                <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shadow-2xs group-hover:scale-110 transition-transform">
+                    <i class="ph-duotone ph-users"></i>
                 </div>
             </div>
             <div>
-                <div class="text-3xl font-black text-slate-900 tracking-tight">{{ number_format($totalPeserta) }}</div>
+                <div class="text-3xl font-black text-slate-900 tracking-tight">{{ number_format($totalPelanggan ?? 0) }}</div>
                 <div class="flex items-center gap-1.5 mt-1.5 text-[11px] font-semibold text-slate-500">
-                    <i class="ph-duotone ph-book-open text-xs text-blue-500"></i>
-                    <span>{{ number_format($totalKursus) }} program kursus aktif</span>
+                    <i class="ph-duotone ph-user-check text-xs text-emerald-600"></i>
+                    <span>Pengguna layanan & akademi</span>
                 </div>
             </div>
         </div>
@@ -123,7 +123,7 @@
             </div>
             <div class="min-w-0">
                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Pelanggan</div>
-                <div class="text-sm font-black text-slate-900 truncate">{{ number_format($totalCustomers ?? 0) }} Klien</div>
+                <div class="text-sm font-black text-slate-900 truncate">{{ number_format($totalPelanggan ?? 0) }} Pelanggan</div>
             </div>
         </div>
 
@@ -142,8 +142,8 @@
                 <i class="ph-duotone ph-graduation-cap"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Siswa Akademi</div>
-                <div class="text-sm font-black text-slate-900 truncate">{{ number_format($totalPeserta ?? 0) }} Peserta</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Program Akademi</div>
+                <div class="text-sm font-black text-slate-900 truncate">{{ number_format($totalKursus ?? 0) }} Kursus</div>
             </div>
         </div>
     </div>

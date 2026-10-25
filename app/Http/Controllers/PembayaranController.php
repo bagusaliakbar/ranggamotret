@@ -549,7 +549,7 @@ class PembayaranController extends Controller
             abort(404, 'Invoice resmi untuk transaksi ini belum diterbitkan.');
         }
 
-        if (!Auth::user()->isAdmin() && Auth::id() !== $invoice->user_id) {
+        if (!Auth::user()->isOwner() && Auth::id() !== $invoice->user_id) {
             abort(403);
         }
 

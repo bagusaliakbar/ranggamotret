@@ -21,7 +21,7 @@ class JadwalController extends Controller
     public function index()
     {
         $user = Auth::user();
-        if ($user->isAdmin()) {
+        if ($user->isOwner()) {
             $bookings = Jadwal::with(['customer', 'layanan', 'paket'])->get();
         } else {
             $bookings = Jadwal::where('user_id', $user->id)->with(['layanan', 'paket'])->get();
@@ -52,7 +52,7 @@ class JadwalController extends Controller
                     'waktu' => $b->waktu ? substr($b->waktu, 0, 5) : '09:00',
                     'lokasi' => $b->lokasi ?? '-',
                     'status' => $b->status,
-                    'detail_url' => Auth::user()->isAdmin() ? route('admin.bookings.show', $b->id) : route('customer.bookings.show', $b->id),
+                    'detail_url' => Auth::user()->isOwner() ? route('admin.bookings.show', $b->id) : route('customer.bookings.show', $b->id),
                 ],
             ];
         });

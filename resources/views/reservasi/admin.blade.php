@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Kelola Reservasi Fotografi — Admin RanggaMotret.id')
+@section('title', 'Kelola Reservasi Fotografi — Owner RanggaMotret.id')
 
 @section('content')
 <div class="space-y-8">
@@ -89,7 +89,7 @@
             <!-- Search Query -->
             <div class="sm:col-span-6 relative">
                 <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari kode booking, nama customer, email, telepon, lokasi..."
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari kode booking, nama pelanggan, email, telepon, lokasi..."
                        class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
             </div>
 

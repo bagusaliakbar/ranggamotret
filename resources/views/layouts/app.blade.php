@@ -121,7 +121,7 @@
                 <!-- Actions / Auth User Dropdown -->
                 <div class="hidden md:flex items-center gap-4">
                     @auth
-                        @if(Auth::user()->isAdmin())
+                        @if(Auth::user()->isOwner())
                             <a href="{{ route('calendar') }}" class="p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-200 transition-colors" title="Jadwal Kalender">
                                 <i class="ph-duotone ph-calendar-blank text-base"></i>
                             </a>

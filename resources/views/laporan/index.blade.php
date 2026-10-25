@@ -31,7 +31,7 @@
         <div class="clean-card p-6 rounded-2xl space-y-2">
             <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pendapatan Akademi Kursus</div>
             <div class="text-3xl font-extrabold text-slate-900">Rp {{ number_format($pendapatanKursus, 0, ',', '.') }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">{{ number_format($totalPesertaLulus) }} sertifikat terbit</div>
+            <div class="text-[11px] text-slate-500 font-medium">{{ number_format($totalPesertaLulus) }} kelulusan sertifikat terbit</div>
         </div>
     </div>
 </div>

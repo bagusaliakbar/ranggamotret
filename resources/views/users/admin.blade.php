@@ -14,7 +14,7 @@
                 <span class="text-slate-700">Kelola Pengguna</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Kelola Pengguna</h1>
-            <p class="text-xs text-slate-500 font-medium mt-1">Kelola data akun Owner (Administrator) dan Pelanggan (Customer / Peserta Kursus).</p>
+            <p class="text-xs text-slate-500 font-medium mt-1">Kelola data akun Owner dan Pelanggan.</p>
         </div>
 
         <button @click="openCreateModal()" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-2">
@@ -42,7 +42,7 @@
                     <i class="ph-duotone ph-shield-check"></i>
                 </div>
             </div>
-            <div class="text-2xl font-black text-slate-900">{{ $totalOwners ?? ($totalAdmins ?? 0) }}</div>
+            <div class="text-2xl font-black text-slate-900">{{ $totalOwners ?? 0 }}</div>
             <div class="text-[11px] text-slate-500 font-medium">Pengelola studio & kursus</div>
         </div>
 
@@ -54,7 +54,7 @@
                     <i class="ph-duotone ph-user-circle-check"></i>
                 </div>
             </div>
-            <div class="text-2xl font-black text-emerald-700">{{ $totalPelanggan ?? ($totalCustomers ?? 0) }}</div>
+            <div class="text-2xl font-black text-emerald-700">{{ $totalPelanggan ?? 0 }}</div>
             <div class="text-[11px] text-slate-500 font-medium">Klien fotografi & akademi</div>
         </div>
     </div>
@@ -71,8 +71,8 @@
             <div class="sm:col-span-3">
                 <select name="role" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
                     <option value="">Semua Hak Akses (Role)</option>
-                    <option value="owner" {{ in_array($role ?? '', ['owner', 'admin']) ? 'selected' : '' }}>Owner</option>
-                    <option value="pelanggan" {{ in_array($role ?? '', ['pelanggan', 'customer', 'peserta']) ? 'selected' : '' }}>Pelanggan</option>
+                    <option value="owner" {{ ($role ?? '') === 'owner' ? 'selected' : '' }}>Owner</option>
+                    <option value="pelanggan" {{ ($role ?? '') === 'pelanggan' ? 'selected' : '' }}>Pelanggan</option>
                 </select>
             </div>v>
 
@@ -147,7 +147,7 @@
                             <!-- Role -->
                             <td class="px-6 py-4">
                                 @php
-                                    $isOwner = in_array($u->role, ['owner', 'admin']);
+                                    $isOwner = $u->role === 'owner';
                                     $roleBadge = $isOwner ? 'bg-slate-900 text-white border-slate-900' : 'bg-emerald-50 text-emerald-800 border-emerald-200';
                                     $roleLabel = $isOwner ? 'Owner' : 'Pelanggan';
                                 @endphp
@@ -242,7 +242,7 @@
                     </div>
                     <div>
                         <h3 class="font-extrabold text-base text-slate-900">Tambah Pengguna Baru</h3>
-                        <p class="text-xs text-slate-500 font-medium">Buat akun untuk Owner (Administrator) atau Pelanggan.</p>
+                        <p class="text-xs text-slate-500 font-medium">Buat akun untuk Owner atau Pelanggan.</p>
                     </div>
                 </div>
                 <button @click="createModalOpen = false" class="text-slate-400 hover:text-slate-600">
@@ -461,7 +461,7 @@
                 this.createModalOpen = true;
             },
             openEditModal(user) {
-                const isOwner = ['owner', 'admin'].includes(user.role);
+                const isOwner = user.role === 'owner';
                 this.selectedUser = {
                     id: user.id,
                     name: user.name || '',

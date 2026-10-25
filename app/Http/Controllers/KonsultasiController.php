@@ -81,11 +81,11 @@ class KonsultasiController extends Controller
             'status' => 'pending',
         ]);
 
-        // Kirim notifikasi ke Admin/Owner jika terdaftar
-        $admin = User::whereIn('role', ['owner', 'admin'])->first();
-        if ($admin) {
+        // Kirim notifikasi ke Owner jika terdaftar
+        $owner = User::where('role', 'owner')->first();
+        if ($owner) {
             Notifikasi::create([
-                'user_id' => $admin->id,
+                'user_id' => $owner->id,
                 'judul' => 'Konsultasi Baru Masuk',
                 'pesan' => 'Konsultasi konsep foto dari ' . $konsultasi->nama . ' (' . $konsultasi->jenis_layanan . ').',
                 'link' => '/admin/consultations',

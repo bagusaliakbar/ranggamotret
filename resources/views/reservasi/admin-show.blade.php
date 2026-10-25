@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Reservasi ' . $booking->nomor_booking . ' - Admin')
+@section('title', 'Detail Reservasi ' . $booking->nomor_booking . ' - Owner')
 
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-12 space-y-8">
@@ -33,7 +33,7 @@
         <div class="clean-card p-6 rounded-3xl space-y-5">
             <h3 class="font-bold text-base text-slate-900 border-b border-slate-100 pb-3">Data Pelanggan & Layanan</h3>
             <div class="space-y-4">
-                <div><span class="text-slate-500 block mb-1">Nama Customer:</span> <span class="font-extrabold text-slate-900 text-sm">{{ $booking->customer->name }}</span></div>
+                <div><span class="text-slate-500 block mb-1">Nama Pelanggan:</span> <span class="font-extrabold text-slate-900 text-sm">{{ $booking->customer->name }}</span></div>
                 <div><span class="text-slate-500 block mb-1">Kontak WA/Email:</span> <span class="text-slate-700 font-medium">{{ $booking->customer->phone ?? '-' }} ({{ $booking->customer->email }})</span></div>
                 <div><span class="text-slate-500 block mb-1">Layanan & Paket:</span> <span class="text-slate-900 font-bold">{{ $booking->layanan->nama }} - {{ $booking->paket->nama_paket }}</span></div>
                 <div><span class="text-slate-500 block mb-1">Harga Tagihan:</span> <span class="font-extrabold text-slate-900 text-sm">Rp {{ number_format($booking->paket->harga, 0, ',', '.') }}</span></div>
@@ -50,12 +50,12 @@
         </div>
     </div>
 
-    <!-- Admin Photo Deliverables Uploader & Proofing Manager -->
+    <!-- Owner Photo Deliverables Uploader & Proofing Manager -->
     <div class="clean-card p-8 rounded-3xl space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
             <div>
                 <h3 class="text-lg font-extrabold text-slate-900">Unggah Hasil Foto Pemotretan (Proofing Deliverables)</h3>
-                <p class="text-xs text-slate-500 font-medium mt-1">Foto yang diunggah akan otomatis muncul di halaman proofing galeri customer.</p>
+                <p class="text-xs text-slate-500 font-medium mt-1">Foto yang diunggah akan otomatis muncul di halaman proofing galeri pelanggan.</p>
             </div>
             <span class="text-[10px] text-slate-600 font-extrabold uppercase tracking-wider bg-slate-100 px-3 py-1.5 rounded-lg">{{ $booking->galeriFotos->count() }} Foto Terunggah</span>
         </div>

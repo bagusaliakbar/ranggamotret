@@ -39,7 +39,7 @@
                 <img src="{{ asset('images/logo.png') }}" alt="RanggaMotret.id" class="w-16 h-16 rounded-2xl object-contain border border-slate-200 p-1">
                 <div>
                     <h1 class="font-bold text-2xl tracking-wider text-slate-900">RANGGAMOTRET.ID</h1>
-                    <p class="text-xs text-slate-500 mt-1">Layanan Fotografi & Kursus Profesional</p>
+                    <p class="text-xs text-slate-500 mt-1">Layanan & Edukasi Fotografi</p>
                     <p class="text-xs text-slate-500">Jl. Studio Fotografi No. 1, Jakarta South</p>
                     <p class="text-xs text-slate-500">Email: info@ranggamotret.id | WA: +62 812-3456-7890</p>
                 </div>
@@ -53,7 +53,7 @@
             </div>
         </div>
 
-        <!-- Customer & Meta Info -->
+        <!-- Pelanggan & Meta Info -->
         <div class="grid grid-cols-2 gap-6 text-xs">
             <div>
                 <span class="text-slate-400 uppercase font-bold text-[10px] block">Diterbitkan Untuk Pelanggan:</span>

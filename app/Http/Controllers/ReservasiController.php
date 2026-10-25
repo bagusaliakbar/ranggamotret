@@ -439,11 +439,11 @@ class ReservasiController extends Controller
             'link' => route('customer.proofing.show', $booking->id),
         ]);
 
-        // Notifikasi ke Admin/Owner
-        $adminUser = \App\Models\User::whereIn('role', ['owner', 'admin'])->first();
-        if ($adminUser) {
+        // Notifikasi ke Owner
+        $ownerUser = \App\Models\User::where('role', 'owner')->first();
+        if ($ownerUser) {
             \App\Models\Notifikasi::create([
-                'user_id' => $adminUser->id,
+                'user_id' => $ownerUser->id,
                 'judul' => "Kurasi Foto Selesai: {$booking->nomor_booking}",
                 'pesan' => "Pelanggan " . Auth::user()->name . " telah mengunci {$selectedCount} foto kurasi untuk diproses retouching & deliverables.",
                 'link' => route('admin.bookings.show', $booking->id),

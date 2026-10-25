@@ -140,7 +140,7 @@
                 <thead class="bg-slate-50 text-slate-900 uppercase font-extrabold text-[10px] border-b border-slate-200 tracking-wider">
                     <tr>
                         <th class="p-4">Kode Transaksi & Tanggal</th>
-                        <th class="p-4">Customer & Layanan/Program</th>
+                        <th class="p-4">Pelanggan & Layanan/Program</th>
                         <th class="p-4">Jumlah Tagihan</th>
                         <th class="p-4">Metode Gateway</th>
                         <th class="p-4 text-center">Status</th>
@@ -160,7 +160,7 @@
                                 </div>
                             </td>
 
-                            <!-- 2. Customer & Item Layanan -->
+                            <!-- 2. Pelanggan & Item Layanan -->
                             <td class="p-4">
                                 <div class="font-extrabold text-slate-900">{{ $p->user->name ?? 'Pelanggan' }}</div>
                                 <div class="text-[11px] text-slate-500 mt-0.5 truncate max-w-xs flex items-center gap-1">

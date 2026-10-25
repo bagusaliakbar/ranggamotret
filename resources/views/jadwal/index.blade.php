@@ -67,7 +67,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-            @if(Auth::user()->isAdmin())
+            @if(Auth::user()->isOwner())
                 <a href="{{ route('admin.bookings.index') }}" 
                    class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs">
                     <i class="ph-duotone ph-calendar-check text-base text-slate-600"></i>
@@ -248,7 +248,7 @@
                 </div>
 
                 <!-- Update Status Sesi -->
-                @if(Auth::user()->isAdmin())
+                @if(Auth::user()->isOwner())
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Status Jadwal & Reservasi</label>
                         <select name="status" x-model="selectedBooking.status"

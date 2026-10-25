@@ -209,7 +209,7 @@
 
                 <!-- Course Inclusions Checklist -->
                 <div class="space-y-3 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-700">
-                    <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-wider block">Fasilitas Peserta:</span>
+                    <span class="text-[11px] font-extrabold text-slate-900 uppercase tracking-wider block">Fasilitas Pelanggan:</span>
                     <div class="flex items-center gap-2.5">
                         <i class="fa-solid fa-circle-check text-emerald-600"></i>
                         <span>Akses video & materi teks 24/7</span>

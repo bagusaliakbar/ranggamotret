@@ -36,7 +36,7 @@
 
                 <div class="bg-white p-6 rounded-xl border border-slate-200 text-xs text-left grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-sm">
                     <div>
-                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Nama Peserta:</span>
+                        <span class="text-slate-500 block text-[10px] uppercase font-bold">Nama Pelanggan:</span>
                         <span class="font-extrabold text-slate-900 text-sm">{{ $sertifikat->user->name }}</span>
                     </div>
                     <div>

@@ -78,7 +78,7 @@
                     </div>
                     <div>
                         <div class="text-3xl lg:text-4xl font-black text-slate-900">1,200+</div>
-                        <div class="text-xs font-semibold text-slate-500 mt-1">Peserta Kursus</div>
+                        <div class="text-xs font-semibold text-slate-500 mt-1">Pelanggan Kursus</div>
                     </div>
                     <div>
                         <div class="text-3xl lg:text-4xl font-black text-slate-900">99.8%</div>

@@ -20,7 +20,7 @@
                 </span>
             </h1>
             <p class="text-xs text-slate-500 font-medium mt-1">
-                Pantau seluruh pendaftaran kelas pelatihan fotografi, rincian peserta, metode bayar, dan aktivasi akses materi belajar.
+                Pantau seluruh pendaftaran kelas pelatihan fotografi, rincian pelanggan, metode bayar, dan aktivasi akses materi belajar.
             </p>
         </div>
 
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="text-2xl font-black text-slate-900">{{ number_format($totalReservations) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Peserta mendaftar kursus</div>
+            <div class="text-[11px] text-slate-500 font-medium">Pelanggan mendaftar kursus</div>
         </div>
 
         <!-- 2. Terverifikasi / Lunas -->
@@ -105,10 +105,10 @@
     <!-- Filter & Pencarian Toolbar -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <form method="GET" action="{{ route('admin.courses.reservations.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-            <!-- Pencarian Transaksi/Peserta -->
+            <!-- Pencarian Transaksi/Pelanggan -->
             <div class="sm:col-span-5 relative">
                 <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Cari kode transaksi, nama peserta, email..."
+                <input type="text" name="search" value="{{ $search }}" placeholder="Cari kode transaksi, nama pelanggan, email..."
                        class="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all">
             </div>
 
@@ -157,7 +157,7 @@
                 <thead class="bg-slate-50 text-slate-900 uppercase font-extrabold text-[10px] border-b border-slate-200 tracking-wider">
                     <tr>
                         <th class="p-4">Kode Transaksi</th>
-                        <th class="p-4">Peserta / Siswa</th>
+                        <th class="p-4">Pelanggan Kursus</th>
                         <th class="p-4">Program Kursus</th>
                         <th class="p-4">Total Biaya & Metode</th>
                         <th class="p-4">Tanggal Daftar</th>
@@ -194,7 +194,7 @@
                                 @endif
                             </td>
 
-                            <!-- 2. Peserta / Siswa -->
+                            <!-- 2. Pelanggan Kursus -->
                             <td class="p-4">
                                 <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
                                     <i class="ph-duotone ph-user text-slate-600"></i>

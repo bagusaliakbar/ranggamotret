@@ -30,26 +30,24 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
 
-        if ($user->isAdmin()) {
-            return $this->adminDashboard($request);
+        if ($user->isOwner()) {
+            return $this->ownerDashboard($request);
         }
 
-        return $this->customerDashboard($request);
+        return $this->pelangganDashboard($request);
     }
 
     /**
-     * Tampilan Dasbor Peran Admin
+     * Tampilan Dasbor Peran Owner
      */
-    protected function adminDashboard(Request $request)
+    protected function ownerDashboard(Request $request)
     {
         $totalBooking = Reservasi::where('tipe', 'fotografi')->count();
         $bookingPending = Reservasi::where('tipe', 'fotografi')->where('status', 'Menunggu Konfirmasi')->count();
         $totalPendapatan = Pembayaran::where('status', 'Dibayar')->sum('jumlah');
         $pembayaranPending = Pembayaran::whereIn('status', ['Menunggu Pembayaran', 'Menunggu Verifikasi', 'pending', 'Belum Dibayar'])->count();
         $totalKursus = Kursus::count();
-        $totalPelanggan = User::whereIn('role', ['pelanggan', 'customer', 'peserta'])->count();
-        $totalCustomers = $totalPelanggan;
-        $totalPeserta = $totalPelanggan;
+        $totalPelanggan = User::where('role', 'pelanggan')->count();
         $pendingConsultations = Konsultasi::where('status', 'pending')->count();
 
         $recentBookings = Reservasi::where('tipe', 'fotografi')->with(['customer', 'layanan'])->latest()->take(5)->get();
@@ -62,19 +60,16 @@ class DashboardController extends Controller
             'pembayaranPending',
             'totalKursus',
             'totalPelanggan',
-            'totalPeserta',
-            'totalCustomers',
             'pendingConsultations',
             'recentBookings',
             'recentPayments'
         ));
     }
 
-
     /**
-     * Tampilan Dasbor Peran Pelanggan / Peserta
+     * Tampilan Dasbor Peran Pelanggan
      */
-    protected function customerDashboard(Request $request)
+    protected function pelangganDashboard(Request $request)
     {
         $user = Auth::user();
 

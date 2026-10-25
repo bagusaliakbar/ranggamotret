@@ -33,12 +33,8 @@ class UserController extends Controller
             });
         }
 
-        if ($role && in_array($role, ['owner', 'pelanggan', 'admin', 'customer', 'peserta'])) {
-            if (in_array($role, ['owner', 'admin'])) {
-                $query->whereIn('role', ['owner', 'admin']);
-            } else {
-                $query->whereIn('role', ['pelanggan', 'customer', 'peserta']);
-            }
+        if ($role && in_array($role, ['owner', 'pelanggan'])) {
+            $query->where('role', $role);
         }
 
         if ($status && in_array($status, ['active', 'inactive'])) {
@@ -49,18 +45,14 @@ class UserController extends Controller
 
         // Statistics
         $totalUsers = User::count();
-        $totalOwners = User::whereIn('role', ['owner', 'admin'])->count();
-        $totalPelanggan = User::whereIn('role', ['pelanggan', 'customer', 'peserta'])->count();
-        $totalAdmins = $totalOwners;
-        $totalCustomers = $totalPelanggan;
+        $totalOwners = User::where('role', 'owner')->count();
+        $totalPelanggan = User::where('role', 'pelanggan')->count();
 
         return view('users.admin', compact(
             'users',
             'totalUsers',
             'totalOwners',
             'totalPelanggan',
-            'totalAdmins',
-            'totalCustomers',
             'search',
             'role',
             'status'
@@ -73,7 +65,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:owner,pelanggan,admin,customer,peserta',
+            'role' => 'required|in:owner,pelanggan',
             'status' => 'required|in:active,inactive',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
@@ -86,19 +78,17 @@ class UserController extends Controller
             'role.required' => 'Role pengguna wajib dipilih.',
         ]);
 
-        $finalRole = in_array($validated['role'], ['owner', 'admin']) ? 'owner' : 'pelanggan';
-
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => $finalRole,
+            'role' => $validated['role'],
             'status' => $validated['status'],
             'phone' => $validated['phone'] ?? null,
             'address' => $validated['address'] ?? null,
         ]);
 
-        if ($finalRole === 'pelanggan') {
+        if ($validated['role'] === 'pelanggan') {
             Customer::firstOrCreate(
                 ['user_id' => $user->id],
                 ['phone' => $validated['phone'] ?? null, 'address' => $validated['address'] ?? null]
@@ -116,7 +106,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8',
-            'role' => 'required|in:owner,pelanggan,admin,customer,peserta',
+            'role' => 'required|in:owner,pelanggan',
             'status' => 'required|in:active,inactive',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
@@ -128,11 +118,9 @@ class UserController extends Controller
             'role.required' => 'Role pengguna wajib dipilih.',
         ]);
 
-        $finalRole = in_array($validated['role'], ['owner', 'admin']) ? 'owner' : 'pelanggan';
-
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        $user->role = $finalRole;
+        $user->role = $validated['role'];
         $user->status = $validated['status'];
         $user->phone = $validated['phone'] ?? null;
         $user->address = $validated['address'] ?? null;
@@ -143,7 +131,7 @@ class UserController extends Controller
 
         $user->save();
 
-        if ($finalRole === 'pelanggan') {
+        if ($validated['role'] === 'pelanggan') {
             Customer::updateOrCreate(
                 ['user_id' => $user->id],
                 ['phone' => $validated['phone'] ?? null, 'address' => $validated['address'] ?? null]

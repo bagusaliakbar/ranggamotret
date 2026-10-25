@@ -111,13 +111,13 @@
             <!-- 4. Total Siswa Terdaftar -->
             <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Siswa Terdaftar</span>
+                    <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Pelanggan Terdaftar</span>
                     <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm">
                         <i class="ph-duotone ph-users"></i>
                     </div>
                 </div>
                 <div class="text-2xl font-black text-purple-600">{{ number_format($totalEnrollments ?? 0) }}</div>
-                <div class="text-[11px] text-slate-500 font-medium">Peserta aktif belajar</div>
+                <div class="text-[11px] text-slate-500 font-medium">Pelanggan aktif belajar</div>
             </div>
         </div>
 
@@ -206,7 +206,7 @@
                                         <span>Biaya: <strong class="text-slate-900 font-extrabold">Rp
                                                 {{ number_format($c->harga, 0, ',', '.') }}</strong></span>
                                         <span>&bull; Durasi: <strong>{{ $c->durasi }}</strong></span>
-                                        <span>&bull; <strong>{{ $c->enrollments->count() }}</strong> Siswa</span>
+                                        <span>&bull; <strong>{{ $c->enrollments->count() }}</strong> Pelanggan</span>
                                     </div>
                                     <div class="text-[11px] text-slate-400">
                                         Pengampu (Owner): <span

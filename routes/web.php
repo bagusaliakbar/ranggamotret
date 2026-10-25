@@ -111,9 +111,9 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/payments/midtrans-callback', [PembayaranController::class, 'handleCallback'])->name('payments.midtrans-callback');
 
 // ==========================================
-// 4. CUSTOMER / PELANGGAN ROUTES (Boundary: Reservasi Foto & Proofing)
+// 4. PELANGGAN ROUTES (Boundary: Reservasi Foto & Proofing)
 // ==========================================
-Route::middleware(['auth', 'role:pelanggan,owner,customer,peserta,admin'])->group(function () {
+Route::middleware(['auth', 'role:pelanggan,owner'])->group(function () {
     // Menu Layanan Fotografi yang Telah Dipesan
     Route::get('/customer/fotografi', [ReservasiController::class, 'customerIndex'])->name('customer.fotografi.index');
     Route::get('/fotografi-saya', [ReservasiController::class, 'customerIndex'])->name('fotografi.saya');
@@ -141,9 +141,9 @@ Route::middleware(['auth', 'role:pelanggan,owner,customer,peserta,admin'])->grou
 });
 
 // ==========================================
-// 5. STUDENT LMS ROUTES (Boundary: Materi & Kursus Siswa)
+// 5. PELANGGAN KURSUS LMS ROUTES (Boundary: Materi & Kursus Siswa)
 // ==========================================
-Route::middleware(['auth', 'role:pelanggan,owner,customer,peserta,admin'])->group(function () {
+Route::middleware(['auth', 'role:pelanggan,owner'])->group(function () {
     // Ruang Kursus & Pembelajaran Siswa (Tampilan Khusus Kursus Pelanggan)
     Route::get('/student/dashboard', [KursusController::class, 'studentIndex'])->name('student.dashboard');
     Route::get('/student/courses', [KursusController::class, 'studentIndex'])->name('student.courses');
@@ -163,9 +163,9 @@ Route::middleware(['auth', 'role:pelanggan,owner,customer,peserta,admin'])->grou
 });
 
 // ==========================================
-// 7. OWNER / ADMIN ROUTES (Boundary: Laporan, Kelola Booking, Layanan, Modul)
+// 7. OWNER ROUTES (Boundary: Laporan, Kelola Booking, Layanan, Modul)
 // ==========================================
-Route::middleware(['auth', 'role:owner,admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:owner'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Manajemen Katalog Layanan & Paket

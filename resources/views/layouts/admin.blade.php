@@ -143,10 +143,10 @@
                     <div class="flex flex-col">
                         <span class="font-extrabold text-base tracking-tight text-slate-900">RANGGA<span class="text-slate-500">MOTRET</span></span>
                         <span class="text-[9px] text-slate-400 font-extrabold uppercase tracking-widest -mt-1">
-                            @if(Auth::user()->isAdmin())
+                            @if(Auth::user()->isOwner())
                                 Owner Portal
                             @else
-                                Customer Portal
+                                Portal Pelanggan
                             @endif
                         </span>
                     </div>
@@ -158,8 +158,8 @@
 
             <!-- Navigation Links -->
             <nav class="space-y-6">
-                @if(Auth::user()->isAdmin())
-                    <!-- 1. ADMIN NAVIGATION GROUP -->
+                @if(Auth::user()->isOwner())
+                    <!-- 1. OWNER NAVIGATION GROUP -->
                     <div class="space-y-1">
                          <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') || request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                             <i class="ph-duotone ph-chart-line-up text-base w-5"></i>
@@ -252,7 +252,7 @@
                     </div>
 
                 @else
-                    <!-- 3. CUSTOMER NAVIGATION GROUP -->
+                    <!-- 2. PELANGGAN NAVIGATION GROUP -->
                     <div class="space-y-1">
                         <div class="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">Utama</div>
 
@@ -463,7 +463,7 @@
                                 <i class="ph-duotone ph-user-circle text-base text-slate-500"></i>
                                 <span>Profil Saya</span>
                             </a>
-                            @if(!Auth::user()->isAdmin())
+                            @if(!Auth::user()->isOwner())
                                 <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors">
                                     <i class="ph-duotone ph-gauge text-base text-slate-500"></i>
                                     <span>Dashboard</span>

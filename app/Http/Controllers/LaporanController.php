@@ -543,7 +543,7 @@ class LaporanController extends Controller
         $sheet->mergeCells('E8:F8');
         $sheet->setCellValue('E8', 'PENDAFTAR KURSUS');
         $sheet->mergeCells('E9:F9');
-        $sheet->setCellValue('E9', $data['totalKursusCount'] . ' Peserta');
+        $sheet->setCellValue('E9', $data['totalKursusCount'] . ' Pelanggan');
 
         // Box 4: Nilai Total Reservasi
         $sheet->mergeCells('G8:H8');

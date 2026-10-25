@@ -25,7 +25,7 @@ use Carbon\Carbon;
  * - Eksplorasi katalog kursus publik
  * - Ruang belajar (classroom LMS player) & modul silabus
  * - Penerbitan & verifikasi sertifikat kelulusan digital
- * - Manajemen kursus, modul, & materi oleh Instruktur / Admin
+ * - Manajemen kursus, modul, & materi oleh Owner
  */
 class KursusController extends Controller
 {
@@ -188,8 +188,8 @@ class KursusController extends Controller
             ->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])
             ->first();
 
-        // Jika admin, izinkan akses preview belajar
-        if (!$enrollment && $user->isAdmin()) {
+        // Jika owner, izinkan akses preview belajar
+        if (!$enrollment && $user->isOwner()) {
             $enrollment = (object)[
                 'status' => 'aktif',
                 'created_at' => now(),
@@ -335,7 +335,7 @@ class KursusController extends Controller
     {
         $sertifikat = Sertifikat::with(['user', 'kursus.instruktur'])->findOrFail($id);
 
-        if (!Auth::user()->isAdmin() && Auth::id() !== $sertifikat->user_id) {
+        if (!Auth::user()->isOwner() && Auth::id() !== $sertifikat->user_id) {
             abort(403);
         }
 
@@ -343,7 +343,7 @@ class KursusController extends Controller
     }
 
     // ==========================================
-    // 3. ADMIN & INSTRUKTUR MANAGEMENT (Boundary: kursus kelola)
+    // 3. OWNER MANAGEMENT (Boundary: kursus kelola)
     // ==========================================
 
     /**
@@ -456,7 +456,7 @@ class KursusController extends Controller
         }
         $pembayaran->save();
 
-        // Notifikasi ke peserta
+        // Notifikasi ke pelanggan
         Notifikasi::create([
             'user_id' => $pembayaran->user_id,
             'judul' => 'Status Reservasi Kursus Diperbarui',
@@ -468,7 +468,7 @@ class KursusController extends Controller
     }
 
     /**
-     * Daftar kursus di panel admin/instruktur
+     * Daftar kursus di panel Owner
      */
     public function adminIndex(Request $request)
     {
@@ -495,7 +495,7 @@ class KursusController extends Controller
         }
 
         $courses = $query->latest()->get();
-        $instructors = User::whereIn('role', ['owner', 'admin'])->get();
+        $instructors = User::where('role', 'owner')->get();
 
         // Metrik statistik kursus
         $totalCourses = Kursus::count();
