@@ -115,41 +115,6 @@
     </div>
 </section>
 
-<!-- 4 Core Pillars of Excellence -->
-<section class="py-12 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="ph-duotone ph-camera text-xl text-emerald-400"></i>
-                </div>
-                <h3 class="font-extrabold text-sm text-slate-900">Gear Flagship Standar Industri</h3>
-                <p class="text-xs text-slate-600 leading-relaxed font-medium">Sony Alpha Full-Frame & prime lens G-Master menjamin ketajaman visual setiap piksel.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="ph-duotone ph-sparkle text-xl text-amber-400"></i>
-                </div>
-                <h3 class="font-extrabold text-sm text-slate-900">Color Grading Sinematik</h3>
-                <p class="text-xs text-slate-600 leading-relaxed font-medium">Palet warna elegan & natural skin tone khas RanggaMotret yang tahan uji waktu.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="ph-duotone ph-cloud-arrow-down text-xl text-sky-400"></i>
-                </div>
-                <h3 class="font-extrabold text-sm text-slate-900">Sistem Digital Proofing</h3>
-                <p class="text-xs text-slate-600 leading-relaxed font-medium">Pilih foto favorit dan unduh berkas resolusi tinggi langsung dari portal klien Anda.</p>
-            </div>
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
-                    <i class="ph-duotone ph-certificate text-xl text-indigo-400"></i>
-                </div>
-                <h3 class="font-extrabold text-sm text-slate-900">Sertifikasi & Evaluasi Digital</h3>
-                <p class="text-xs text-slate-600 leading-relaxed font-medium">Kurikulum akademi disertai kuis pemahaman modul dan sertifikat resmi terverifikasi.</p>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Section 1: Services Grid (Clean White Background & Cards) -->
 <section class="py-20 bg-slate-50">
