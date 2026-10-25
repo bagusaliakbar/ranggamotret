@@ -29,22 +29,22 @@
                     Platform ekosistem kreatif satu pintu: dokumentasi fotografi eksklusif (Wedding, Prewedding, Wisuda, Commercial) dengan sistem digital proofing instan, serta akademi kurikulum fotografi praktis berstandar industri langsung di Subang.
                 </p>
 
-                <!-- Action CTAs -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
+                <!-- Action CTAs (3 Uniform Full-Width Buttons) -->
+                <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-1">
                     <a href="{{ route('public.services') }}" 
-                       class="btn-dark px-7 py-3.5 rounded-xl text-xs uppercase tracking-wider font-extrabold text-center flex items-center justify-center gap-2 shadow-lg shadow-slate-900/15 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
+                       class="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-extrabold tracking-wide text-center flex items-center justify-center gap-2 shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all">
                         <i class="ph-duotone ph-camera text-base text-emerald-400"></i>
                         <span>Reservasi Sesi Foto</span>
                     </a>
                     <a href="{{ route('public.courses') }}" 
-                       class="btn-outline px-7 py-3.5 rounded-xl text-xs uppercase tracking-wider font-extrabold text-center flex items-center justify-center gap-2 hover:bg-slate-100 hover:scale-[1.02] active:scale-95 transition-all">
-                        <i class="ph-duotone ph-graduation-cap text-base text-slate-700"></i>
+                       class="px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-900 border border-slate-300 text-xs font-extrabold tracking-wide text-center flex items-center justify-center gap-2 shadow-2xs hover:border-slate-400 hover:scale-[1.02] active:scale-95 transition-all">
+                        <i class="ph-duotone ph-graduation-cap text-base text-indigo-600"></i>
                         <span>Eksplorasi Kursus</span>
                     </a>
                     <a href="{{ route('public.consultation') }}" 
-                       class="px-4 py-3.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 text-center flex items-center justify-center gap-1.5 transition-colors">
-                        <i class="ph-duotone ph-chats-circle text-base"></i>
-                        <span>Konsultasi Gratis &rarr;</span>
+                       class="px-6 py-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200/80 text-xs font-extrabold tracking-wide text-center flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all">
+                        <i class="ph-duotone ph-chats-circle text-base text-amber-600"></i>
+                        <span>Konsultasi Gratis</span>
                     </a>
                 </div>
 
@@ -130,7 +130,7 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-6">
             <div>
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Katalog Utama</span>
-                <h2 class="text-3xl font-extrabold text-slate-900 mt-1">Layanan Fotografi Spesialis</h2>
+                <h2 class="text-3xl font-extrabold text-slate-900 mt-1">Layanan Fotografi</h2>
             </div>
             <a href="{{ route('public.services') }}" class="text-xs font-extrabold text-slate-900 hover:text-slate-700 transition-colors inline-flex items-center gap-1">
                 <span>Lihat Semua Paket Layanan</span> &rarr;
