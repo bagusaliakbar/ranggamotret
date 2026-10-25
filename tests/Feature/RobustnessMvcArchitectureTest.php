@@ -113,7 +113,11 @@ test('authenticated user consultation links user_id and appears in consultation 
 
     $this->actingAs($user)->get('/konsultasi')
         ->assertStatus(200)
-        ->assertSee('Riwayat Konsultasi Anda')
+        ->assertDontSee('Riwayat Konsultasi Anda');
+
+    $this->actingAs($user)->get('/customer/consultations')
+        ->assertStatus(200)
+        ->assertSee('Riwayat Konsultasi Konsep')
         ->assertSee('Wisuda / Graduation');
 });
 
