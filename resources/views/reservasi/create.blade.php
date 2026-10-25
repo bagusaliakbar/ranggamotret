@@ -136,9 +136,6 @@
     <!-- Top Header -->
     <div class="border-b border-slate-200 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-extrabold uppercase tracking-wider mb-2">
-                <i class="ph-duotone ph-camera text-slate-700"></i> Reservasi Fotografi
-            </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Formulir Reservasi Sesi Foto</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Konfigurasikan paket dokumentasi, jadwal pemotretan, dan lokasi venue yang Anda kehendaki.</p>
         </div>
@@ -375,8 +372,7 @@
             <div class="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
                 <div class="clean-card p-6 sm:p-7 rounded-3xl border border-slate-200 bg-white shadow-xl space-y-6">
                     <div class="border-b border-slate-100 pb-4">
-                        <span class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest block">Ringkasan Pemesanan</span>
-                        <h3 class="text-lg font-black text-slate-900 mt-0.5">Live Order Breakdown</h3>
+                        <h3 class="text-lg font-black text-slate-900 mt-0.5">Ringkasan Pemesanan</h3>
                     </div>
 
                     <!-- Dynamic Service & Package Badge -->
@@ -417,7 +413,7 @@
                             <span class="text-xs font-bold text-slate-500">Estimasi Total Tagihan:</span>
                             <span class="text-2xl font-black text-slate-900" x-text="getCurrentPaket()?.harga_formatted || 'Rp 0'"></span>
                         </div>
-                        <p class="text-[10px] text-slate-400 font-medium">Pembayaran dapat diselesaikan melalui Midtrans Snap atau Transfer Bank setelah formulir dikirim.</p>
+                        <p class="text-[10px] text-slate-400 font-medium">Pembayaran akan diselesaikan melalui Midtrans Snap</p>
                     </div>
 
                     <!-- Primary Submit Button -->
