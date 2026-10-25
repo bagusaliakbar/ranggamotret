@@ -192,3 +192,64 @@ test('admin can access reports and export pdf and excel with active filters', fu
     $resFilteredExcel->assertStatus(200);
 });
 
+test('consultation supports two-way threaded chat between customer and owner in single table', function () {
+    $pelanggan = User::create([
+        'name' => 'Bagus Klien',
+        'email' => 'bagus.klien@test.com',
+        'password' => bcrypt('password123'),
+        'role' => 'pelanggan',
+        'status' => 'active',
+    ]);
+
+    $owner = User::firstOrCreate(
+        ['email' => 'owner@test.com'],
+        ['name' => 'Owner Studio Test', 'password' => bcrypt('password123'), 'role' => 'owner', 'status' => 'active']
+    );
+
+    // 1. Pelanggan mengajukan konsultasi awal
+    $this->actingAs($pelanggan)->post('/konsultasi', [
+        'nama' => $pelanggan->name,
+        'email' => $pelanggan->email,
+        'phone' => '082112345678',
+        'jenis_layanan' => 'Wedding & Prewedding',
+        'konsep' => 'Outdoor Cinematic',
+        'kebutuhan' => 'Bisa untuk foto prewedding di area Lembang?',
+    ])->assertSessionHas('success');
+
+    $konsultasi = \App\Models\Konsultasi::where('email', 'bagus.klien@test.com')->first();
+    expect($konsultasi)->not->toBeNull();
+    expect($konsultasi->chat_messages)->toHaveCount(1);
+    expect($konsultasi->chat_messages[0]['pesan'])->toBe('Bisa untuk foto prewedding di area Lembang?');
+
+    // 2. Owner membalas pesan
+    $this->actingAs($owner)->post("/admin/consultations/{$konsultasi->id}/reply", [
+        'pesan' => 'Bisa sekali kak! Rencana untuk tanggal berapa?',
+    ])->assertSessionHas('success');
+
+    $konsultasi->refresh();
+    expect($konsultasi->chat_messages)->toHaveCount(2);
+    expect($konsultasi->status)->toBe('replied');
+    expect($konsultasi->chat_messages[1]['sender'])->toBe('owner');
+
+    // 3. Pelanggan membalas kembali
+    $this->actingAs($pelanggan)->post("/customer/consultations/{$konsultasi->id}/reply", [
+        'pesan' => 'Rencana tanggal 15 November kak, konsep casual.',
+    ])->assertSessionHas('success');
+
+    $konsultasi->refresh();
+    expect($konsultasi->chat_messages)->toHaveCount(3);
+    expect($konsultasi->status)->toBe('pending');
+    expect($konsultasi->chat_messages[2]['sender'])->toBe('pelanggan');
+
+    // 4. Verifikasi tampilan di portal pelanggan
+    $this->actingAs($pelanggan)->get('/customer/consultations')
+        ->assertStatus(200)
+        ->assertSee('Rencana tanggal 15 November kak, konsep casual.')
+        ->assertSee('Ruang Diskusi Konsep');
+
+    // 5. Verifikasi tampilan di portal owner
+    $this->actingAs($owner)->get('/admin/consultations')
+        ->assertStatus(200)
+        ->assertSee('Ruang Diskusi Konsultasi');
+});
+

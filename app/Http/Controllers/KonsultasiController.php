@@ -78,6 +78,14 @@ class KonsultasiController extends Controller
             'tanggal' => $request->input('tanggal'),
             'budget' => $request->input('budget'),
             'kebutuhan' => $kebutuhan,
+            'percakapan' => [
+                [
+                    'sender' => 'pelanggan',
+                    'nama' => $validated['nama'],
+                    'pesan' => $kebutuhan,
+                    'waktu' => now()->format('d M Y, H:i'),
+                ]
+            ],
             'status' => 'pending',
         ]);
 
@@ -138,16 +146,23 @@ class KonsultasiController extends Controller
     }
 
     /**
-     * Admin memberikan balasan konsultasi
+     * Owner memberikan tanggapan / balasan ke dalam percakapan konsultasi
      */
     public function adminReply(Request $request, $id)
     {
         $request->validate([
-            'tanggapan_admin' => 'required|string',
+            'tanggapan_admin' => 'nullable|string',
+            'pesan' => 'nullable|string',
         ]);
 
+        $replyMessage = $request->input('pesan') ?: $request->input('tanggapan_admin');
+        if (empty(trim((string)$replyMessage))) {
+            return back()->withErrors(['pesan' => 'Pesan tanggapan wajib diisi.'])->withInput();
+        }
+
         $konsultasi = Konsultasi::findOrFail($id);
-        $konsultasi->tanggapan_admin = $request->tanggapan_admin;
+        $konsultasi->tanggapan_admin = $replyMessage;
+        $konsultasi->addMessage('owner', 'Owner RanggaMotret', $replyMessage);
         $konsultasi->status = 'replied';
         $konsultasi->save();
 
@@ -155,12 +170,43 @@ class KonsultasiController extends Controller
             Notifikasi::create([
                 'user_id' => $konsultasi->user_id,
                 'judul' => 'Tanggapan Konsultasi RanggaMotret',
-                'pesan' => 'Konsultasi Anda mengenai layanan ' . $konsultasi->jenis_layanan . ' telah ditanggapi oleh admin.',
+                'pesan' => 'Owner RanggaMotret mengirimkan tanggapan baru mengenai ' . $konsultasi->jenis_layanan . '.',
                 'link' => '/customer/consultations',
             ]);
         }
 
         return back()->with('success', 'Tanggapan konsultasi berhasil dikirim.');
+    }
+
+    /**
+     * Pelanggan mengirimkan balasan ke dalam percakapan konsultasi
+     */
+    public function customerReply(Request $request, $id)
+    {
+        $request->validate([
+            'pesan' => 'required|string|max:2000',
+        ]);
+
+        $konsultasi = Konsultasi::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $konsultasi->addMessage('pelanggan', Auth::user()->name, $request->pesan);
+        $konsultasi->status = 'pending';
+        $konsultasi->save();
+
+        // Notifikasi ke Owner
+        $owner = User::where('role', 'owner')->first();
+        if ($owner) {
+            Notifikasi::create([
+                'user_id' => $owner->id,
+                'judul' => 'Balasan Konsultasi dari Pelanggan',
+                'pesan' => Auth::user()->name . ' membalas pesan konsultasi ' . $konsultasi->jenis_layanan . '.',
+                'link' => '/admin/consultations',
+            ]);
+        }
+
+        return back()->with('success', 'Balasan Anda berhasil dikirim ke Owner.');
     }
 
     /**

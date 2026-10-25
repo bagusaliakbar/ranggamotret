@@ -152,31 +152,79 @@
                         </div>
                     </div>
 
-                    <!-- Client Note -->
-                    @if($item->kebutuhan)
-                        <div class="text-xs text-slate-600 bg-slate-50/70 p-4 rounded-xl border border-slate-100 space-y-1">
-                            <span class="text-[10px] uppercase font-extrabold text-slate-500 block">Catatan / Detail Permintaan Anda:</span>
-                            <p class="leading-relaxed font-medium">{{ $item->kebutuhan }}</p>
+                    <!-- Ruang Percakapan & Diskusi Konsep (Chat Thread) -->
+                    <div class="space-y-4 pt-3 border-t border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                                <i class="ph-duotone ph-chats-circle text-base text-slate-700"></i> Ruang Diskusi Konsep
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold">
+                                {{ count($item->chat_messages) }} Pesan
+                            </span>
                         </div>
-                    @endif
 
-                    <!-- Official Admin/Photographer Reply -->
-                    @if($item->status === 'replied' && $item->tanggapan_admin)
-                        <div class="p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-xs space-y-2">
-                            <div class="flex items-center justify-between text-emerald-900 font-extrabold">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs">
-                                        <i class="ph-duotone ph-camera"></i>
+                        <!-- Chat Messages List -->
+                        <div class="space-y-3 max-h-96 overflow-y-auto p-4 rounded-2xl bg-slate-50/70 border border-slate-100">
+                            @forelse($item->chat_messages as $msg)
+                                @if(($msg['sender'] ?? '') === 'owner')
+                                    <!-- Bubble dari Owner (Sisi Kiri) -->
+                                    <div class="flex items-start gap-3 max-w-xl">
+                                        <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs text-sm">
+                                            <i class="ph-duotone ph-camera"></i>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[11px] font-extrabold text-emerald-900">Owner RanggaMotret</span>
+                                                <span class="text-[9px] font-bold text-slate-400">{{ $msg['waktu'] ?? '' }}</span>
+                                            </div>
+                                            <div class="p-3.5 rounded-2xl rounded-tl-xs bg-emerald-50 border border-emerald-200 text-slate-800 text-xs leading-relaxed font-medium shadow-xs">
+                                                {{ $msg['pesan'] ?? '' }}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <span>Tanggapan Resmi Tim Kreatif RanggaMotret</span>
+                                @else
+                                    <!-- Bubble dari Pelanggan (Sisi Kanan) -->
+                                    <div class="flex items-start justify-end gap-3 max-w-xl ml-auto">
+                                        <div class="space-y-1 text-right">
+                                            <div class="flex items-center justify-end gap-2">
+                                                <span class="text-[9px] font-bold text-slate-400">{{ $msg['waktu'] ?? '' }}</span>
+                                                <span class="text-[11px] font-extrabold text-slate-900">Anda ({{ $msg['nama'] ?? 'Pelanggan' }})</span>
+                                            </div>
+                                            <div class="p-3.5 rounded-2xl rounded-tr-xs bg-slate-900 text-white text-xs leading-relaxed font-medium text-left shadow-xs">
+                                                {{ $msg['pesan'] ?? '' }}
+                                            </div>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0 shadow-xs text-xs font-bold">
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                        </div>
+                                    </div>
+                                @endif
+                            @empty
+                                <div class="text-center py-6 text-slate-400 text-xs font-medium">
+                                    Belum ada percakapan. Tuliskan pesan pertama Anda di bawah.
                                 </div>
-                                <span class="text-[10px] text-emerald-700 font-semibold">Telah Diverifikasi</span>
-                            </div>
-                            <p class="text-slate-800 leading-relaxed font-medium pl-8 bg-white/70 p-3.5 rounded-xl border border-emerald-100">
-                                {{ $item->tanggapan_admin }}
-                            </p>
+                            @endforelse
                         </div>
-                    @endif
+
+                        <!-- Form Balas Pesan untuk Pelanggan -->
+                        <form method="POST" action="{{ route('customer.consultations.reply', $item->id) }}" class="space-y-3 pt-2">
+                            @csrf
+                            <div>
+                                <textarea name="pesan" rows="2" required 
+                                    placeholder="Tulis balasan atau pertanyaan lanjutan mengenai konsep foto..." 
+                                    class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none text-xs text-slate-900 font-medium leading-relaxed transition-colors shadow-2xs"></textarea>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] text-slate-400 font-medium">
+                                    <i class="ph-duotone ph-info mr-1"></i> Owner akan menerima notifikasi balasan Anda.
+                                </span>
+                                <button type="submit" class="btn-dark px-5 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 transition-all">
+                                    <i class="ph-duotone ph-paper-plane-tilt text-emerald-400 text-sm"></i>
+                                    <span>Kirim Balasan</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             @endforeach
 

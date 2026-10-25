@@ -138,6 +138,7 @@ Route::middleware(['auth', 'role:pelanggan,owner'])->group(function () {
     // Riwayat Konsultasi Customer (Portal Dashboard)
     Route::get('/customer/consultations', [KonsultasiController::class, 'customerIndex'])->name('customer.consultations.index');
     Route::get('/riwayat-konsultasi', [KonsultasiController::class, 'customerIndex'])->name('konsultasi.riwayat');
+    Route::post('/customer/consultations/{id}/reply', [KonsultasiController::class, 'customerReply'])->name('customer.consultations.reply');
 });
 
 // ==========================================

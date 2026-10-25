@@ -150,37 +150,75 @@
                             <td class="p-4 text-center">
                                 <button @click="openReply = true" 
                                         class="bg-slate-900 hover:bg-black text-white px-3 py-1.5 rounded-xl text-[11px] font-extrabold transition-all shadow-2xs inline-flex items-center gap-1.5 hover:scale-105">
-                                    <i class="ph-duotone ph-paper-plane-tilt text-xs text-indigo-400"></i>
-                                    <span>Respon</span>
+                                    <i class="ph-duotone ph-chats-circle text-xs text-emerald-400"></i>
+                                    <span>Diskusi ({{ count($c->chat_messages) }})</span>
                                 </button>
 
-                                <!-- Modal Tanggapan -->
+                                <!-- Modal Diskusi & Tanggapan Owner -->
                                 <div x-show="openReply" 
                                      x-cloak 
                                      class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-                                    <div class="bg-white p-6 rounded-3xl max-w-md w-full text-left space-y-4 border border-slate-200 shadow-xl" 
+                                    <div class="bg-white p-6 rounded-3xl max-w-xl w-full text-left space-y-4 border border-slate-200 shadow-2xl" 
                                          @click.away="openReply = false">
                                         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                                             <div>
-                                                <h4 class="font-black text-base text-slate-900">Tanggapi Konsultasi</h4>
-                                                <p class="text-xs text-slate-500 font-medium">Klien: {{ $c->nama }} ({{ $c->jenis_layanan }})</p>
+                                                <h4 class="font-black text-base text-slate-900 flex items-center gap-2">
+                                                    <i class="ph-duotone ph-chats-circle text-emerald-600"></i> Ruang Diskusi Konsultasi
+                                                </h4>
+                                                <p class="text-xs text-slate-500 font-medium">Klien: <strong class="text-slate-800">{{ $c->nama }}</strong> &bull; Layanan: <strong class="text-slate-800">{{ $c->jenis_layanan }}</strong></p>
                                             </div>
                                             <button @click="openReply = false" class="text-slate-400 hover:text-slate-900 transition-colors p-1 rounded-lg">
                                                 <i class="ph ph-x text-lg"></i>
                                             </button>
                                         </div>
 
-                                        <form method="POST" action="{{ route('admin.consultations.reply', $c->id) }}" class="space-y-4 text-xs">
+                                        <!-- Riwayat Percakapan (Chat History) -->
+                                        <div class="space-y-3 max-h-64 overflow-y-auto p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                            @forelse($c->chat_messages as $msg)
+                                                @if(($msg['sender'] ?? '') === 'owner')
+                                                    <!-- Bubble Owner (Kanan) -->
+                                                    <div class="flex items-start justify-end gap-2 max-w-md ml-auto">
+                                                        <div class="space-y-1 text-right">
+                                                            <div class="flex items-center justify-end gap-1.5">
+                                                                <span class="text-[9px] font-bold text-slate-400">{{ $msg['waktu'] ?? '' }}</span>
+                                                                <span class="text-[10px] font-extrabold text-emerald-700">Anda (Owner)</span>
+                                                            </div>
+                                                            <div class="p-3 rounded-2xl rounded-tr-xs bg-emerald-600 text-white text-xs leading-relaxed font-medium text-left shadow-2xs">
+                                                                {{ $msg['pesan'] ?? '' }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <!-- Bubble Pelanggan (Kiri) -->
+                                                    <div class="flex items-start gap-2 max-w-md">
+                                                        <div class="space-y-1">
+                                                            <div class="flex items-center gap-1.5">
+                                                                <span class="text-[10px] font-extrabold text-slate-800">{{ $msg['nama'] ?? 'Pelanggan' }}</span>
+                                                                <span class="text-[9px] font-bold text-slate-400">{{ $msg['waktu'] ?? '' }}</span>
+                                                            </div>
+                                                            <div class="p-3 rounded-2xl rounded-tl-xs bg-white border border-slate-200 text-slate-800 text-xs leading-relaxed font-medium shadow-2xs">
+                                                                {{ $msg['pesan'] ?? '' }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @empty
+                                                <p class="text-center text-slate-400 text-xs py-3 font-medium">Belum ada riwayat pesan.</p>
+                                            @endforelse
+                                        </div>
+
+                                        <!-- Form Kirim Balasan Baru -->
+                                        <form method="POST" action="{{ route('admin.consultations.reply', $c->id) }}" class="space-y-3 text-xs">
                                             @csrf
                                             <div>
-                                                <label class="block text-slate-700 font-bold mb-2">Pesan Rekomendasi / Penawaran Paket Studio</label>
-                                                <textarea name="tanggapan_admin" rows="4" required 
+                                                <label class="block text-slate-700 font-bold mb-1.5">Kirim Balasan / Arahan Konsep</label>
+                                                <textarea name="pesan" rows="3" required 
                                                           placeholder="Tuliskan arahan konsep, estimasi biaya, atau jadwal temu studio..."
-                                                          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-colors">{{ old('tanggapan_admin', $c->tanggapan_admin) }}</textarea>
+                                                          class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-colors leading-relaxed font-medium"></textarea>
                                             </div>
                                             <button type="submit" class="w-full bg-slate-900 hover:bg-black text-white py-3 rounded-xl font-extrabold shadow-md transition-all flex items-center justify-center gap-2">
                                                 <i class="ph-duotone ph-paper-plane-tilt text-sm text-emerald-400"></i>
-                                                <span>Kirim Tanggapan ke Klien</span>
+                                                <span>Kirim Balasan ke Klien</span>
                                             </button>
                                         </form>
                                     </div>
