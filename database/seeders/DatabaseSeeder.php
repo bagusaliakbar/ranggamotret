@@ -14,7 +14,6 @@ use App\Models\Invoice;
 use App\Models\Kursus;
 use App\Models\Modul;
 use App\Models\Materi;
-use App\Models\Tugas;
 use App\Models\Quiz;
 use App\Models\QuizSoal;
 use App\Models\Enrollment;
@@ -22,7 +21,6 @@ use App\Models\Sertifikat;
 use App\Models\Portofolio;
 use App\Models\GaleriFoto;
 use App\Models\Konsultasi;
-use App\Models\Testimoni;
 use App\Models\Notifikasi;
 use Carbon\Carbon;
 
@@ -252,14 +250,6 @@ class DatabaseSeeder extends Seeder
             'urutan' => 2,
         ]);
 
-        // Practical Assignment for Modul 2
-        $tugas1 = Tugas::create([
-            'modul_id' => $modul2->id,
-            'judul' => 'Tugas Praktik: Eksperimen Depth of Field & Motion Blur',
-            'instruksi' => 'Ambil 2 foto objek yang sama: 1 foto dengan background sangat blur (f/1.8 atau f/2.8) dan 1 foto dengan motion blur (shutter speed 1/10 detik). Upload file JPG original Anda.',
-            'deadline' => Carbon::now()->addDays(7),
-        ]);
-
         // Quiz for Modul 2
         $quiz1 = Quiz::create([
             'modul_id' => $modul2->id,
@@ -338,15 +328,7 @@ class DatabaseSeeder extends Seeder
             'status_publikasi' => 'published',
         ]);
 
-        // 7. Seed Testimonials & Consultations
-        Testimoni::create([
-            'user_id' => $customer1->id,
-            'booking_id' => $booking1->id,
-            'rating' => 5,
-            'komentar' => 'Sangat puas dengan tim RanggaMotret! Foto-foto pernikahan kami terlihat sangat estetik, hidup, dan mewah. Komunikasi fotografer sangat ramah!',
-            'status' => 'approved',
-        ]);
-
+        // 7. Seed Consultations
         Konsultasi::create([
             'user_id' => $customer1->id,
             'nama' => 'Anisa Rahmawati',

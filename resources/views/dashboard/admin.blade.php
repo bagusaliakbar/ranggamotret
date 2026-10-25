@@ -139,11 +139,11 @@
 
         <div class="p-3.5 rounded-2xl bg-white border border-slate-200/80 flex items-center gap-3">
             <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm shrink-0">
-                <i class="ph-duotone ph-star"></i>
+                <i class="ph-duotone ph-graduation-cap"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ulasan Masuk</div>
-                <div class="text-sm font-black text-slate-900 truncate">{{ number_format($pendingTestimonials ?? 0) }} Ulasan</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Siswa Akademi</div>
+                <div class="text-sm font-black text-slate-900 truncate">{{ number_format($totalPeserta ?? 0) }} Peserta</div>
             </div>
         </div>
     </div>

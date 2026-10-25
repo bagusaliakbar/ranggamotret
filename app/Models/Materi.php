@@ -59,66 +59,6 @@ class MateriProgress extends Model
 }
 
 /**
- * Sub-entity Tugas: tugas praktik modul pembelajaran kursus
- */
-class Tugas extends Model
-{
-    protected $table = 'tugas';
-
-    protected $fillable = [
-        'modul_id',
-        'judul',
-        'instruksi',
-        'deadline',
-        'file_pendukung',
-    ];
-
-    public function modul()
-    {
-        return $this->belongsTo(Modul::class, 'modul_id');
-    }
-
-    public function submissions()
-    {
-        return $this->hasMany(TugasSubmission::class, 'tugas_id');
-    }
-
-    public function submissionOf($userId)
-    {
-        return $this->submissions()->where('user_id', $userId)->first();
-    }
-}
-
-/**
- * Sub-entity TugasSubmission: pengumpulan file tugas praktik dan penilaian
- */
-class TugasSubmission extends Model
-{
-    protected $table = 'tugas_submission';
-
-    protected $fillable = [
-        'tugas_id',
-        'user_id',
-        'file_path',
-        'catatan',
-        'tanggal_submit',
-        'nilai',
-        'feedback',
-        'status',
-    ];
-
-    public function tugas()
-    {
-        return $this->belongsTo(Tugas::class, 'tugas_id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-}
-
-/**
  * Sub-entity Quiz: tes evaluasi pemahaman modul kursus
  */
 class Quiz extends Model

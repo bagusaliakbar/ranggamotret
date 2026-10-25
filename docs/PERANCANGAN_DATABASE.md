@@ -18,19 +18,16 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 10. [modul](#10-tabel-modul) — Modul bab silabus kursus
 11. [materi](#11-tabel-materi) — Materi pembelajaran (video/dokumen/teks)
 12. [materi_progress](#12-tabel-materi_progress) — Riwayat progres belajar siswa
-13. [tugas](#13-tabel-tugas) — Tugas praktik siswa
-14. [tugas_submission](#14-tabel-tugas_submission) — Pengumpulan hasil tugas siswa & penilaian
-15. [quiz](#15-tabel-quiz) — Kuis evaluasi pemahaman modul
-16. [quiz_soal](#16-tabel-quiz_soal) — Bank soal pilihan ganda kuis
-17. [quiz_attempt](#17-tabel-quiz_attempt) — Hasil riwayat pengerjaan kuis siswa
-18. [enrollment](#18-tabel-enrollment) — Pendaftaran & hak akses kursus siswa
-19. [sertifikat](#19-tabel-sertifikat) — Sertifikat kelulusan digital & verifikasi
-20. [portofolio](#20-tabel-portofolio) — Galeri album karya fotografi
-21. [portofolio_foto](#21-tabel-portofolio_foto) — Rincian multi-foto dalam album karya
-22. [galeri_foto](#22-tabel-galeri_foto) — Galeri foto hasil sesi klien (proofing)
-23. [konsultasi](#23-tabel-konsultasi) — Tiket konsultasi konsep foto klien
-24. [testimoni](#24-tabel-testimoni) — Ulasan dan rating kepuasan pelanggan
-25. [notifikasi](#25-tabel-notifikasi) — Notifikasi sistem real-time internal
+13. [quiz](#13-tabel-quiz) — Kuis evaluasi pemahaman modul
+14. [quiz_soal](#14-tabel-quiz_soal) — Bank soal pilihan ganda kuis
+15. [quiz_attempt](#15-tabel-quiz_attempt) — Hasil riwayat pengerjaan kuis siswa
+16. [enrollment](#16-tabel-enrollment) — Pendaftaran & hak akses kursus siswa
+17. [sertifikat](#17-tabel-sertifikat) — Sertifikat kelulusan digital & verifikasi
+18. [portofolio](#18-tabel-portofolio) — Galeri album karya fotografi
+19. [portofolio_foto](#19-tabel-portofolio_foto) — Rincian multi-foto dalam album karya
+20. [galeri_foto](#20-tabel-galeri_foto) — Galeri foto hasil sesi klien (proofing)
+21. [konsultasi](#21-tabel-konsultasi) — Tiket konsultasi konsep foto klien
+22. [notifikasi](#22-tabel-notifikasi) — Notifikasi sistem real-time internal
 
 ---
 
@@ -300,50 +297,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 13. Tabel: `tugas`
-- **Nama Tabel:** `tugas`
-- **Primary Key:** `id`
-- **Foreign Key:** `modul_id` (mengacu ke `modul.id` dengan relasi `ON DELETE CASCADE`)
-- **Deskripsi Tabel:** Menyimpan tugas praktik fotografi yang wajib dikerjakan oleh siswa pada suatu modul tertentu.
-
-| Field | Type | Size | Keterangan |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik tugas (Primary Key, Auto Increment) |
-| `modul_id` | BIGINT (UNSIGNED) | 20 | Foreign Key referensi modul (`modul.id`) |
-| `judul` | VARCHAR | 255 | Judul penugasan praktik |
-| `instruksi` | TEXT | - | Petunjuk detail, teknik kamera, dan kriteria tugas |
-| `deadline` | DATETIME | - | Batas waktu terakhir pengumpulan tugas (Nullable) |
-| `file_pendukung` | VARCHAR | 255 | Path berkas referensi/panduan penugasan (Nullable) |
-| `created_at` | TIMESTAMP | - | Waktu tugas diterbitkan |
-| `updated_at` | TIMESTAMP | - | Waktu instruksi tugas disunting |
-
----
-
-### 14. Tabel: `tugas_submission`
-- **Nama Tabel:** `tugas_submission`
-- **Primary Key:** `id`
-- **Foreign Key:** 
-  - `tugas_id` (mengacu ke `tugas.id` dengan relasi `ON DELETE CASCADE`)
-  - `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)
-- **Deskripsi Tabel:** Menyimpan berkas pengumpulan tugas hasil bidikan foto dari siswa serta nilai dan masukan evaluasi dari instruktur.
-
-| Field | Type | Size | Keterangan |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik pengumpulan tugas (Primary Key, Auto Increment) |
-| `tugas_id` | BIGINT (UNSIGNED) | 20 | Foreign Key tugas yang dikumpulkan (`tugas.id`) |
-| `user_id` | BIGINT (UNSIGNED) | 20 | Foreign Key siswa pengumpul (`users.id`) |
-| `file_path` | VARCHAR | 255 | Path berkas karya foto tugas siswa (Nullable) |
-| `catatan` | TEXT | - | Catatan penjelasan konsep foto dari siswa (Nullable) |
-| `tanggal_submit` | TIMESTAMP | - | Waktu penyerahan berkas tugas |
-| `nilai` | INT | 11 | Skor evaluasi tugas dari instruktur skala 0-100 (Nullable) |
-| `feedback` | TEXT | - | Ulasan masukan perbaikan dari instruktur (Nullable) |
-| `status` | VARCHAR | 30 | Status verifikasi tugas ('submitted', 'graded', 'revision_requested') |
-| `created_at` | TIMESTAMP | - | Waktu data dicatat |
-| `updated_at` | TIMESTAMP | - | Waktu pemberian nilai/umpan balik |
-
----
-
-### 15. Tabel: `quiz`
+### 13. Tabel: `quiz`
 - **Nama Tabel:** `quiz`
 - **Primary Key:** `id`
 - **Foreign Key:** `modul_id` (mengacu ke `modul.id` dengan relasi `ON DELETE CASCADE`)
@@ -361,7 +315,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 16. Tabel: `quiz_soal`
+### 14. Tabel: `quiz_soal`
 - **Nama Tabel:** `quiz_soal`
 - **Primary Key:** `id`
 - **Foreign Key:** `quiz_id` (mengacu ke `quiz.id` dengan relasi `ON DELETE CASCADE`)
@@ -384,7 +338,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 17. Tabel: `quiz_attempt`
+### 15. Tabel: `quiz_attempt`
 - **Nama Tabel:** `quiz_attempt`
 - **Primary Key:** `id`
 - **Foreign Key:** 
@@ -404,7 +358,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 18. Tabel: `enrollment`
+### 16. Tabel: `enrollment`
 - **Nama Tabel:** `enrollment`
 - **Primary Key:** `id`
 - **Foreign Key:** 
@@ -424,7 +378,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 19. Tabel: `sertifikat`
+### 17. Tabel: `sertifikat`
 - **Nama Tabel:** `sertifikat`
 - **Primary Key:** `id`
 - **Foreign Key:** 
@@ -446,7 +400,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 20. Tabel: `portofolio`
+### 18. Tabel: `portofolio`
 - **Nama Tabel:** `portofolio`
 - **Primary Key:** `id`
 - **Foreign Key:** Tidak ada
@@ -466,7 +420,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 21. Tabel: `portofolio_foto`
+### 19. Tabel: `portofolio_foto`
 - **Nama Tabel:** `portofolio_foto`
 - **Primary Key:** `id`
 - **Foreign Key:** `portofolio_id` (mengacu ke `portofolio.id` dengan relasi `ON DELETE CASCADE`)
@@ -484,7 +438,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 22. Tabel: `galeri_foto`
+### 20. Tabel: `galeri_foto`
 - **Nama Tabel:** `galeri_foto`
 - **Primary Key:** `id`
 - **Foreign Key:** `booking_id` (mengacu ke `booking.id` dengan relasi `ON DELETE CASCADE`)
@@ -502,7 +456,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 23. Tabel: `konsultasi`
+### 21. Tabel: `konsultasi`
 - **Nama Tabel:** `konsultasi`
 - **Primary Key:** `id`
 - **Foreign Key:** `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`, Nullable)
@@ -529,31 +483,7 @@ Dokumen ini berisi rancangan fisik basis data (*Database Schema*) yang digunakan
 
 ---
 
-### 24. Tabel: `testimoni`
-- **Nama Tabel:** `testimoni`
-- **Primary Key:** `id`
-- **Foreign Key:** 
-  - `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)
-  - `booking_id` (mengacu ke `booking.id` dengan relasi `ON DELETE CASCADE`, Nullable)
-  - `kursus_id` (mengacu ke `kursus.id` dengan relasi `ON DELETE CASCADE`, Nullable)
-- **Deskripsi Tabel:** Menyimpan ulasan feedback, rating bintang kepuasan, dan testimoni dari pelanggan sesi foto maupun peserta kursus.
-
-| Field | Type | Size | Keterangan |
-| :--- | :--- | :--- | :--- |
-| `id` | BIGINT (UNSIGNED) | 20 | Identifikator unik ulasan testimoni (Primary Key, Auto Increment) |
-| `user_id` | BIGINT (UNSIGNED) | 20 | Foreign Key akun pemberi ulasan (`users.id`) |
-| `booking_id` | BIGINT (UNSIGNED) | 20 | Foreign Key sesi foto yang diulas (`booking.id`, Nullable) |
-| `kursus_id` | BIGINT (UNSIGNED) | 20 | Foreign Key kursus yang diulas (`kursus.id`, Nullable) |
-| `rating` | INT | 11 | Skor kepuasan penilaian bintang skala 1 s/d 5 (Default 5) |
-| `komentar` | TEXT | - | Testimoni naratif pengalaman menggunakan jasa studio |
-| `foto` | VARCHAR | 255 | Lampiran foto hasil karya yang dipamerkan klien (Nullable) |
-| `status` | VARCHAR | 20 | Status moderasi ulasan ('pending', 'approved', 'rejected') |
-| `created_at` | TIMESTAMP | - | Waktu pengiriman ulasan |
-| `updated_at` | TIMESTAMP | - | Waktu moderasi persetujuan status |
-
----
-
-### 25. Tabel: `notifikasi`
+### 22. Tabel: `notifikasi`
 - **Nama Tabel:** `notifikasi`
 - **Primary Key:** `id`
 - **Foreign Key:** `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`)

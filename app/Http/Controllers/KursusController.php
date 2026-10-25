@@ -10,8 +10,6 @@ use App\Models\Materi;
 use App\Models\MateriProgress;
 use App\Models\Enrollment;
 use App\Models\Sertifikat;
-use App\Models\Tugas;
-use App\Models\TugasSubmission;
 use App\Models\Quiz;
 use App\Models\QuizSoal;
 use App\Models\QuizAttempt;
@@ -56,7 +54,7 @@ class KursusController extends Controller
      */
     public function detail($id)
     {
-        $kursus = Kursus::with(['instruktur', 'moduls.materis', 'testimoni.user'])->findOrFail($id);
+        $kursus = Kursus::with(['instruktur', 'moduls.materis'])->findOrFail($id);
         $isEnrolled = Auth::check() && Enrollment::where('user_id', Auth::id())->where('kursus_id', $id)->exists();
 
         return view('kursus.detail', compact('kursus', 'isEnrolled'));
@@ -168,29 +166,21 @@ class KursusController extends Controller
 
         $kursus = Kursus::with([
             'moduls.materis',
-            'moduls.tugas.submissions' => fn($q) => $q->where('user_id', $user->id),
             'moduls.quizs.attempts' => fn($q) => $q->where('user_id', $user->id),
         ])->findOrFail($kursusId);
 
         $materiId = $request->query('materi_id');
         $quizId = $request->query('quiz_id');
-        $tugasId = $request->query('tugas_id');
 
         $activeType = 'materi';
         $activeMateri = null;
         $activeQuiz = null;
-        $activeTugas = null;
         $bestAttempt = null;
-        $tugasSubmission = null;
 
         if ($quizId) {
             $activeQuiz = Quiz::with(['soals', 'modul'])->findOrFail($quizId);
             $bestAttempt = $activeQuiz->bestAttemptOf($user->id);
             $activeType = 'quiz';
-        } elseif ($tugasId) {
-            $activeTugas = Tugas::with(['submissions' => fn($q) => $q->where('user_id', $user->id), 'modul'])->findOrFail($tugasId);
-            $tugasSubmission = $activeTugas->submissionOf($user->id);
-            $activeType = 'tugas';
         } elseif ($materiId) {
             $activeMateri = Materi::findOrFail($materiId);
             $activeType = 'materi';
@@ -203,10 +193,6 @@ class KursusController extends Controller
                 $activeQuiz = $firstModul->quizs->first();
                 $bestAttempt = $activeQuiz->bestAttemptOf($user->id);
                 $activeType = 'quiz';
-            } elseif ($firstModul && $firstModul->tugas->count() > 0) {
-                $activeTugas = $firstModul->tugas->first();
-                $tugasSubmission = $activeTugas->submissionOf($user->id);
-                $activeType = 'tugas';
             }
         }
 
@@ -244,9 +230,7 @@ class KursusController extends Controller
             'activeType',
             'activeMateri',
             'activeQuiz',
-            'activeTugas',
             'bestAttempt',
-            'tugasSubmission',
             'completedMateris',
             'totalMateris',
             'progressPercentage',

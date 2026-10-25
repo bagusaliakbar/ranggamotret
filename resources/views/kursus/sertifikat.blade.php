@@ -162,7 +162,7 @@
                 </h2>
 
                 <p class="text-xs text-slate-600 max-w-xl mx-auto leading-relaxed pt-2 font-medium">
-                    Telah berhasil menyelesaikan seluruh kurikulum pembelajaran, evaluasi tugas praktik, dan lulus ujian quiz pada kursus fotografi:
+                    Telah berhasil menyelesaikan seluruh kurikulum pembelajaran dan lulus ujian evaluasi kuis pada kursus fotografi:
                 </p>
 
                 <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">

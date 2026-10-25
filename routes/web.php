@@ -130,11 +130,10 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::get('/reservasi/check-jadwal', [ReservasiController::class, 'checkJadwal'])->name('reservasi.check-jadwal');
     Route::get('/reservasi/{id}', [ReservasiController::class, 'customerShow'])->name('reservasi.show');
 
-    // Proofing Studio & Testimoni
+    // Proofing Studio
     Route::get('/customer/proofing/{bookingId}', [ReservasiController::class, 'customerProofing'])->name('customer.proofing.show');
     Route::post('/customer/proofing/{id}/toggle', [ReservasiController::class, 'toggleProofingSelection'])->name('customer.proofing.toggle');
     Route::post('/customer/proofing/{bookingId}/submit', [ReservasiController::class, 'submitFinalProofing'])->name('customer.proofing.submit');
-    Route::post('/customer/testimonials', [ReservasiController::class, 'storeTestimonial'])->name('customer.testimonials.store');
 
     // Riwayat Konsultasi Customer (Portal Dashboard)
     Route::get('/customer/consultations', [KonsultasiController::class, 'customerIndex'])->name('customer.consultations.index');
@@ -159,17 +158,8 @@ Route::middleware(['auth', 'role:customer,peserta,admin'])->group(function () {
     Route::post('/student/courses/{kursusId}/issue-certificate', [KursusController::class, 'issueCertificate'])->name('student.certificate.issue');
     Route::get('/student/certificates/{id}', [KursusController::class, 'showCertificate'])->name('student.certificate.show');
 
-    Route::post('/student/tugas/{tugasId}/submit', [MateriController::class, 'submitTugas'])->name('student.tugas.submit');
     Route::get('/student/quiz/{quizId}', [MateriController::class, 'showQuiz'])->name('student.quiz.show');
     Route::post('/student/quiz/{quizId}/submit', [MateriController::class, 'submitQuiz'])->name('student.quiz.submit');
-});
-
-// ==========================================
-// 6. OWNER EVALUATION ROUTES (Penilaian Tugas Siswa oleh Owner)
-// ==========================================
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/instructor/assignments', [MateriController::class, 'instructorAssignmentsIndex'])->name('instructor.assignments.index');
-    Route::post('/instructor/assignments/{id}/grade', [MateriController::class, 'gradeAssignment'])->name('instructor.assignments.grade');
 });
 
 // ==========================================
@@ -230,12 +220,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/modules/{modulId}/quizzes', [KursusController::class, 'storeQuiz'])->name('modules.quizzes.store');
     Route::delete('/quizzes/{id}', [KursusController::class, 'destroyQuiz'])->name('quizzes.destroy');
 
-    // Konsultasi & Testimoni
+    // Konsultasi Fotografer
     Route::get('/consultations', [KonsultasiController::class, 'adminIndex'])->name('consultations.index');
     Route::post('/consultations/{id}/reply', [KonsultasiController::class, 'adminReply'])->name('consultations.reply');
-
-    Route::get('/testimonials', [ReservasiController::class, 'adminTestimonialsIndex'])->name('testimonials.index');
-    Route::post('/testimonials/{id}/status', [ReservasiController::class, 'adminUpdateTestimonialStatus'])->name('testimonials.update-status');
 
     // Kelola Portofolio & Album Foto (Owner / Admin)
     Route::get('/portofolio', [PortofolioController::class, 'adminIndex'])->name('portofolio.index');

@@ -11,7 +11,6 @@ use App\Models\Pembayaran;
 use App\Models\Enrollment;
 use App\Models\Notifikasi;
 use App\Models\GaleriFoto;
-use App\Models\Testimoni;
 use Carbon\Carbon;
 
 /**
@@ -22,7 +21,6 @@ use Carbon\Carbon;
  * - Kalender & validasi jadwal pemotretan
  * - Moderasi & update status reservasi oleh Admin
  * - Galeri proofing hasil foto
- * - Ulasan & testimoni pelanggan
  */
 class ReservasiController extends Controller
 {
@@ -280,7 +278,7 @@ class ReservasiController extends Controller
     public function customerShow($id)
     {
         $booking = Reservasi::where('user_id', Auth::id())
-            ->with(['layanan', 'paket', 'pembayaran.invoice', 'galeriFotos', 'testimoni'])
+            ->with(['layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])
             ->findOrFail($id);
 
         return view('reservasi.show', compact('booking'));
@@ -510,63 +508,5 @@ class ReservasiController extends Controller
     public function adminDeletePhoto($id)
     {
         return $this->adminDeleteProofingPhoto($id);
-    }
-
-    public function adminUpdateStatusTestimoni(Request $request, $id)
-    {
-        return $this->adminUpdateTestimonialStatus($request, $id);
-    }
-
-    // ==========================================
-    // 4. TESTIMONI & ULASAN RESERVASI
-    // ==========================================
-
-    /**
-     * Pelanggan mengirimkan ulasan setelah sesi foto
-     */
-    public function storeTestimonial(Request $request)
-    {
-        $validated = $request->validate([
-            'booking_id' => 'nullable|exists:booking,id',
-            'kursus_id' => 'nullable|exists:kursus,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'komentar' => 'required|string|max:1000',
-        ]);
-
-        Testimoni::create([
-            'user_id' => Auth::id(),
-            'booking_id' => $validated['booking_id'] ?? null,
-            'kursus_id' => $validated['kursus_id'] ?? null,
-            'rating' => $validated['rating'],
-            'komentar' => $validated['komentar'],
-            'status' => 'pending',
-        ]);
-
-        return back()->with('success', 'Terima kasih atas ulasan Anda! Testimoni Anda sedang ditinjau oleh admin.');
-    }
-
-    /**
-     * Admin melihat daftar testimoni
-     */
-    public function adminTestimonialsIndex()
-    {
-        $testimonis = Testimoni::with(['user', 'booking.layanan', 'kursus'])->latest()->paginate(15);
-        return view('reservasi.testimoni', compact('testimonis'));
-    }
-
-    /**
-     * Admin memoderasi status testimoni
-     */
-    public function adminUpdateTestimonialStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:approved,rejected,pending',
-        ]);
-
-        $testimoni = Testimoni::findOrFail($id);
-        $testimoni->status = $request->status;
-        $testimoni->save();
-
-        return back()->with('success', 'Status testimoni berhasil diperbarui.');
     }
 }

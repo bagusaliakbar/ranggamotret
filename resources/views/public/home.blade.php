@@ -144,8 +144,8 @@
                 <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-sm shadow-md">
                     <i class="ph-duotone ph-certificate text-xl text-indigo-400"></i>
                 </div>
-                <h3 class="font-extrabold text-sm text-slate-900">Sertifikasi & Praktik Nyata</h3>
-                <p class="text-xs text-slate-600 leading-relaxed font-medium">Kurikulum akademi disertai evaluasi tugas praktik dan sertifikat resmi terverifikasi.</p>
+                <h3 class="font-extrabold text-sm text-slate-900">Sertifikasi & Evaluasi Digital</h3>
+                <p class="text-xs text-slate-600 leading-relaxed font-medium">Kurikulum akademi disertai kuis pemahaman modul dan sertifikat resmi terverifikasi.</p>
             </div>
         </div>
     </div>
@@ -269,39 +269,6 @@
                         <a href="{{ route('public.courses.detail', $c->id) }}" class="btn-dark w-full py-3 rounded-xl text-center text-xs font-bold block shadow-md">
                             Detail Kurikulum & Pendaftaran
                         </a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-<!-- Section 4: Testimonials (Clean White) -->
-<section class="py-20 bg-white border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div class="text-center max-w-2xl mx-auto space-y-2">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Ulasan Pengguna</span>
-            <h2 class="text-3xl font-extrabold text-slate-900">Testimoni Klien & Peserta</h2>
-            <p class="text-xs text-slate-600 font-medium">Ulasan nyata dari pasangan pengantin, keluarga, dan alumni akademi RanggaMotret.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @foreach($testimoni as $t)
-                <div class="clean-card p-6 rounded-2xl space-y-4 shadow-sm hover:shadow-md transition-all">
-                    <div class="flex text-amber-500 text-xs gap-1">
-                        @for($i=1; $i<=5; $i++)
-                            <i class="fa-solid fa-star {{ $i <= $t->rating ? '' : 'text-slate-200' }}"></i>
-                        @endfor
-                    </div>
-                    <p class="text-xs text-slate-700 italic leading-relaxed font-medium">"{{ $t->komentar }}"</p>
-                    <div class="flex items-center gap-3 pt-3 border-t border-slate-100 text-xs">
-                        <div class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center text-xs">
-                            {{ strtoupper(substr($t->user->name, 0, 1)) }}
-                        </div>
-                        <div>
-                            <div class="font-bold text-slate-900">{{ $t->user->name }}</div>
-                            <div class="text-[10px] text-slate-500 font-medium">Ulasan Terverifikasi</div>
-                        </div>
                     </div>
                 </div>
             @endforeach

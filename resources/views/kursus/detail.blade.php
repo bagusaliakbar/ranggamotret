@@ -152,22 +152,10 @@
                                         </div>
                                     </div>
                                 @empty
-                                    @if($modul->tugas->count() === 0 && $modul->quizs->count() === 0)
+                                    @if($modul->quizs->count() === 0)
                                         <div class="text-xs text-slate-400 italic">Materi untuk modul ini sedang disiapkan.</div>
                                     @endif
                                 @endforelse
-
-                                @foreach($modul->tugas as $t)
-                                    <div class="flex items-center justify-between p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 font-bold">
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <i class="fa-solid fa-pen-ruler text-amber-600 text-sm shrink-0"></i>
-                                            <span class="truncate">Tugas Praktik: {{ $t->judul }}</span>
-                                        </div>
-                                        <span class="text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded bg-amber-200 text-amber-900 border border-amber-300 shrink-0">
-                                            Upload Karya
-                                        </span>
-                                    </div>
-                                @endforeach
 
                                 @foreach($modul->quizs as $q)
                                     <div class="flex items-center justify-between p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-950 font-bold">
@@ -228,7 +216,7 @@
                     </div>
                     <div class="flex items-center gap-2.5">
                         <i class="fa-solid fa-circle-check text-emerald-600"></i>
-                        <span>Tugas praktik dievaluasi oleh Owner</span>
+                        <span>Studi kasus teknik kamera & lighting profesional</span>
                     </div>
                     <div class="flex items-center gap-2.5">
                         <i class="fa-solid fa-circle-check text-emerald-600"></i>

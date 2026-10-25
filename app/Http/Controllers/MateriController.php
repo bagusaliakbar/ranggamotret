@@ -6,21 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Materi;
 use App\Models\MateriProgress;
-use App\Models\Tugas;
-use App\Models\TugasSubmission;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
 use App\Models\Notifikasi;
 use Carbon\Carbon;
 
 /**
- * Controller Manajemen Materi, Tugas, & Kuis Pembelajaran (ICONIX Robustness: MateriController)
+ * Controller Manajemen Materi & Kuis Pembelajaran (ICONIX Robustness: MateriController)
  * 
  * Bertanggung jawab atas:
  * - Pencatatan progres kelulusan materi bacaan & video
- * - Penyerahan berkas tugas praktik siswa
  * - Pelaksanaan dan penilaian otomatis kuis modul
- * - Penilaian dan pemberian feedback oleh Instruktur
  */
 class MateriController extends Controller
 {
@@ -36,47 +32,6 @@ class MateriController extends Controller
         );
 
         return back()->with('success', 'Materi berhasil ditandai sebagai selesai!');
-    }
-
-    /**
-     * Penyerahan tugas praktik oleh siswa
-     */
-    public function submitTugas(Request $request, $tugasId)
-    {
-        $validated = $request->validate([
-            'catatan' => 'nullable|string',
-            'file_submission' => 'nullable|file|mimes:jpg,jpeg,png,zip,pdf,rar|max:20480',
-            'link_submission' => 'nullable|string|max:500',
-        ]);
-
-        $tugas = Tugas::with('modul')->findOrFail($tugasId);
-        $filePath = null;
-
-        if ($request->hasFile('file_submission')) {
-            $file = $request->file('file_submission');
-            $filename = time() . '_' . Auth::id() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('uploads/tugas'), $filename);
-            $filePath = 'uploads/tugas/' . $filename;
-        } elseif (!empty($validated['link_submission'])) {
-            $filePath = $validated['link_submission'];
-        }
-
-        if (!$filePath && empty($validated['catatan'])) {
-            return back()->with('error', 'Silakan unggah berkas tugas atau sertakan tautan / catatan.');
-        }
-
-        TugasSubmission::updateOrCreate(
-            ['tugas_id' => $tugasId, 'user_id' => Auth::id()],
-            [
-                'file_path' => $filePath ?? 'Submitted via text notes',
-                'catatan' => $validated['catatan'] ?? null,
-                'tanggal_submit' => Carbon::now(),
-                'status' => 'submitted',
-            ]
-        );
-
-        return redirect()->route('student.learn', [$tugas->modul->kursus_id, 'tugas_id' => $tugasId])
-            ->with('success', 'Tugas praktik Anda berhasil dikirim!');
     }
 
     /**
@@ -131,63 +86,9 @@ class MateriController extends Controller
             ]);
     }
 
-    /**
-     * Instruktur melihat daftar pengumpulan tugas siswa
-     */
-    public function instructorAssignmentsIndex()
-    {
-        $submissions = TugasSubmission::with(['tugas.modul.kursus', 'user'])
-            ->latest()
-            ->paginate(20);
-
-        return view('materi.tugas', compact('submissions'));
-    }
-
-    /**
-     * Instruktur memberikan nilai dan ulasan pada tugas siswa
-     */
-    public function gradeAssignment(Request $request, $submissionId)
-    {
-        $validated = $request->validate([
-            'nilai' => 'required|integer|min:0|max:100',
-            'feedback' => 'nullable|string',
-            'status' => 'required|in:graded,revision_requested',
-        ]);
-
-        $submission = TugasSubmission::findOrFail($submissionId);
-        $submission->nilai = $validated['nilai'];
-        $submission->feedback = $validated['feedback'];
-        $submission->status = $validated['status'];
-        $submission->save();
-
-        Notifikasi::create([
-            'user_id' => $submission->user_id,
-            'judul' => 'Nilai Tugas Diberikan',
-            'pesan' => 'Tugas "' . $submission->tugas->judul . '" telah dinilai: ' . $submission->nilai . '/100.',
-            'link' => '/student/courses/' . $submission->tugas->modul->kursus_id . '/learn',
-        ]);
-
-        return back()->with('success', 'Nilai dan feedback berhasil disimpan.');
-    }
-
     // Method aliases for backward-compatibility
-    public function submit(Request $request, $tugasId)
-    {
-        return $this->submitTugas($request, $tugasId);
-    }
-
     public function show($quizId)
     {
         return $this->showQuiz($quizId);
-    }
-
-    public function instructorIndex()
-    {
-        return $this->instructorAssignmentsIndex();
-    }
-
-    public function grade(Request $request, $submissionId)
-    {
-        return $this->gradeAssignment($request, $submissionId);
     }
 }

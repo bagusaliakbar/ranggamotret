@@ -9,9 +9,7 @@ use App\Models\Pembayaran;
 use App\Models\Kursus;
 use App\Models\User;
 use App\Models\Konsultasi;
-use App\Models\Testimoni;
 use App\Models\Enrollment;
-use App\Models\TugasSubmission;
 
 /**
  * Controller Dasbor Terpadu (Unified Adaptive Dashboard)
@@ -53,7 +51,6 @@ class DashboardController extends Controller
         $totalPeserta = User::where('role', 'peserta')->count();
         $totalCustomers = User::where('role', 'customer')->count();
         $pendingConsultations = Konsultasi::where('status', 'pending')->count();
-        $pendingTestimonials = Testimoni::where('status', 'pending')->count();
 
         $recentBookings = Reservasi::with(['customer', 'layanan'])->latest()->take(5)->get();
         $recentPayments = Pembayaran::with(['user', 'booking.layanan', 'kursus'])->latest()->take(5)->get();
@@ -67,7 +64,6 @@ class DashboardController extends Controller
             'totalPeserta',
             'totalCustomers',
             'pendingConsultations',
-            'pendingTestimonials',
             'recentBookings',
             'recentPayments'
         ));

@@ -8,7 +8,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Kursus Akademi Saya</h1>
-            <p class="text-xs text-slate-500 font-medium mt-1">Akses materi pelatihan, pantau progress modul belajar, kerjakan tugas praktik, dan raih sertifikat resmi.</p>
+            <p class="text-xs text-slate-500 font-medium mt-1">Akses materi pelatihan, pantau progress modul belajar, kerjakan kuis evaluasi, dan raih sertifikat resmi.</p>
         </div>
 
         <a href="{{ route('public.courses') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md inline-flex items-center gap-2 self-start sm:self-auto hover:scale-[1.02] transition-transform">
@@ -83,7 +83,7 @@
                         <div>
                             <h3 class="font-black text-sm text-slate-900">Perhatian: Pendaftaran Kursus Belum Selesai</h3>
                             <p class="text-xs text-amber-900 font-medium mt-0.5 leading-relaxed">
-                                Anda memiliki <strong>{{ $unpaidCourses->count() }} kursus</strong> yang pembayarannya belum selesai. Selesaikan pembayaran online via Midtrans untuk langsung membuka akses materi video, modul belajar, dan tugas praktik.
+                                Anda memiliki <strong>{{ $unpaidCourses->count() }} kursus</strong> yang pembayarannya belum selesai. Selesaikan pembayaran online via Midtrans untuk langsung membuka akses materi video, modul belajar, dan kuis kompetensi.
                             </p>
                         </div>
                     </div>

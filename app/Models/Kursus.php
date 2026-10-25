@@ -43,16 +43,6 @@ class Kursus extends Model
     {
         return $this->hasMany(Sertifikat::class, 'kursus_id');
     }
-
-    public function testimoni()
-    {
-        return $this->hasMany(Testimoni::class, 'kursus_id');
-    }
-
-    public function testimonis()
-    {
-        return $this->hasMany(Testimoni::class, 'kursus_id');
-    }
 }
 
 /**
@@ -77,11 +67,6 @@ class Modul extends Model
     public function materis()
     {
         return $this->hasMany(Materi::class, 'modul_id')->orderBy('urutan');
-    }
-
-    public function tugas()
-    {
-        return $this->hasMany(Tugas::class, 'modul_id');
     }
 
     public function quizs()

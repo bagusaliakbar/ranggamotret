@@ -58,7 +58,7 @@
                     <span class="text-slate-700">Kursus & Materi</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Kelola Kursus & Materi Pembelajaran</h1>
-                <p class="text-xs text-slate-500 font-medium mt-1">Buat program kursus baru, kelola silabus modul, serta atur materi teks, video, kuis, dan tugas praktik.</p>
+                <p class="text-xs text-slate-500 font-medium mt-1">Buat program kursus baru, kelola silabus modul, serta atur materi teks, video, dan kuis evaluasi.</p>
             </div>
 
             <div class="flex items-center gap-3">

@@ -29,16 +29,8 @@
                 'url' => route('student.learn', [$kursus->id, 'quiz_id' => $quz->id])
             ]);
         }
-        foreach($m->tugas as $tug) {
-            $allItems->push([
-                'type' => 'tugas',
-                'id' => $tug->id,
-                'title' => 'Tugas: ' . $tug->judul,
-                'url' => route('student.learn', [$kursus->id, 'tugas_id' => $tug->id])
-            ]);
-        }
     }
-    $currentActiveId = $activeMateri->id ?? ($activeQuiz->id ?? ($activeTugas->id ?? null));
+    $currentActiveId = $activeMateri->id ?? ($activeQuiz->id ?? null);
     $currentIndex = $allItems->search(fn($it) => $it['type'] === $activeType && $it['id'] == $currentActiveId);
     $prevItem = ($currentIndex !== false && $currentIndex > 0) ? $allItems->get($currentIndex - 1) : null;
     $nextItem = ($currentIndex !== false && $currentIndex < $allItems->count() - 1) ? $allItems->get($currentIndex + 1) : null;
@@ -213,89 +205,7 @@
                         @endif
                     </div>
 
-                <!-- 2. ACTIVE VIEW: IN-PAGE TUGAS PRAKTIK -->
-                @elseif($activeType === 'tugas' && isset($activeTugas))
-                    <div class="clean-card p-6 sm:p-8 rounded-3xl space-y-6 bg-white border border-slate-200 shadow-sm">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-                            <div class="space-y-1">
-                                <span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200">
-                                    <i class="fa-solid fa-pen-ruler mr-1"></i> Tugas Praktik Modul
-                                </span>
-                                <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight mt-1">{{ $activeTugas->judul }}</h2>
-                                <p class="text-xs text-slate-500 font-medium">
-                                    Batas Waktu: <strong class="text-slate-800">{{ $activeTugas->deadline ? date('d M Y', strtotime($activeTugas->deadline)) : 'Fleksibel' }}</strong>
-                                </p>
-                            </div>
-
-                            @if($tugasSubmission)
-                                <div class="px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-right">
-                                    <div class="text-[10px] font-bold text-slate-500 uppercase">Status Tugas</div>
-                                    <div class="text-xs font-black text-emerald-700 flex items-center gap-1 justify-end">
-                                        <i class="fa-solid fa-circle-check"></i> Sudah Terkirim
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                            <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Instruksi & Panduan Pengerjaan</h4>
-                            <p class="text-xs text-slate-700 leading-relaxed font-medium">
-                                {{ $activeTugas->instruksi ?? 'Kerjakan tugas praktik fotografi sesuai dengan instruksi modul dan unggah berkas hasil karya Anda.' }}
-                            </p>
-                        </div>
-
-                        @if($tugasSubmission)
-                            <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div class="font-extrabold text-xs flex items-center gap-2">
-                                        <i class="fa-solid fa-file-arrow-up text-emerald-600 text-base"></i>
-                                        <span>Berkas Tugas Anda Telah Dikirim</span>
-                                    </div>
-                                    <span class="text-[10px] font-bold text-emerald-700">
-                                        {{ $tugasSubmission->tanggal_submit ? date('d M Y H:i', strtotime($tugasSubmission->tanggal_submit)) : '' }}
-                                    </span>
-                                </div>
-
-                                @if($tugasSubmission->nilai !== null)
-                                    <div class="p-3 bg-white rounded-xl border border-emerald-200 flex items-center justify-between">
-                                        <span class="text-xs font-bold text-slate-700">Nilai Evaluasi Owner:</span>
-                                        <span class="text-base font-black text-emerald-700">{{ $tugasSubmission->nilai }} / 100</span>
-                                    </div>
-                                    @if($tugasSubmission->feedback)
-                                        <p class="text-xs text-slate-600 italic">"{{ $tugasSubmission->feedback }}"</p>
-                                    @endif
-                                @else
-                                    <p class="text-xs text-emerald-800 font-medium">
-                                        Tugas Anda sedang dalam antrean evaluasi dan review oleh Owner.
-                                    </p>
-                                @endif
-                            </div>
-                        @endif
-
-                        <form method="POST" action="{{ route('student.tugas.submit', $activeTugas->id) }}" enctype="multipart/form-data" class="space-y-4 text-xs">
-                            @csrf
-                            <div class="space-y-2">
-                                <label class="block text-slate-900 font-bold">Unggah Berkas Foto / ZIP Karya Tugas <span class="text-slate-400 font-normal">(Maks. 20MB)</span></label>
-                                <input type="file" name="file_submission" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-slate-900 font-bold">Atau Tautan Google Drive / Cloud <span class="text-slate-400 font-normal">(Opsional)</span></label>
-                                <input type="text" name="link_submission" placeholder="https://drive.google.com/..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:border-slate-900 focus:outline-none font-medium">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-slate-900 font-bold">Catatan Pengerjaan / Pengaturan Kamera (Shutter, Aperture, ISO)</label>
-                                <textarea name="catatan" rows="3" placeholder="Tuliskan pengaturan kamera dan konsep foto yang Anda ambil..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:border-slate-900 focus:outline-none font-medium leading-relaxed"></textarea>
-                            </div>
-
-                            <button type="submit" class="w-full btn-dark py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-cloud-arrow-up text-amber-400"></i> {{ $tugasSubmission ? 'Kirim Ulang / Perbarui Tugas' : 'Kirim Berkas Tugas Praktik' }}
-                            </button>
-                        </form>
-                    </div>
-
-                <!-- 3. ACTIVE VIEW: VIDEO & TEXT LESSON MATERIAL -->
+                <!-- 2. ACTIVE VIEW: VIDEO & TEXT LESSON MATERIAL -->
                 @elseif($activeType === 'materi' && isset($activeMateri))
                     <div class="clean-card p-6 sm:p-8 rounded-3xl space-y-6 bg-white border border-slate-200 shadow-sm">
                         <!-- Header -->
@@ -407,8 +317,7 @@
                                 $cleanTitle = preg_replace('/^Modul\s*\d+\s*:\s*/i', '', $mod->judul);
                                 $isCurrentModul = (
                                     (isset($activeMateri) && $activeMateri->modul_id === $mod->id) ||
-                                    (isset($activeQuiz) && $activeQuiz->modul_id === $mod->id) ||
-                                    (isset($activeTugas) && $activeTugas->modul_id === $mod->id)
+                                    (isset($activeQuiz) && $activeQuiz->modul_id === $mod->id)
                                 );
                             @endphp
 
@@ -459,25 +368,6 @@
                                             @if($attempt && $attempt->is_passed)
                                                 <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 ml-2">
                                                     {{ $attempt->nilai }}%
-                                                </span>
-                                            @endif
-                                        </a>
-                                    @endforeach
-
-                                    @foreach($mod->tugas as $tug)
-                                        @php
-                                            $isTugasActive = (isset($activeTugas) && $activeTugas->id === $tug->id && $activeType === 'tugas');
-                                            $sub = $tug->submissionOf(Auth::id());
-                                        @endphp
-                                        <a href="{{ route('student.learn', [$kursus->id, 'tugas_id' => $tug->id]) }}"
-                                            class="flex items-center justify-between p-2.5 rounded-xl font-bold transition-all border {{ $isTugasActive ? 'bg-slate-900 text-white border-slate-900 shadow-sm' : 'bg-amber-50/70 border-amber-200 text-amber-900 hover:bg-amber-100' }}">
-                                            <div class="flex items-center gap-2 truncate">
-                                                <i class="fa-solid fa-pen-ruler {{ $isTugasActive ? 'text-white' : 'text-amber-600' }} text-xs shrink-0"></i>
-                                                <span class="truncate text-xs">Tugas: {{ $tug->judul }}</span>
-                                            </div>
-                                            @if($sub)
-                                                <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-600 text-white shrink-0 ml-2">
-                                                    Terkirim
                                                 </span>
                                             @endif
                                         </a>

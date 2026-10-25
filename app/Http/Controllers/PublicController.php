@@ -7,7 +7,6 @@ use App\Models\Katalog;
 use App\Models\Paket;
 use App\Models\Portofolio;
 use App\Models\Kursus;
-use App\Models\Testimoni;
 use App\Models\Konsultasi;
 use App\Models\Sertifikat;
 
@@ -18,9 +17,8 @@ class PublicController extends Controller
         $layanan = Katalog::where('status', 'aktif')->take(6)->get();
         $portofolio = Portofolio::where('status_publikasi', 'published')->take(6)->get();
         $kursus = Kursus::where('status', 'aktif')->take(3)->get();
-        $testimoni = Testimoni::where('status', 'approved')->with('user')->take(6)->get();
 
-        return view('public.home', compact('layanan', 'portofolio', 'kursus', 'testimoni'));
+        return view('public.home', compact('layanan', 'portofolio', 'kursus'));
     }
 
     public function services(Request $request)
@@ -98,7 +96,7 @@ class PublicController extends Controller
     public function courseDetail($id)
     {
         $kursus = Kursus::where('status', 'aktif')
-            ->with(['instruktur', 'moduls.materis', 'moduls.tugas', 'moduls.quizs'])
+            ->with(['instruktur', 'moduls.materis', 'moduls.quizs'])
             ->findOrFail($id);
 
         return view('kursus.detail', compact('kursus'));

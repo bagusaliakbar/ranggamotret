@@ -61,11 +61,6 @@ class Reservasi extends Model
         return $this->hasMany(GaleriFoto::class, 'booking_id');
     }
 
-    public function testimoni()
-    {
-        return $this->hasOne(Testimoni::class, 'booking_id');
-    }
-
     public function scopeAktif($query)
     {
         return $query->whereIn('status', [
@@ -100,44 +95,6 @@ class GaleriFoto extends Model
     public function reservasi()
     {
         return $this->belongsTo(Reservasi::class, 'booking_id');
-    }
-}
-
-/**
- * Sub-entity Testimoni: review dan rating kepuasan pelanggan
- */
-class Testimoni extends Model
-{
-    protected $table = 'testimoni';
-
-    protected $fillable = [
-        'user_id',
-        'booking_id',
-        'kursus_id',
-        'rating',
-        'komentar',
-        'foto',
-        'status',
-    ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function booking()
-    {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
-    }
-
-    public function reservasi()
-    {
-        return $this->belongsTo(Reservasi::class, 'booking_id');
-    }
-
-    public function kursus()
-    {
-        return $this->belongsTo(Kursus::class, 'kursus_id');
     }
 }
 
