@@ -116,24 +116,6 @@
 
 
 
-    <!-- Conversion Call-to-Action for Customer Booking -->
-    <div class="clean-card p-8 sm:p-12 rounded-3xl bg-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-        <div class="space-y-2 text-center sm:text-left z-10 max-w-xl">
-            <span class="text-xs font-bold uppercase tracking-widest text-amber-300">Wujudkan Konsep Impian Anda</span>
-            <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Suka dengan estetika visual album ini?</h3>
-            <p class="text-xs sm:text-sm text-slate-300 font-medium">
-                Pesan sesi pemotretan Anda sekarang bersama tim fotografer profesional RanggaMotret dengan pencahayaan dan konsep personal.
-            </p>
-        </div>
-        <div class="flex items-center gap-3 z-10 w-full sm:w-auto">
-            <a href="{{ route('customer.bookings.create') }}" 
-               class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-black shadow-lg transition-all flex items-center justify-center gap-2 hover:scale-105">
-                <i class="ph-duotone ph-calendar-plus text-base text-slate-900"></i>
-                <span>Reservasi Sesi Sekarang</span>
-            </a>
-        </div>
-    </div>
-
     <!-- Related Albums in Same Category -->
     @if(isset($relatedAlbums) && $relatedAlbums->isNotEmpty())
         <div class="space-y-6 pt-6">
