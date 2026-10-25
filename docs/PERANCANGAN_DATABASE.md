@@ -409,7 +409,7 @@ Berikut adalah tabel matriks integritas relasi fisik basis data (*Foreign Key Co
 Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang saling terintegrasi:
 
 1. **Domain Autentikasi & Akun Pengguna:**
-   - Tabel `users` bertindak sebagai sentral identitas bagi Owner (`role: admin`) dan Pelanggan/Siswa (`role: customer` / `role: peserta`).
+   - Tabel `users` bertindak sebagai sentral identitas bagi Owner (`role: owner`) dan Pelanggan (`role: pelanggan`).
    - Setiap pengguna memiliki relasi 1:1 opsional dengan `customers` untuk data alamat domisili dan nomor WhatsApp, serta relasi 1:N dengan `notifikasi` untuk pesan sistem real-time.
 
 2. **Domain Katalog Layanan Fotografi:**
@@ -442,7 +442,7 @@ Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang sa
 - **Nama Tabel:** `users`
 - **Primary Key:** `id`
 - **Foreign Key:** Tidak ada
-- **Deskripsi Tabel:** Menyimpan data kredensial akun pengguna sistem, baik akun Administrator/Owner (`role: admin`) maupun akun Pelanggan/Klien/Peserta Kursus (`role: customer`).
+- **Deskripsi Tabel:** Menyimpan data kredensial akun pengguna sistem, baik akun Administrator/Owner (`role: owner`) maupun akun Pelanggan/Klien/Peserta Kursus (`role: pelanggan`).
 
 | Field | Type | Size | Keterangan |
 | :--- | :--- | :--- | :--- |
@@ -451,7 +451,7 @@ Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang sa
 | `email` | VARCHAR | 255 | Alamat email unik untuk otentikasi login (Unique) |
 | `email_verified_at` | TIMESTAMP | - | Waktu verifikasi email (Nullable) |
 | `password` | VARCHAR | 255 | Kata sandi pengguna yang telah dienkripsi (Hash bcrypt/argon2) |
-| `role` | VARCHAR | 50 | Peran akses sistem ('admin' = Owner, 'customer' = Pelanggan) |
+| `role` | VARCHAR | 50 | Peran akses akun sistem ('owner', 'pelanggan') |
 | `status` | VARCHAR | 20 | Status akun pengguna ('active', 'inactive') |
 | `phone` | VARCHAR | 20 | Nomor telepon / WhatsApp pengguna (Nullable) |
 | `address` | TEXT | - | Alamat tempat tinggal / domisili pengguna (Nullable) |

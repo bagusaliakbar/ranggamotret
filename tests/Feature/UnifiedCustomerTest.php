@@ -15,7 +15,7 @@ test('new user can register without choosing role and becomes unified customer',
 
     $this->assertDatabaseHas('users', [
         'email' => 'budi@example.com',
-        'role' => 'customer',
+        'role' => 'pelanggan',
     ]);
 
     $this->assertDatabaseHas('customers', [
@@ -28,7 +28,7 @@ test('unified customer can access both customer booking dashboard and student lm
         'name' => 'Siti Nurhaliza',
         'email' => 'siti@example.com',
         'password' => bcrypt('password123'),
-        'role' => 'customer',
+        'role' => 'pelanggan',
         'status' => 'active',
     ]);
 

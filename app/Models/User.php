@@ -14,7 +14,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // admin (owner), customer (pelanggan)
+        'role', // owner, pelanggan
         'status', // active, inactive
         'phone',
         'address',
@@ -34,24 +34,29 @@ class User extends Authenticatable
         ];
     }
 
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
-
     public function isOwner(): bool
     {
-        return $this->isAdmin();
+        return in_array($this->role, ['owner', 'admin']);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->isOwner();
+    }
+
+    public function isPelanggan(): bool
+    {
+        return in_array($this->role, ['pelanggan', 'customer', 'peserta']);
     }
 
     public function isCustomer(): bool
     {
-        return in_array($this->role, ['customer', 'peserta']);
+        return $this->isPelanggan();
     }
 
     public function isPeserta(): bool
     {
-        return in_array($this->role, ['customer', 'peserta']);
+        return $this->isPelanggan();
     }
 
     public function bookings()

@@ -25,7 +25,22 @@ class RoleMiddleware
             return redirect()->guest(route('login'))->with('error', 'Akun Anda telah dinonaktifkan. Silakan hubungi admin.');
         }
 
-        if (!in_array($user->role, $roles)) {
+        $normalizedRoles = [];
+        foreach ($roles as $r) {
+            $normalizedRoles[] = $r;
+            if ($r === 'owner' || $r === 'admin') {
+                $normalizedRoles[] = 'owner';
+                $normalizedRoles[] = 'admin';
+            }
+            if ($r === 'pelanggan' || $r === 'customer' || $r === 'peserta') {
+                $normalizedRoles[] = 'pelanggan';
+                $normalizedRoles[] = 'customer';
+                $normalizedRoles[] = 'peserta';
+            }
+        }
+        $normalizedRoles = array_unique($normalizedRoles);
+
+        if (!in_array($user->role, $normalizedRoles)) {
             abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }
 

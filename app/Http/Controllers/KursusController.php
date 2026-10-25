@@ -495,7 +495,7 @@ class KursusController extends Controller
         }
 
         $courses = $query->latest()->get();
-        $instructors = User::where('role', 'admin')->get();
+        $instructors = User::whereIn('role', ['owner', 'admin'])->get();
 
         // Metrik statistik kursus
         $totalCourses = Kursus::count();

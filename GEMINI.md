@@ -36,7 +36,7 @@ Seluruh antarmuka web wajib menggunakan **Phosphor Icons** sebagai sistem ikon s
 ## 4. Standar Arsitektur MVC & Unified Dashboard (Robustness Diagram)
 Pengembangan fitur dan modul wajib selaras 100% dengan **Robustness Diagram (UML Analysis)**:
 1. **Unified Adaptive Dashboard & Aktor Sistem:**
-   - Sistem hanya memiliki **2 Aktor Utama**: **Owner** (`role: admin`) dan **Pelanggan** (`role: customer` / `peserta`). Tidak ada aktor/role instruktur terpisah; seluruh manajemen kursus, materi, dan evaluasi tugas di-handle langsung oleh Owner.
+   - Sistem hanya memiliki **2 Aktor Utama**: **Owner** (`role: owner`) dan **Pelanggan** (`role: pelanggan`). Tidak ada aktor/role instruktur terpisah; seluruh manajemen kursus, materi, dan evaluasi tugas di-handle langsung oleh Owner.
    - Gunakan satu pintu `/dashboard` (`DashboardController@index`) yang adaptif menampilkan data dan widget sesuai izin pengguna (Owner Dashboard vs Pelanggan Dashboard).
 2. **Kesesuaian Boundary, Control, & Entity:**
    - *Boundary (View):* `registrasi`, `login`, `profile`, `katalog`, `kursus`, `materi`, `jadwal`, `reservasi_foto`, `reservasi_kursus`, `konsultasi`, `portofolio`, `pembayaran`, `laporan`, `dashboard`.

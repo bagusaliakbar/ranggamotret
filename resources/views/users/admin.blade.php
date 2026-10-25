@@ -34,34 +34,32 @@
             </div>
             <div class="text-2xl font-black text-slate-900">{{ $totalUsers ?? 0 }}</div>
             <div class="text-[11px] text-slate-500 font-medium">Semua akun terdaftar</div>
-        </div>
-
-        <!-- 2. Owner / Administrator -->
+        </div>        <!-- 2. Owner -->
         <div class="clean-card p-5 rounded-2xl space-y-1">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Owner / Admin</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Owner</span>
                 <div class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center text-sm">
                     <i class="ph-duotone ph-shield-check"></i>
                 </div>
             </div>
-            <div class="text-2xl font-black text-slate-900">{{ $totalAdmins ?? 0 }}</div>
+            <div class="text-2xl font-black text-slate-900">{{ $totalOwners ?? ($totalAdmins ?? 0) }}</div>
             <div class="text-[11px] text-slate-500 font-medium">Pengelola studio & kursus</div>
         </div>
 
-        <!-- 3. Customer / Peserta Kursus -->
+        <!-- 3. Pelanggan -->
         <div class="clean-card p-5 rounded-2xl space-y-1">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Pelanggan & Siswa</span>
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Pelanggan</span>
                 <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
                     <i class="ph-duotone ph-user-circle-check"></i>
                 </div>
             </div>
-            <div class="text-2xl font-black text-emerald-700">{{ $totalCustomers ?? 0 }}</div>
+            <div class="text-2xl font-black text-emerald-700">{{ $totalPelanggan ?? ($totalCustomers ?? 0) }}</div>
             <div class="text-[11px] text-slate-500 font-medium">Klien fotografi & akademi</div>
         </div>
     </div>
 
-    <!-- Search & Filters Card -->
+    <!-- Search & Filter Card -->
     <div class="clean-card p-4 sm:p-5 rounded-2xl">
         <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 text-xs">
             <div class="sm:col-span-5 relative">
@@ -73,11 +71,10 @@
             <div class="sm:col-span-3">
                 <select name="role" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
                     <option value="">Semua Hak Akses (Role)</option>
-                    <option value="admin" {{ ($role ?? '') === 'admin' ? 'selected' : '' }}>Owner / Admin</option>
-                    <option value="customer" {{ ($role ?? '') === 'customer' ? 'selected' : '' }}>Customer (Pelanggan)</option>
-                    <option value="peserta" {{ ($role ?? '') === 'peserta' ? 'selected' : '' }}>Peserta Kursus</option>
+                    <option value="owner" {{ in_array($role ?? '', ['owner', 'admin']) ? 'selected' : '' }}>Owner</option>
+                    <option value="pelanggan" {{ in_array($role ?? '', ['pelanggan', 'customer', 'peserta']) ? 'selected' : '' }}>Pelanggan</option>
                 </select>
-            </div>
+            </div>v>
 
             <div class="sm:col-span-2">
                 <select name="status" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
@@ -150,15 +147,12 @@
                             <!-- Role -->
                             <td class="px-6 py-4">
                                 @php
-                                    $roleBadge = match($u->role) {
-                                        'admin' => 'bg-slate-900 text-white border-slate-900',
-                                        'instruktur' => 'bg-blue-50 text-blue-800 border-blue-200',
-                                        'peserta' => 'bg-purple-50 text-purple-800 border-purple-200',
-                                        default => 'bg-emerald-50 text-emerald-800 border-emerald-200',
-                                    };
+                                    $isOwner = in_array($u->role, ['owner', 'admin']);
+                                    $roleBadge = $isOwner ? 'bg-slate-900 text-white border-slate-900' : 'bg-emerald-50 text-emerald-800 border-emerald-200';
+                                    $roleLabel = $isOwner ? 'Owner' : 'Pelanggan';
                                 @endphp
                                 <span class="px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase border {{ $roleBadge }}">
-                                    {{ $u->role }}
+                                    {{ $roleLabel }}
                                 </span>
                             </td>
 
@@ -282,9 +276,8 @@
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Role / Hak Akses <span class="text-rose-500">*</span></label>
                         <select name="role" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
-                            <option value="customer">Customer (Pelanggan)</option>
-                            <option value="peserta">Peserta (Siswa LMS)</option>
-                            <option value="admin">Owner (Administrator)</option>
+                            <option value="pelanggan">Pelanggan</option>
+                            <option value="owner">Owner</option>
                         </select>
                     </div>
                     <div>
@@ -374,9 +367,8 @@
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Role / Hak Akses <span class="text-rose-500">*</span></label>
                         <select name="role" x-model="selectedUser.role" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-900 focus:outline-none text-slate-900 font-medium">
-                            <option value="customer">Customer (Pelanggan)</option>
-                            <option value="peserta">Peserta (Siswa LMS)</option>
-                            <option value="admin">Owner (Administrator)</option>
+                            <option value="pelanggan">Pelanggan</option>
+                            <option value="owner">Owner</option>
                         </select>
                     </div>
                     <div>
@@ -460,7 +452,7 @@
                 id: '',
                 name: '',
                 email: '',
-                role: 'customer',
+                role: 'pelanggan',
                 status: 'active',
                 phone: '',
                 address: ''
@@ -469,11 +461,12 @@
                 this.createModalOpen = true;
             },
             openEditModal(user) {
+                const isOwner = ['owner', 'admin'].includes(user.role);
                 this.selectedUser = {
                     id: user.id,
                     name: user.name || '',
                     email: user.email || '',
-                    role: user.role || 'customer',
+                    role: isOwner ? 'owner' : 'pelanggan',
                     status: user.status || 'active',
                     phone: user.phone || '',
                     address: user.address || ''

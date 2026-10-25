@@ -13,7 +13,7 @@ test('controllers and routes corresponding to robustness boundaries respond with
         [
             'name' => 'Route Tester',
             'password' => bcrypt('password123'),
-            'role' => 'customer',
+            'role' => 'pelanggan',
             'status' => 'active',
         ]
     );
@@ -90,7 +90,7 @@ test('authenticated user consultation links user_id and appears in consultation 
         [
             'name' => 'Consult Client',
             'password' => bcrypt('password123'),
-            'role' => 'customer',
+            'role' => 'pelanggan',
             'status' => 'active',
         ]
     );
@@ -120,7 +120,7 @@ test('authenticated user consultation links user_id and appears in consultation 
 test('course detail page with eager loaded relationships returns HTTP 200', function () {
     $owner = User::firstOrCreate(
         ['email' => 'owner@test.com'],
-        ['name' => 'Owner Studio Test', 'password' => bcrypt('password123'), 'role' => 'admin', 'status' => 'active']
+        ['name' => 'Owner Studio Test', 'password' => bcrypt('password123'), 'role' => 'owner', 'status' => 'active']
     );
 
     $kursus = Kursus::create([
@@ -144,7 +144,7 @@ test('admin can access reports and export pdf and excel with active filters', fu
         [
             'name' => 'Owner Admin Tester',
             'password' => bcrypt('password123'),
-            'role' => 'admin',
+            'role' => 'owner',
             'status' => 'active',
         ]
     );

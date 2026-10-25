@@ -440,7 +440,7 @@ class ReservasiController extends Controller
         ]);
 
         // Notifikasi ke Admin/Owner
-        $adminUser = \App\Models\User::where('role', 'admin')->first();
+        $adminUser = \App\Models\User::whereIn('role', ['owner', 'admin'])->first();
         if ($adminUser) {
             \App\Models\Notifikasi::create([
                 'user_id' => $adminUser->id,

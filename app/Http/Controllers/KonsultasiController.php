@@ -81,8 +81,8 @@ class KonsultasiController extends Controller
             'status' => 'pending',
         ]);
 
-        // Kirim notifikasi ke Admin jika admin terdaftar
-        $admin = User::where('role', 'admin')->first();
+        // Kirim notifikasi ke Admin/Owner jika terdaftar
+        $admin = User::whereIn('role', ['owner', 'admin'])->first();
         if ($admin) {
             Notifikasi::create([
                 'user_id' => $admin->id,
