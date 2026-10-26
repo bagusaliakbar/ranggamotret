@@ -58,7 +58,7 @@ class LaporanController extends Controller
         }
 
         if ($kategori === 'foto') {
-            $query->whereNotNull('booking_id');
+            $query->whereNotNull('reservasi_id');
         } elseif ($kategori === 'kursus') {
             $query->whereNotNull('kursus_id');
         }
@@ -83,7 +83,7 @@ class LaporanController extends Controller
             ->whereDate('tanggal_pembayaran', '<=', $endDate);
 
         if ($kategori === 'foto') {
-            $baseQuery->whereNotNull('booking_id');
+            $baseQuery->whereNotNull('reservasi_id');
         } elseif ($kategori === 'kursus') {
             $baseQuery->whereNotNull('kursus_id');
         }
@@ -103,7 +103,7 @@ class LaporanController extends Controller
         }
 
         $totalPendapatan = (clone $baseQuery)->sum('jumlah');
-        $pendapatanFoto = (clone $baseQuery)->whereNotNull('booking_id')->sum('jumlah');
+        $pendapatanFoto = (clone $baseQuery)->whereNotNull('reservasi_id')->sum('jumlah');
         $pendapatanKursus = (clone $baseQuery)->whereNotNull('kursus_id')->sum('jumlah');
         $transaksiCount = (clone $baseQuery)->count();
 

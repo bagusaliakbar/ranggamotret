@@ -290,4 +290,30 @@ test('consultation supports two-way threaded chat between customer and owner in 
     expect($konsultasi->status)->toBe('replied');
 });
 
+test('owner can access financial reports without database column error', function () {
+    $owner = User::firstOrCreate(
+        ['email' => 'owner_report@test.com'],
+        ['name' => 'Owner Report Test', 'password' => bcrypt('password123'), 'role' => 'owner', 'status' => 'active']
+    );
+
+    // Akses laporan pendapatan umum
+    $this->actingAs($owner)->get('/admin/reports/pendapatan')
+        ->assertStatus(200)
+        ->assertSee('Laporan Pendapatan');
+
+    // Akses laporan pendapatan kategori foto
+    $this->actingAs($owner)->get('/admin/reports/pendapatan?kategori=foto')
+        ->assertStatus(200);
+
+    // Akses laporan pendapatan kategori kursus
+    $this->actingAs($owner)->get('/admin/reports/pendapatan?kategori=kursus')
+        ->assertStatus(200);
+
+    // Akses laporan reservasi
+    $this->actingAs($owner)->get('/admin/reports/reservasi')
+        ->assertStatus(200)
+        ->assertSee('Laporan Reservasi');
+});
+
+
 
