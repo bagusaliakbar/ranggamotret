@@ -65,16 +65,6 @@
                 Kalender jadwal sesi pemotretan interaktif. Klik sesi foto untuk mengatur ulang tanggal, jam, atau status reservasi.
             </p>
         </div>
-
-        <div class="flex items-center gap-3">
-            @if(Auth::user()->isOwner())
-                <a href="{{ route('admin.bookings.index') }}" 
-                   class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs">
-                    <i class="ph-duotone ph-calendar-check text-base text-slate-600"></i>
-                    <span>Daftar Reservasi</span>
-                </a>
-            @endif
-        </div>
     </div>
 
     <!-- Alert Notifikasi -->

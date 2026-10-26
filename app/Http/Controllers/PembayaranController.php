@@ -516,17 +516,17 @@ class PembayaranController extends Controller
     public function showInvoice($id)
     {
         // Cari invoice berdasarkan ID invoice atau fallback berdasarkan pembayaran_id
-        $invoice = Invoice::with(['pembayaran', 'user', 'reservasi.layanan', 'reservasi.paket', 'kursus'])->find($id);
+        $invoice = Invoice::with(['pembayaran', 'user', 'reservasi.layanan', 'reservasi.paket', 'reservasi.kursus', 'kursus'])->find($id);
 
         if (!$invoice) {
             // Cek jika ID yang dikirim adalah ID Pembayaran
-            $pembayaran = Pembayaran::with(['invoice', 'user', 'reservasi.layanan', 'reservasi.paket', 'kursus'])->find($id);
+            $pembayaran = Pembayaran::with(['invoice', 'user', 'reservasi.layanan', 'reservasi.paket', 'reservasi.kursus', 'kursus'])->find($id);
             if ($pembayaran) {
                 if ($pembayaran->invoice) {
                     $invoice = $pembayaran->invoice;
                 } elseif ($pembayaran->status === 'Dibayar') {
                     // Auto-generate invoice jika status pembayaran sudah Dibayar
-                    $prefix = $pembayaran->kursus_id ? 'KRS' : 'FTO';
+                    $prefix = ($pembayaran->kursus_id || ($pembayaran->reservasi && $pembayaran->reservasi->isKursus())) ? 'KRS' : 'FTO';
                     $invNum = 'INV-' . date('Ymd', strtotime($pembayaran->tanggal_pembayaran ?? $pembayaran->created_at)) . '-' . $prefix . '-' . str_pad($pembayaran->id, 4, '0', STR_PAD_LEFT);
 
                     $invoice = Invoice::create([
@@ -534,13 +534,13 @@ class PembayaranController extends Controller
                         'nomor_invoice' => $invNum,
                         'user_id' => $pembayaran->user_id,
                         'reservasi_id' => $pembayaran->reservasi_id,
-                        'kursus_id' => $pembayaran->kursus_id,
+                        'kursus_id' => $pembayaran->kursus_id ?? $pembayaran->reservasi?->kursus_id,
                         'subtotal' => $pembayaran->jumlah,
                         'diskon' => 0,
                         'total' => $pembayaran->jumlah,
                         'status_pembayaran' => 'LUNAS',
                     ]);
-                    $invoice->load(['pembayaran', 'user', 'reservasi.layanan', 'reservasi.paket', 'kursus']);
+                    $invoice->load(['pembayaran', 'user', 'reservasi.layanan', 'reservasi.paket', 'reservasi.kursus', 'kursus']);
                 }
             }
         }

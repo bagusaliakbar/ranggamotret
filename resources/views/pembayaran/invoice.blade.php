@@ -57,16 +57,16 @@
         <div class="grid grid-cols-2 gap-6 text-xs">
             <div>
                 <span class="text-slate-400 uppercase font-bold text-[10px] block">Diterbitkan Untuk Pelanggan:</span>
-                <div class="font-bold text-slate-900 text-sm mt-1">{{ $invoice->user->name }}</div>
-                <div class="text-slate-600">{{ $invoice->user->email }}</div>
-                <div class="text-slate-600">{{ $invoice->user->phone ?? '-' }}</div>
-                <div class="text-slate-600">{{ $invoice->user->address ?? '-' }}</div>
+                <div class="font-bold text-slate-900 text-sm mt-1">{{ $invoice->user?->name ?? 'Pelanggan' }}</div>
+                <div class="text-slate-600">{{ $invoice->user?->email ?? '-' }}</div>
+                <div class="text-slate-600">{{ $invoice->user?->phone ?? '-' }}</div>
+                <div class="text-slate-600">{{ $invoice->user?->address ?? '-' }}</div>
             </div>
             <div class="text-right">
                 <span class="text-slate-400 uppercase font-bold text-[10px] block">Rincian Tanggal Transaksi:</span>
-                <div class="text-slate-700 mt-1">Tanggal Invoice: <strong>{{ date('d F Y', strtotime($invoice->created_at)) }}</strong></div>
-                <div class="text-slate-700">Nomor Transaksi: <strong class="font-mono">{{ $invoice->pembayaran->nomor_transaksi }}</strong></div>
-                <div class="text-slate-700">Metode Bayar: <strong>{{ $invoice->pembayaran->metode_pembayaran }}</strong></div>
+                <div class="text-slate-700 mt-1">Tanggal Invoice: <strong>{{ $invoice->created_at ? date('d F Y', strtotime($invoice->created_at)) : date('d F Y') }}</strong></div>
+                <div class="text-slate-700">Nomor Transaksi: <strong class="font-mono">{{ $invoice->pembayaran?->nomor_transaksi ?? '-' }}</strong></div>
+                <div class="text-slate-700">Metode Bayar: <strong>{{ $invoice->pembayaran?->metode_pembayaran ?? 'Online Payment (Midtrans)' }}</strong></div>
             </div>
         </div>
 
@@ -82,21 +82,39 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
-                    @if($invoice->booking)
+                    @if($invoice->booking && $invoice->booking->isFotografi())
                         <tr>
                             <td class="p-4">
-                                <div class="font-bold text-slate-900">{{ $invoice->booking->layanan->nama }}</div>
-                                <div class="text-[11px] text-slate-500">Paket: {{ $invoice->booking->paket->nama_paket }} (Jadwal: {{ date('d M Y', strtotime($invoice->booking->tanggal)) }})</div>
+                                <div class="font-bold text-slate-900">{{ $invoice->booking->layanan?->nama ?? 'Layanan Fotografi' }}</div>
+                                <div class="text-[11px] text-slate-500">
+                                    Paket: {{ $invoice->booking->paket?->nama_paket ?? 'Paket Foto' }} 
+                                    @if($invoice->booking->tanggal)
+                                        (Jadwal: {{ date('d M Y', strtotime($invoice->booking->tanggal)) }})
+                                    @endif
+                                </div>
                             </td>
                             <td class="p-4 text-center">1</td>
                             <td class="p-4 text-right font-mono">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>
                             <td class="p-4 text-right font-mono font-bold text-slate-900">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>
                         </tr>
-                    @elseif($invoice->kursus)
+                    @elseif($invoice->kursus || ($invoice->booking && $invoice->booking->isKursus()))
+                        @php
+                            $kursusItem = $invoice->kursus ?? $invoice->booking?->kursus ?? $invoice->pembayaran?->kursus;
+                        @endphp
                         <tr>
                             <td class="p-4">
-                                <div class="font-bold text-slate-900">Pendaftaran Akademi: {{ $invoice->kursus->nama }}</div>
-                                <div class="text-[11px] text-slate-500">Level: {{ $invoice->kursus->level }} | Akses Modul Lengkap</div>
+                                <div class="font-bold text-slate-900">Pendaftaran Akademi: {{ $kursusItem?->nama ?? 'Kursus Fotografi Akademi' }}</div>
+                                <div class="text-[11px] text-slate-500">Level: {{ $kursusItem?->level ?? 'Semua Level' }} | Akses Modul Lengkap</div>
+                            </td>
+                            <td class="p-4 text-center">1</td>
+                            <td class="p-4 text-right font-mono">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>
+                            <td class="p-4 text-right font-mono font-bold text-slate-900">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td class="p-4">
+                                <div class="font-bold text-slate-900">{{ $invoice->booking?->layanan?->nama ?? ($invoice->pembayaran?->catatan ?? 'Layanan RanggaMotret') }}</div>
+                                <div class="text-[11px] text-slate-500">{{ $invoice->booking?->paket?->nama_paket ?? 'Paket Pilihan' }}</div>
                             </td>
                             <td class="p-4 text-center">1</td>
                             <td class="p-4 text-right font-mono">Rp {{ number_format($invoice->subtotal, 0, ',', '.') }}</td>

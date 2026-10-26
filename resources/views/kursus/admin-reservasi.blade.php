@@ -15,26 +15,10 @@
             </div>
             <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center gap-2.5">
                 <span>Kelola Reservasi Kursus Akademi</span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-50 text-indigo-700 border border-indigo-200">
-                    {{ $totalReservations }} Pendaftar
-                </span>
             </h1>
             <p class="text-xs text-slate-500 font-medium mt-1">
                 Pantau seluruh pendaftaran kelas pelatihan fotografi, rincian pelanggan, metode bayar, dan aktivasi akses materi belajar.
             </p>
-        </div>
-
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.courses.index') }}" 
-               class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center gap-2 shadow-2xs">
-                <i class="ph-duotone ph-graduation-cap text-base text-slate-600"></i>
-                <span>Kelola Materi Kursus</span>
-            </a>
-            <a href="{{ route('admin.payments.index') }}" 
-               class="bg-slate-900 hover:bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
-                <i class="ph-duotone ph-receipt text-base text-emerald-400"></i>
-                <span>Verifikasi Semua Pembayaran</span>
-            </a>
         </div>
     </div>
 
