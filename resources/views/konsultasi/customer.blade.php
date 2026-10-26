@@ -25,9 +25,9 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <span class="text-slate-900 font-extrabold">Konsultasi Konsep</span>
+                <span class="text-slate-900 font-extrabold">Konsultasi</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Riwayat Konsultasi Konsep</h1>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Riwayat Konsultasi</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Diskusikan ide tema visual, rekomendasi outfit, pemilihan lokasi pemotretan, hingga kepastian estimasi budget langsung bersama tim fotografer profesional RanggaMotret.</p>
         </div>
     </div>
@@ -59,120 +59,109 @@
         </div>
     @endif
 
-    <!-- 4 Interactive Filter Metric Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- 1. Semua -->
-        <button type="button" @click="activeFilter = 'all'" 
-            :class="activeFilter === 'all' ? 'border-slate-900 bg-slate-900 text-white shadow-md ring-2 ring-slate-900/10' : 'border-slate-200 bg-white text-slate-800 hover:border-slate-300'"
-            class="clean-card p-4 sm:p-5 rounded-3xl border transition-all text-left flex flex-col justify-between space-y-3 cursor-pointer group">
+    <!-- Quick Metrics Summary Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- 1. Total Konsultasi -->
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-extrabold uppercase tracking-wider" :class="activeFilter === 'all' ? 'text-slate-300' : 'text-slate-400'">
-                    Total Pengajuan
-                </span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-transform group-hover:scale-110"
-                     :class="activeFilter === 'all' ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-700'">
+                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Total Konsultasi</span>
+                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
                     <i class="ph-duotone ph-chats-circle"></i>
                 </div>
             </div>
-            <div>
-                <div class="text-2xl sm:text-3xl font-black tracking-tight" :class="activeFilter === 'all' ? 'text-white' : 'text-slate-900'">
-                    {{ $stats['total'] }}
-                </div>
-                <span class="text-[11px] font-medium" :class="activeFilter === 'all' ? 'text-slate-300' : 'text-slate-500'">Semua topik diskusi</span>
+            <div class="flex items-baseline justify-between">
+                <div class="text-2xl sm:text-3xl font-black text-slate-900">{{ $stats['total'] }}</div>
+                <span class="text-xs font-bold text-slate-500">Topik Sesi</span>
             </div>
-        </button>
+            <div class="text-[11px] text-slate-400 font-medium">Histori pengajuan konsep</div>
+        </div>
 
         <!-- 2. Menunggu Balasan -->
-        <button type="button" @click="activeFilter = 'pending'"
-            :class="activeFilter === 'pending' ? 'border-amber-500 bg-amber-500 text-white shadow-md ring-2 ring-amber-500/20' : 'border-slate-200 bg-white text-slate-800 hover:border-amber-300'"
-            class="clean-card p-4 sm:p-5 rounded-3xl border transition-all text-left flex flex-col justify-between space-y-3 cursor-pointer group">
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-extrabold uppercase tracking-wider" :class="activeFilter === 'pending' ? 'text-amber-100' : 'text-amber-600'">
-                    Menunggu Balasan
-                </span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-transform group-hover:scale-110"
-                     :class="activeFilter === 'pending' ? 'bg-white/20 text-white' : 'bg-amber-50 text-amber-600 border border-amber-100'">
+                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Menunggu Balasan</span>
+                <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm">
                     <i class="ph-duotone ph-clock"></i>
                 </div>
             </div>
-            <div>
-                <div class="text-2xl sm:text-3xl font-black tracking-tight" :class="activeFilter === 'pending' ? 'text-white' : 'text-amber-600'">
-                    {{ $stats['pending'] }}
-                </div>
-                <span class="text-[11px] font-medium" :class="activeFilter === 'pending' ? 'text-amber-100' : 'text-slate-500'">Sedang ditinjau fotografer</span>
+            <div class="flex items-baseline justify-between">
+                <div class="text-2xl sm:text-3xl font-black text-amber-600">{{ $stats['pending'] }}</div>
+                <span class="text-xs font-bold text-amber-600">Ditinjau</span>
             </div>
-        </button>
+            <div class="text-[11px] text-slate-400 font-medium">Sedang ditinjau fotografer</div>
+        </div>
 
-        <!-- 3. Sudah Dibalas -->
-        <button type="button" @click="activeFilter = 'replied'"
-            :class="activeFilter === 'replied' ? 'border-emerald-600 bg-emerald-600 text-white shadow-md ring-2 ring-emerald-600/20' : 'border-slate-200 bg-white text-slate-800 hover:border-emerald-300'"
-            class="clean-card p-4 sm:p-5 rounded-3xl border transition-all text-left flex flex-col justify-between space-y-3 cursor-pointer group">
+        <!-- 3. Sudah Ditanggapi -->
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-extrabold uppercase tracking-wider" :class="activeFilter === 'replied' ? 'text-emerald-100' : 'text-emerald-600'">
-                    Sudah Ditanggapi
-                </span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-transform group-hover:scale-110"
-                     :class="activeFilter === 'replied' ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'">
+                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Sudah Ditanggapi</span>
+                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
                     <i class="ph-duotone ph-chat-circle-dots"></i>
                 </div>
             </div>
-            <div>
-                <div class="text-2xl sm:text-3xl font-black tracking-tight" :class="activeFilter === 'replied' ? 'text-white' : 'text-emerald-600'">
-                    {{ $stats['replied'] }}
-                </div>
-                <span class="text-[11px] font-medium" :class="activeFilter === 'replied' ? 'text-emerald-100' : 'text-slate-500'">Ada arahan dari Owner</span>
+            <div class="flex items-baseline justify-between">
+                <div class="text-2xl sm:text-3xl font-black text-emerald-600">{{ $stats['replied'] }}</div>
+                <span class="text-xs font-bold text-emerald-600">Ada Arahan</span>
             </div>
-        </button>
+            <div class="text-[11px] text-slate-400 font-medium">Owner telah membalas</div>
+        </div>
 
         <!-- 4. Konsultasi Selesai -->
-        <button type="button" @click="activeFilter = 'selesai'"
-            :class="activeFilter === 'selesai' ? 'border-blue-600 bg-blue-600 text-white shadow-md ring-2 ring-blue-600/20' : 'border-slate-200 bg-white text-slate-800 hover:border-blue-300'"
-            class="clean-card p-4 sm:p-5 rounded-3xl border transition-all text-left flex flex-col justify-between space-y-3 cursor-pointer group">
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] font-extrabold uppercase tracking-wider" :class="activeFilter === 'selesai' ? 'text-blue-100' : 'text-blue-600'">
-                    Konsultasi Selesai
-                </span>
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-transform group-hover:scale-110"
-                     :class="activeFilter === 'selesai' ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-600 border border-blue-100'">
+                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Konsultasi Selesai</span>
+                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
                     <i class="ph-duotone ph-check-circle"></i>
                 </div>
             </div>
-            <div>
-                <div class="text-2xl sm:text-3xl font-black tracking-tight" :class="activeFilter === 'selesai' ? 'text-white' : 'text-blue-600'">
-                    {{ $stats['selesai'] ?? 0 }}
-                </div>
-                <span class="text-[11px] font-medium" :class="activeFilter === 'selesai' ? 'text-blue-100' : 'text-slate-500'">Pertanyaan tuntas terjawab</span>
+            <div class="flex items-baseline justify-between">
+                <div class="text-2xl sm:text-3xl font-black text-blue-600">{{ $stats['selesai'] ?? 0 }}</div>
+                <span class="text-xs font-bold text-blue-600">Tuntas</span>
             </div>
-        </button>
+            <div class="text-[11px] text-slate-400 font-medium">Pertanyaan tuntas terjawab</div>
+        </div>
     </div>
 
-    <!-- Filter & Live Search Toolbar with Action Button -->
+    <!-- Control Bar: Tabs, Search & Action Button -->
     <div class="clean-card p-4 rounded-3xl bg-white border border-slate-200/90 shadow-2xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-        <!-- Filter Tab Buttons -->
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 text-xs">
-            <button type="button" @click="activeFilter = 'all'"
-                :class="activeFilter === 'all' ? 'bg-slate-900 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+        <!-- Interactive Category Tabs -->
+        <div class="flex items-center gap-1 overflow-x-auto p-1 bg-slate-100 rounded-2xl no-scrollbar text-xs">
+            <button type="button" @click="activeFilter = 'all'" 
+                    :class="activeFilter === 'all' ? 'bg-white text-slate-900 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
                 <i class="ph-duotone ph-chats-circle"></i>
-                <span>Semua ({{ $stats['total'] }})</span>
+                <span>Semua Sesi</span>
+                <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-200/70 text-slate-700 ml-1">{{ $stats['total'] }}</span>
             </button>
-            <button type="button" @click="activeFilter = 'pending'"
-                :class="activeFilter === 'pending' ? 'bg-amber-500 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+
+            <button type="button" @click="activeFilter = 'pending'" 
+                    :class="activeFilter === 'pending' ? 'bg-white text-amber-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
                 <i class="ph-duotone ph-clock"></i>
-                <span>Menunggu ({{ $stats['pending'] }})</span>
+                <span>Menunggu Balasan</span>
+                @if($stats['pending'] > 0)
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 ml-1">{{ $stats['pending'] }}</span>
+                @endif
             </button>
-            <button type="button" @click="activeFilter = 'replied'"
-                :class="activeFilter === 'replied' ? 'bg-emerald-600 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+
+            <button type="button" @click="activeFilter = 'replied'" 
+                    :class="activeFilter === 'replied' ? 'bg-white text-emerald-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
                 <i class="ph-duotone ph-chat-circle-dots"></i>
-                <span>Ditanggapi ({{ $stats['replied'] }})</span>
+                <span>Sudah Dibalas</span>
+                @if($stats['replied'] > 0)
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 ml-1">{{ $stats['replied'] }}</span>
+                @endif
             </button>
-            <button type="button" @click="activeFilter = 'selesai'"
-                :class="activeFilter === 'selesai' ? 'bg-blue-600 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+
+            <button type="button" @click="activeFilter = 'selesai'" 
+                    :class="activeFilter === 'selesai' ? 'bg-white text-blue-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
                 <i class="ph-duotone ph-check-circle"></i>
-                <span>Selesai ({{ $stats['selesai'] ?? 0 }})</span>
+                <span>Selesai</span>
+                @if(($stats['selesai'] ?? 0) > 0)
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-blue-100 text-blue-800 ml-1">{{ $stats['selesai'] ?? 0 }}</span>
+                @endif
             </button>
         </div>
 
@@ -214,143 +203,143 @@
             </div>
         </div>
     @else
-        <div class="space-y-6">
+        <div class="space-y-4">
             @foreach($consultations as $item)
                 @php
                     $searchable = strtolower($item->jenis_layanan . ' ' . ($item->konsep ?? '') . ' ' . ($item->lokasi ?? '') . ' ' . ($item->kebutuhan ?? ''));
                     $msgs = $item->chat_messages;
                     $msgCount = count($msgs);
                     $lastMessage = $msgCount > 0 ? $msgs[$msgCount - 1] : null;
+
+                    $statusConfig = match($item->status) {
+                        'selesai' => [
+                            'bg' => 'bg-blue-50 text-blue-800 border-blue-200',
+                            'icon' => 'ph-check-circle',
+                            'iconColor' => 'text-blue-600',
+                            'label' => 'Konsultasi Selesai'
+                        ],
+                        'replied' => [
+                            'bg' => 'bg-emerald-50 text-emerald-800 border-emerald-200',
+                            'icon' => 'ph-chat-circle-dots',
+                            'iconColor' => 'text-emerald-600',
+                            'label' => 'Dibalas Owner'
+                        ],
+                        default => [
+                            'bg' => 'bg-amber-50 text-amber-800 border-amber-200',
+                            'icon' => 'ph-clock',
+                            'iconColor' => 'text-amber-600',
+                            'label' => 'Menunggu Tanggapan'
+                        ]
+                    };
                 @endphp
 
                 <div x-show="matchesFilter('{{ $item->status }}', '{{ addslashes($searchable) }}')" 
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 translate-y-2"
                      x-transition:enter-end="opacity-100 translate-y-0"
-                     class="clean-card rounded-3xl border {{ $item->status === 'selesai' ? 'border-slate-200 bg-white' : ($item->status === 'replied' ? 'border-emerald-200/90 bg-white ring-1 ring-emerald-500/10' : 'border-slate-200 bg-white') }} overflow-hidden shadow-xs hover:shadow-md transition-all">
+                     class="clean-card rounded-3xl overflow-hidden border border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-md transition-all duration-300">
                     
-                    <!-- Card Header Strip -->
-                    <div class="p-6 sm:p-7 border-b border-slate-100 space-y-5">
+                    <!-- Main Header Strip of Card -->
+                    <div class="p-5 sm:p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 border-b border-slate-100 bg-linear-to-r from-slate-50/50 via-white to-white">
                         
-                        <!-- Top Meta & Status Badge -->
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div class="flex flex-wrap items-center gap-2.5">
-                                <span class="px-3 py-1 rounded-xl bg-slate-900 text-white font-black text-xs inline-flex items-center gap-1.5 shadow-2xs">
-                                    <i class="ph-duotone ph-camera text-emerald-400"></i>
-                                    <span>{{ $item->jenis_layanan }}</span>
-                                </span>
-                                <span class="text-xs text-slate-400 font-medium inline-flex items-center gap-1">
-                                    <i class="ph-duotone ph-calendar-blank"></i>
-                                    <span>Diajukan: {{ $item->created_at->timezone(config('app.timezone', 'Asia/Jakarta'))->translatedFormat('d M Y, H:i') }}</span>
-                                </span>
+                        <!-- Left Identity -->
+                        <div class="flex items-start sm:items-center gap-4">
+                            <!-- Service/Topic Avatar Icon Box -->
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0 shadow-2xs group relative flex items-center justify-center text-slate-700">
+                                <i class="ph-duotone ph-chats-circle text-2xl sm:text-3xl text-emerald-600"></i>
                             </div>
 
-                            <!-- Status Pill Badge -->
-                            <div>
-                                @if($item->status === 'selesai')
-                                    <span class="px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 font-extrabold text-xs border border-blue-200 inline-flex items-center gap-1.5 shadow-2xs">
-                                        <i class="ph-duotone ph-check-circle text-sm text-blue-600"></i>
-                                        <span>Konsultasi Selesai</span>
+                            <!-- Consultation Info & Metadata -->
+                            <div class="space-y-1">
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="font-mono text-[11px] font-black text-slate-900 bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200">
+                                        {{ $item->jenis_layanan }}
                                     </span>
-                                @elseif($item->status === 'replied')
-                                    <span class="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 font-extrabold text-xs border border-emerald-200 inline-flex items-center gap-1.5 shadow-2xs">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                        <i class="ph-duotone ph-chat-circle-dots text-sm text-emerald-600"></i>
-                                        <span>Sudah Ditanggapi Owner</span>
+                                    <span class="text-[11px] font-semibold text-slate-400">
+                                        Diajukan: {{ $item->created_at->timezone(config('app.timezone', 'Asia/Jakarta'))->translatedFormat('d M Y, H:i') }}
                                     </span>
-                                @else
-                                    <span class="px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-800 font-extrabold text-xs border border-amber-200 inline-flex items-center gap-1.5 shadow-2xs">
-                                        <i class="ph-duotone ph-clock text-sm text-amber-600"></i>
-                                        <span>Menunggu Tanggapan</span>
-                                    </span>
+                                    @if($item->status === 'replied')
+                                        <span class="px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 inline-flex items-center gap-1">
+                                            <i class="ph-duotone ph-sparkle text-xs"></i> Ada Arahan Baru
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <h3 class="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-snug">
+                                    {{ $item->konsep ?: 'Konsultasi Layanan ' . $item->jenis_layanan }}
+                                </h3>
+
+                                @if($item->kebutuhan)
+                                    <p class="text-xs text-slate-500 font-medium line-clamp-1 max-w-xl leading-relaxed">
+                                        {{ $item->kebutuhan }}
+                                    </p>
                                 @endif
+
+                                <div class="flex flex-wrap items-center gap-2 text-xs pt-0.5">
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold text-[11px]">
+                                        Lokasi: {{ $item->lokasi ?: 'Fleksibel' }}
+                                    </span>
+                                    <span class="font-mono font-black text-slate-900 text-xs">
+                                        {{ $item->budget ? 'Estimasi Rp ' . number_format($item->budget, 0, ',', '.') : 'Budget Fleksibel' }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Concept Headline & Topic -->
-                        <div class="space-y-1">
-                            <h3 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-                                {{ $item->konsep ?: 'Konsultasi Layanan ' . $item->jenis_layanan }}
-                            </h3>
-                            @if($item->kebutuhan)
-                                <p class="text-xs text-slate-600 font-medium line-clamp-2 leading-relaxed">
-                                    {{ $item->kebutuhan }}
-                                </p>
+                        <!-- Right Status & Main Quick Actions -->
+                        <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-start lg:justify-end shrink-0 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+                            <!-- Status Badge -->
+                            <span class="px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-2xs inline-flex items-center gap-1.5 {{ $statusConfig['bg'] }}">
+                                <i class="ph-duotone {{ $statusConfig['icon'] }} text-xs {{ $statusConfig['iconColor'] }}"></i>
+                                <span>{{ $statusConfig['label'] }}</span>
+                            </span>
+
+                            <!-- Action: Selesaikan Chat jika belum selesai -->
+                            @if($item->status !== 'selesai')
+                                <form method="POST" action="{{ route('customer.consultations.close', $item->id) }}" onsubmit="return confirm('Apakah seluruh pertanyaan Anda sudah terjawab dan ingin mengakhiri sesi chat ini?')">
+                                    @csrf
+                                    <button type="submit" 
+                                        class="px-3 py-1.5 rounded-xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 text-slate-600 hover:text-emerald-800 text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-2xs hover:scale-105 active:scale-95" 
+                                        title="Tandai konsultasi selesai">
+                                        <i class="ph-duotone ph-check-square-offset text-sm text-emerald-600"></i>
+                                        <span>Selesaikan</span>
+                                    </button>
+                                </form>
                             @endif
+
+                            <!-- Action: Toggle Ruang Obrolan -->
+                            <button type="button" @click="toggleChat({{ $item->id }})" 
+                                class="px-3.5 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-2xs hover:scale-105 active:scale-95 transition-all"
+                                :class="expandedChatId === {{ $item->id }} ? 'bg-slate-900 text-white' : 'btn-dark'">
+                                <span x-text="expandedChatId === {{ $item->id }} ? 'Tutup Obrolan' : 'Buka Obrolan'"></span>
+                                <i class="ph-bold ph-caret-down text-xs transition-transform duration-200" 
+                                   :class="expandedChatId === {{ $item->id }} ? 'rotate-180' : ''"></i>
+                            </button>
                         </div>
+                    </div>
 
-                        <!-- Metadata Micro-Grid (Tanggal, Budget, Lokasi & Kontak) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/90 flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white text-slate-700 flex items-center justify-center shrink-0 border border-slate-200/80 shadow-2xs">
-                                    <i class="ph-duotone ph-calendar text-base text-emerald-600"></i>
-                                </div>
-                                <div class="truncate">
-                                    <span class="text-[10px] uppercase font-extrabold text-slate-400 block tracking-wider">Rencana Tanggal</span>
-                                    <span class="font-extrabold text-slate-800 truncate">
-                                        {{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') : 'Fleksibel / Belum Ditentukan' }}
-                                    </span>
-                                </div>
+                    <!-- Secondary Information Strip (Schedule, Location, Contact, Messages Count) -->
+                    <div class="px-5 sm:px-6 py-3.5 bg-white flex flex-wrap items-center justify-between gap-4 text-xs text-slate-600 font-medium">
+                        <div class="flex flex-wrap items-center gap-y-2 gap-x-5">
+                            <div class="flex items-center gap-1.5 text-slate-700">
+                                <i class="ph-duotone ph-calendar-blank text-slate-400 text-sm"></i>
+                                <span>Rencana: <strong class="text-slate-900 font-bold">{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') : 'Fleksibel' }}</strong></span>
                             </div>
-
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/90 flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white text-slate-700 flex items-center justify-center shrink-0 border border-slate-200/80 shadow-2xs">
-                                    <i class="ph-duotone ph-wallet text-base text-emerald-600"></i>
-                                </div>
-                                <div class="truncate">
-                                    <span class="text-[10px] uppercase font-extrabold text-slate-400 block tracking-wider">Estimasi Budget</span>
-                                    <span class="font-black text-slate-900 font-mono">
-                                        {{ $item->budget ? 'Rp ' . number_format($item->budget, 0, ',', '.') : 'Belum Ditentukan' }}
-                                    </span>
-                                </div>
+                            <div class="flex items-center gap-1.5 text-slate-700">
+                                <i class="ph-duotone ph-whatsapp-logo text-emerald-600 text-sm"></i>
+                                <span>WA: <strong class="text-slate-900 font-bold">{{ $item->phone }}</strong></span>
                             </div>
-
-                            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100/90 flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-white text-slate-700 flex items-center justify-center shrink-0 border border-slate-200/80 shadow-2xs">
-                                    <i class="ph-duotone ph-whatsapp-logo text-base text-emerald-600"></i>
-                                </div>
-                                <div class="truncate">
-                                    <span class="text-[10px] uppercase font-extrabold text-slate-400 block tracking-wider">Kontak WhatsApp</span>
-                                    <span class="font-extrabold text-slate-800 truncate">{{ $item->phone }}</span>
-                                </div>
+                            <div class="flex items-center gap-1.5 text-slate-700">
+                                <i class="ph-duotone ph-chats text-slate-400 text-sm"></i>
+                                <span>Diskusi: <strong class="text-slate-900 font-bold">{{ $msgCount }} Pesan</strong></span>
                             </div>
                         </div>
 
-                        <!-- Bar Pengontrol & Cuplikan Pesan Terakhir -->
-                        <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                            <div class="text-xs text-slate-500 font-medium flex items-center gap-2 truncate">
-                                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-extrabold text-[11px] inline-flex items-center gap-1 shrink-0">
-                                    <i class="ph-duotone ph-chats text-xs text-emerald-600"></i>
-                                    <span>{{ $msgCount }} Pesan</span>
-                                </span>
-                                @if($lastMessage)
-                                    <span class="text-slate-400 truncate">
-                                        Terakhir oleh <strong class="text-slate-700 font-semibold">{{ $lastMessage['nama'] ?? 'Pengguna' }}</strong>: 
-                                        &ldquo;{{ Str::limit($lastMessage['pesan'] ?? '', 45) }}&rdquo;
-                                    </span>
-                                @endif
+                        @if($lastMessage)
+                            <div class="text-[11px] text-slate-400 truncate max-w-md">
+                                Terakhir oleh <strong class="text-slate-700 font-semibold">{{ $lastMessage['nama'] ?? 'Pengguna' }}</strong>: &ldquo;{{ Str::limit($lastMessage['pesan'] ?? '', 45) }}&rdquo;
                             </div>
-
-                            <div class="flex items-center gap-2 shrink-0">
-                                @if($item->status !== 'selesai')
-                                    <form method="POST" action="{{ route('customer.consultations.close', $item->id) }}" onsubmit="return confirm('Apakah seluruh pertanyaan Anda sudah terjawab dan ingin mengakhiri sesi chat ini?')">
-                                        @csrf
-                                        <button type="submit" class="px-3 py-2 rounded-xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 text-slate-600 hover:text-emerald-800 text-xs font-bold transition-all inline-flex items-center gap-1.5" title="Selesaikan konsultasi">
-                                            <i class="ph-duotone ph-check-square-offset text-sm text-emerald-600"></i>
-                                            <span>Selesaikan Chat</span>
-                                        </button>
-                                    </form>
-                                @endif
-
-                                <button type="button" @click="toggleChat({{ $item->id }})" 
-                                    class="px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-2"
-                                    :class="expandedChatId === {{ $item->id }} ? 'bg-slate-900 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'">
-                                    <span x-text="expandedChatId === {{ $item->id }} ? 'Tutup Obrolan' : 'Buka Ruang Obrolan'"></span>
-                                    <i class="ph-bold ph-caret-down transition-transform duration-200" 
-                                       :class="expandedChatId === {{ $item->id }} ? 'rotate-180' : ''"></i>
-                                </button>
-                            </div>
-                        </div>
+                        @endif
                     </div>
 
                     <!-- Ruang Percakapan & Diskusi Konsep (Collapsible Chat Section) -->
