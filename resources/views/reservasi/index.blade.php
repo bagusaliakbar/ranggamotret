@@ -49,7 +49,7 @@
         $activeList = $bookings->filter(fn($b) => in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal']));
         $completedList = $bookings->filter(fn($b) => $b->status === 'Selesai');
         $proofingList = $bookings->filter(fn($b) => $b->galeriFotos->count() > 0);
-        $totalNominal = $bookings->sum(fn($b) => $b->paket->harga ?? 0);
+        $totalNominal = $bookings->sum(fn($b) => $b->paket?->harga ?? 0);
     @endphp
 
     <!-- Quick Metrics Summary Cards -->
@@ -247,7 +247,7 @@
                 };
             @endphp
 
-            <div x-show="filterStatus('{{ $b->status }}', '{{ $paymentStatus }}', {{ $hasGallery }}) && ('{{ strtolower($b->nomor_booking . ' ' . $b->layanan->nama . ' ' . $b->lokasi) }}'.includes(searchQuery.toLowerCase()))"
+            <div x-show="filterStatus('{{ $b->status }}', '{{ $paymentStatus }}', {{ $hasGallery }}) && ('{{ strtolower(($b->nomor_booking ?? '') . ' ' . ($b->layanan?->nama ?? '') . ' ' . ($b->lokasi ?? '')) }}'.includes(searchQuery.toLowerCase()))"
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="opacity-0 translate-y-2"
                  x-transition:enter-end="opacity-100 translate-y-0"
@@ -259,8 +259,8 @@
                     <div class="flex items-start sm:items-center gap-4">
                         <!-- Service Thumbnail Avatar -->
                         <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0 shadow-2xs group relative">
-                            @if($b->layanan->thumbnail)
-                                <img src="{{ $b->layanan->thumbnail }}" alt="{{ $b->layanan->nama }}" class="w-full h-full object-cover">
+                            @if($b->layanan?->thumbnail)
+                                <img src="{{ $b->layanan->thumbnail }}" alt="{{ $b->layanan?->nama ?? 'Layanan' }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-400">
                                     <i class="ph-duotone ph-camera text-2xl"></i>
@@ -285,15 +285,15 @@
                             </div>
 
                             <h3 class="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-snug">
-                                {{ $b->layanan->nama }}
+                                {{ $b->layanan?->nama ?? 'Layanan Pemotretan' }}
                             </h3>
 
                             <div class="flex flex-wrap items-center gap-2 text-xs">
                                 <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold text-[11px]">
-                                    Paket: {{ $b->paket->nama_paket }}
+                                    Paket: {{ $b->paket?->nama_paket ?? 'Paket Standar' }}
                                 </span>
                                 <span class="font-mono font-black text-slate-900 text-xs">
-                                    Rp {{ number_format($b->paket->harga ?? 0, 0, ',', '.') }}
+                                    Rp {{ number_format($b->paket?->harga ?? 0, 0, ',', '.') }}
                                 </span>
                             </div>
                         </div>
@@ -364,7 +364,7 @@
                         <!-- Kru Fotografer -->
                         <div class="flex items-center gap-1.5 text-slate-700">
                             <i class="ph-duotone ph-users text-slate-400 text-sm"></i>
-                            <span>Fotografer: <strong class="text-slate-900 font-bold">{{ $b->paket->jumlah_fotografer ?? 1 }} Personil</strong></span>
+                            <span>Fotografer: <strong class="text-slate-900 font-bold">{{ $b->paket?->jumlah_fotografer ?? 1 }} Personil</strong></span>
                         </div>
 
                         <!-- Metode Pembayaran jika sudah tercatat -->

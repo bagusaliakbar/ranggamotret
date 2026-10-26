@@ -162,10 +162,10 @@
                                 <span class="font-mono text-[10px] font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                                     {{ $b->nomor_booking }}
                                 </span>
-                                <h3 class="text-sm font-extrabold text-slate-900 truncate">{{ $b->layanan->nama }}</h3>
+                                <h3 class="text-sm font-extrabold text-slate-900 truncate">{{ $b->layanan?->nama ?? 'Layanan Pemotretan' }}</h3>
                             </div>
                             <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 font-medium">
-                                <span><i class="ph-duotone ph-package text-slate-400 mr-1"></i> Paket {{ $b->paket->nama_paket }}</span>
+                                <span><i class="ph-duotone ph-package text-slate-400 mr-1"></i> Paket {{ $b->paket?->nama_paket ?? '-' }}</span>
                                 <span><i class="ph-duotone ph-calendar-blank text-slate-400 mr-1"></i> {{ date('d M Y', strtotime($b->tanggal)) }} ({{ substr($b->waktu, 0, 5) }} WIB)</span>
                             </div>
                         </div>

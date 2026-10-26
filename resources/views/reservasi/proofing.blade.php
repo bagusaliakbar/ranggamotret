@@ -39,7 +39,7 @@
                 <span class="text-[10px] font-mono font-black text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
                     {{ $booking->nomor_booking }}
                 </span>
-                <span class="text-xs font-bold text-slate-500">• {{ $booking->layanan->nama }} (Paket {{ $booking->paket->nama_paket }})</span>
+                <span class="text-xs font-bold text-slate-500">• {{ $booking->layanan?->nama ?? 'Layanan Foto' }} (Paket {{ $booking->paket?->nama_paket ?? '-' }})</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 tracking-tight">Studio Proofing & Kurasi Foto</h1>
             <p class="text-xs text-slate-600 font-medium mt-1">

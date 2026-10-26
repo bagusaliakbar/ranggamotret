@@ -39,6 +39,10 @@ class ReservasiController extends Controller
     public function customerIndex()
     {
         $bookings = Reservasi::where('user_id', Auth::id())
+            ->where(function ($query) {
+                $query->where('tipe', 'fotografi')
+                      ->orWhereNull('tipe');
+            })
             ->with(['layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])
             ->latest()
             ->get();
@@ -54,6 +58,10 @@ class ReservasiController extends Controller
         $userId = Auth::id();
         
         $bookings = Reservasi::where('user_id', $userId)
+            ->where(function ($query) {
+                $query->where('tipe', 'fotografi')
+                      ->orWhereNull('tipe');
+            })
             ->with(['layanan', 'paket', 'pembayaran', 'galeriFotos'])
             ->latest()
             ->get();

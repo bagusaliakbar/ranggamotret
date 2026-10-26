@@ -51,11 +51,11 @@
                 <div class="grid grid-cols-2 gap-4 text-xs">
                     <div>
                         <span class="text-slate-500 font-medium block">Layanan:</span>
-                        <span class="font-extrabold text-slate-900 text-sm">{{ $booking->layanan->nama }}</span>
+                        <span class="font-extrabold text-slate-900 text-sm">{{ $booking->layanan?->nama ?? 'Layanan Pemotretan' }}</span>
                     </div>
                     <div>
                         <span class="text-slate-500 font-medium block">Paket:</span>
-                        <span class="font-extrabold text-slate-900 text-sm">{{ $booking->paket->nama_paket }}</span>
+                        <span class="font-extrabold text-slate-900 text-sm">{{ $booking->paket?->nama_paket ?? '-' }}</span>
                     </div>
                     <div>
                         <span class="text-slate-500 font-medium block">Tanggal Pemotretan:</span>

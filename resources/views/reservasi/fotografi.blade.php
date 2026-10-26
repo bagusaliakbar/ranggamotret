@@ -123,11 +123,17 @@
                         <div>
                             <!-- Thumbnail & Category Tag -->
                             <div class="aspect-video overflow-hidden relative bg-slate-100">
-                                <img src="{{ $b->layanan->thumbnail }}" alt="{{ $b->layanan->nama }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                @if($b->layanan?->thumbnail)
+                                    <img src="{{ $b->layanan->thumbnail }}" alt="{{ $b->layanan?->nama ?? 'Layanan' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                        <i class="ph-duotone ph-camera text-4xl"></i>
+                                    </div>
+                                @endif
                                 
                                 <div class="absolute top-3 left-3 flex items-center gap-2">
                                     <span class="px-2.5 py-1 rounded-full bg-slate-900/90 text-white text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-sm shadow-sm">
-                                        {{ $b->layanan->kategori ?? 'Fotografi' }}
+                                        {{ $b->layanan?->kategori ?? 'Fotografi' }}
                                     </span>
                                 </div>
 
@@ -143,14 +149,14 @@
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
                                         <span>Kode: {{ $b->nomor_booking }}</span>
-                                        <span class="font-sans font-bold text-slate-800">Rp {{ number_format($b->paket->harga ?? 0, 0, ',', '.') }}</span>
+                                        <span class="font-sans font-bold text-slate-800">Rp {{ number_format($b->paket?->harga ?? 0, 0, ',', '.') }}</span>
                                     </div>
                                     <h3 class="text-lg font-black text-slate-900 group-hover:text-slate-700 transition-colors">
-                                        {{ $b->layanan->nama }}
+                                        {{ $b->layanan?->nama ?? 'Layanan Pemotretan' }}
                                     </h3>
                                     <p class="text-xs font-bold text-slate-600 flex items-center gap-1.5">
                                         <i class="ph-duotone ph-package text-slate-400"></i>
-                                        <span>Paket: <strong class="text-slate-900">{{ $b->paket->nama_paket }}</strong></span>
+                                        <span>Paket: <strong class="text-slate-900">{{ $b->paket?->nama_paket ?? '-' }}</strong></span>
                                     </p>
                                 </div>
 
