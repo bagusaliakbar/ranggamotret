@@ -19,33 +19,16 @@
     }
 }">
     
-    <!-- Top Hero Header -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white p-6 sm:p-8 shadow-xl border border-slate-800">
-        <!-- Subtle Background Glow Elements -->
-        <div class="absolute -right-12 -top-12 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-12 -bottom-12 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none"></div>
-
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="space-y-2 max-w-2xl">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-[11px] font-bold text-emerald-400 border border-white/10">
-                    <i class="ph-duotone ph-sparkle text-xs"></i>
-                    <span>Pre-Booking Direct Creative Advisory</span>
-                </div>
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
-                    Riwayat Konsultasi Konsep
-                </h1>
-                <p class="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed">
-                    Diskusikan ide tema visual, rekomendasi outfit, pemilihan lokasi pemotretan, hingga kepastian estimasi budget langsung bersama fotografer profesional RanggaMotret.
-                </p>
+    <!-- Top Header Section -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+        <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <span class="text-slate-900 font-extrabold">Konsultasi Konsep</span>
             </div>
-
-            <div class="flex items-center gap-3 shrink-0">
-                <button @click="openModal = true" 
-                    class="px-5 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/25 hover:scale-[1.02] active:scale-95 transition-all">
-                    <i class="ph-duotone ph-plus-circle text-lg"></i>
-                    <span>Ajukan Konsultasi Baru</span>
-                </button>
-            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Riwayat Konsultasi Konsep</h1>
+            <p class="text-xs text-slate-500 font-medium mt-1">Diskusikan ide tema visual, rekomendasi outfit, pemilihan lokasi pemotretan, hingga kepastian estimasi budget langsung bersama tim fotografer profesional RanggaMotret.</p>
         </div>
     </div>
 
@@ -163,36 +146,50 @@
         </button>
     </div>
 
-    <!-- Filter & Live Search Toolbar -->
-    <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
-        <!-- Search Input -->
-        <div class="relative w-full sm:w-80">
-            <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" x-model="searchQuery" placeholder="Cari layanan, tema konsep, lokasi..."
-                   class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-all">
-        </div>
-
+    <!-- Filter & Live Search Toolbar with Action Button -->
+    <div class="clean-card p-4 rounded-3xl bg-white border border-slate-200/90 shadow-2xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
         <!-- Filter Tab Buttons -->
-        <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 text-xs">
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 xl:pb-0 text-xs">
             <button type="button" @click="activeFilter = 'all'"
                 :class="activeFilter === 'all' ? 'bg-slate-900 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3 py-1.5 rounded-xl transition-all shrink-0">
-                Semua ({{ $stats['total'] }})
+                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+                <i class="ph-duotone ph-chats-circle"></i>
+                <span>Semua ({{ $stats['total'] }})</span>
             </button>
             <button type="button" @click="activeFilter = 'pending'"
                 :class="activeFilter === 'pending' ? 'bg-amber-500 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3 py-1.5 rounded-xl transition-all shrink-0">
-                Menunggu ({{ $stats['pending'] }})
+                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+                <i class="ph-duotone ph-clock"></i>
+                <span>Menunggu ({{ $stats['pending'] }})</span>
             </button>
             <button type="button" @click="activeFilter = 'replied'"
                 :class="activeFilter === 'replied' ? 'bg-emerald-600 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3 py-1.5 rounded-xl transition-all shrink-0">
-                Ditanggapi ({{ $stats['replied'] }})
+                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+                <i class="ph-duotone ph-chat-circle-dots"></i>
+                <span>Ditanggapi ({{ $stats['replied'] }})</span>
             </button>
             <button type="button" @click="activeFilter = 'selesai'"
                 :class="activeFilter === 'selesai' ? 'bg-blue-600 text-white font-black shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'"
-                class="px-3 py-1.5 rounded-xl transition-all shrink-0">
-                Selesai ({{ $stats['selesai'] ?? 0 }})
+                class="px-3.5 py-2 rounded-xl transition-all shrink-0 flex items-center gap-1.5">
+                <i class="ph-duotone ph-check-circle"></i>
+                <span>Selesai ({{ $stats['selesai'] ?? 0 }})</span>
+            </button>
+        </div>
+
+        <!-- Right Side: Search Input + Tombol Ajukan Konsultasi Baru -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <!-- Search Input -->
+            <div class="relative w-full sm:w-64">
+                <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" x-model="searchQuery" placeholder="Cari layanan, tema, lokasi..."
+                       class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all">
+            </div>
+
+            <!-- Tombol Ajukan Konsultasi Baru -->
+            <button @click="openModal = true" 
+                class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 transition-all whitespace-nowrap">
+                <i class="ph-duotone ph-plus-circle text-emerald-400 text-base"></i>
+                <span>Ajukan Konsultasi Baru</span>
             </button>
         </div>
     </div>
