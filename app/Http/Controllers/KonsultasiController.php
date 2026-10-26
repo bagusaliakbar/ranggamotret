@@ -83,7 +83,7 @@ class KonsultasiController extends Controller
                     'sender' => 'pelanggan',
                     'nama' => $validated['nama'],
                     'pesan' => $kebutuhan,
-                    'waktu' => now()->format('d M Y, H:i'),
+                    'waktu' => now()->timezone(config('app.timezone', 'Asia/Jakarta'))->translatedFormat('d M Y, H:i'),
                 ]
             ],
             'status' => 'pending',

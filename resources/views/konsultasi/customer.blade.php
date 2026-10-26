@@ -121,7 +121,7 @@
                                     {{ $item->jenis_layanan }}
                                 </span>
                                 <span class="text-xs text-slate-400 font-medium">
-                                    Diajukan: {{ $item->created_at->format('d M Y, H:i') }}
+                                    Diajukan: {{ $item->created_at->timezone(config('app.timezone', 'Asia/Jakarta'))->translatedFormat('d M Y, H:i') }}
                                 </span>
                             </div>
                             @if($item->konsep)
@@ -167,7 +167,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                         <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
                             <span class="text-[10px] uppercase font-bold text-slate-400 block">Rencana Tanggal:</span>
-                            <span class="font-bold text-slate-800">{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d F Y') : 'Fleksibel / Belum Ditentukan' }}</span>
+                            <span class="font-bold text-slate-800">{{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') : 'Fleksibel / Belum Ditentukan' }}</span>
                         </div>
 
                         <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">

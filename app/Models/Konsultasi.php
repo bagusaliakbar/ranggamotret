@@ -54,7 +54,7 @@ class Konsultasi extends Model
                 'sender' => 'pelanggan',
                 'nama' => $this->nama ?: 'Pelanggan',
                 'pesan' => $this->kebutuhan,
-                'waktu' => $this->created_at ? $this->created_at->format('d M Y, H:i') : null,
+                'waktu' => $this->created_at ? $this->created_at->timezone(config('app.timezone', 'Asia/Jakarta'))->translatedFormat('d M Y, H:i') : null,
             ];
         }
 
@@ -63,7 +63,7 @@ class Konsultasi extends Model
                 'sender' => 'owner',
                 'nama' => 'Owner RanggaMotret',
                 'pesan' => $this->tanggapan_admin,
-                'waktu' => $this->updated_at ? $this->updated_at->format('d M Y, H:i') : null,
+                'waktu' => $this->updated_at ? $this->updated_at->timezone(config('app.timezone', 'Asia/Jakarta'))->translatedFormat('d M Y, H:i') : null,
             ];
         }
 
@@ -80,7 +80,7 @@ class Konsultasi extends Model
             'sender' => $sender,
             'nama' => $nama,
             'pesan' => $pesan,
-            'waktu' => now()->format('d M Y, H:i'),
+            'waktu' => now()->timezone(config('app.timezone', 'Asia/Jakarta'))->translatedFormat('d M Y, H:i'),
         ];
 
         $this->percakapan = $current;
