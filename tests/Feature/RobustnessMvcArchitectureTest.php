@@ -262,11 +262,11 @@ test('consultation supports two-way threaded chat between customer and owner in 
     expect($konsultasi->chat_messages[3]['sender'])->toBe('system');
     expect($konsultasi->chat_messages[3]['pesan'])->toContain('diselesaikan oleh klien');
 
-    // Tampilan portal pelanggan setelah chat selesai menampilkan banner & tombol booking
+    // Tampilan portal pelanggan setelah chat selesai menampilkan banner & tombol buka obrolan
     $this->actingAs($pelanggan)->get('/customer/consultations')
         ->assertStatus(200)
         ->assertSee('Percakapan Konsultasi Telah Selesai')
-        ->assertSee('Lanjut Booking Foto');
+        ->assertSee('Buka Obrolan');
 
     // 7. Pelanggan membuka kembali chat (Reopen)
     $this->actingAs($pelanggan)->post("/customer/consultations/{$konsultasi->id}/reopen")

@@ -266,10 +266,6 @@
                                             <span>Buka Obrolan</span>
                                         </button>
                                     </form>
-                                    <a href="{{ route('reservasi.create') }}" class="px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 shadow-md hover:scale-[1.02] active:scale-95 bg-emerald-500 hover:bg-emerald-400 text-slate-950">
-                                        <i class="ph-duotone ph-calendar-plus text-sm"></i>
-                                        <span>Lanjut Booking Foto</span>
-                                    </a>
                                 </div>
                             </div>
                         @else
