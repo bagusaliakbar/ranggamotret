@@ -3,35 +3,79 @@
 @section('title', 'Riwayat Transaksi Pembayaran — RanggaMotret.id')
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-8" x-data="{ activeTab: 'all', searchQuery: '' }">
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <span class="text-slate-700">Riwayat Pembayaran</span>
+                <span class="text-slate-900 font-extrabold">Riwayat Pembayaran</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Riwayat Transaksi Pembayaran</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Daftar transaksi pembayaran sesi foto dan kursus akademi Anda melalui Midtrans Payment Gateway.</p>
         </div>
+    </div>
 
-        <div class="flex flex-wrap items-center gap-2.5">
-            <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm hover:scale-105 transition-all">
-                <i class="ph-duotone ph-camera text-base"></i>
-                <span>Pesan Sesi Foto Baru</span>
-            </a>
-            <a href="{{ route('public.courses') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold inline-flex items-center gap-1.5 shadow-xs transition-all">
-                <i class="ph-duotone ph-graduation-cap text-base"></i>
-                <span>Jelajahi Kursus</span>
-            </a>
+    @php
+        $totalTrans = $pembayarans->count();
+        $paidCount = $pembayarans->where('status', 'Dibayar')->count();
+        $unpaidCount = $pembayarans->whereIn('status', ['Belum Dibayar', 'Menunggu Pembayaran', 'Menunggu Verifikasi'])->count();
+        $totalSpent = $pembayarans->where('status', 'Dibayar')->sum('jumlah');
+    @endphp
+
+    <!-- Quick Metrics Summary Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- 1. Total Transaksi -->
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Total Transaksi</span>
+                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-receipt"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-slate-900">{{ $totalTrans }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Foto & kursus akademi</div>
+        </div>
+
+        <!-- 2. Pembayaran Lunas -->
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Lunas Terverifikasi</span>
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-check-circle"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-emerald-600">{{ $paidCount }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Invoice resmi terbit</div>
+        </div>
+
+        <!-- 3. Menunggu Bayar -->
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Menunggu Bayar</span>
+                <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-clock"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-amber-600">{{ $unpaidCount }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Perlu diselesaikan</div>
+        </div>
+
+        <!-- 4. Total Terbayar -->
+        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-1">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Total Terbayar</span>
+                <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-wallet"></i>
+                </div>
+            </div>
+            <div class="text-xl sm:text-2xl font-black text-slate-900">Rp {{ number_format($totalSpent, 0, ',', '.') }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Investasi layanan</div>
         </div>
     </div>
 
     <!-- Helpful Order Info Notice -->
-    @php
-        $unpaidCount = $pembayarans->whereIn('status', ['Belum Dibayar', 'Menunggu Pembayaran', 'Menunggu Verifikasi'])->count();
-    @endphp
     @if($unpaidCount > 0)
         <div class="p-4 sm:p-5 rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
             <div class="flex items-start sm:items-center gap-3">
@@ -51,6 +95,49 @@
             </a>
         </div>
     @endif
+
+    <!-- Control Bar: Tabs, Search & Action Button -->
+    <div class="clean-card p-4 rounded-3xl bg-white border border-slate-200/90 shadow-2xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <!-- Interactive Category Tabs -->
+        <div class="flex items-center gap-1 overflow-x-auto p-1 bg-slate-100 rounded-2xl no-scrollbar text-xs">
+            <button type="button" @click="activeTab = 'all'" 
+                    :class="activeTab === 'all' ? 'bg-white text-slate-900 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
+                <i class="ph-duotone ph-receipt"></i>
+                <span>Semua ({{ $totalTrans }})</span>
+            </button>
+
+            <button type="button" @click="activeTab = 'paid'" 
+                    :class="activeTab === 'paid' ? 'bg-white text-emerald-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
+                <i class="ph-duotone ph-check-circle"></i>
+                <span>Lunas ({{ $paidCount }})</span>
+            </button>
+
+            <button type="button" @click="activeTab = 'unpaid'" 
+                    :class="activeTab === 'unpaid' ? 'bg-white text-amber-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
+                <i class="ph-duotone ph-clock"></i>
+                <span>Menunggu Bayar ({{ $unpaidCount }})</span>
+            </button>
+        </div>
+
+        <!-- Right Side: Search Input + Action Button -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <div class="relative w-full sm:w-64">
+                <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" 
+                       x-model="searchQuery" 
+                       placeholder="Cari transaksi / invoice..." 
+                       class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all">
+            </div>
+
+            <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 transition-all whitespace-nowrap">
+                <i class="ph-duotone ph-plus-circle text-emerald-400 text-base"></i>
+                <span>Pesan Sesi Foto Baru</span>
+            </a>
+        </div>
+    </div>
 
     <!-- Payment History Table -->
     <div class="clean-card rounded-3xl overflow-hidden shadow-sm border border-slate-200 bg-white">
@@ -73,7 +160,8 @@
                             $isBooking = !empty($p->booking_id) || str_contains($p->nomor_transaksi, 'BK');
                             $isGateway = str_contains($p->metode_pembayaran ?? '', 'Midtrans') || !empty($p->snap_token);
                         @endphp
-                        <tr class="hover:bg-slate-50/80 transition-colors {{ $p->status === 'Belum Dibayar' ? 'bg-amber-50/20' : '' }}">
+                        <tr x-show="(activeTab === 'all' || (activeTab === 'paid' && '{{ $p->status }}' === 'Dibayar') || (activeTab === 'unpaid' && '{{ $p->status }}' !== 'Dibayar')) && (!searchQuery || '{{ strtolower(addslashes($p->nomor_transaksi . ' ' . ($p->booking->layanan->nama ?? '') . ' ' . ($p->kursus->nama ?? '') . ' ' . ($p->invoice->nomor_invoice ?? ''))) }}'.includes(searchQuery.toLowerCase()))"
+                            class="hover:bg-slate-50/80 transition-colors {{ $p->status === 'Belum Dibayar' ? 'bg-amber-50/20' : '' }}">
                             
                             <!-- 1. Kode Transaksi -->
                             <td class="p-4 whitespace-nowrap">

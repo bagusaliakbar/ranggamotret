@@ -3,17 +3,20 @@
 @section('title', 'Riwayat Reservasi Kursus — RanggaMotret.id')
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-8" x-data="{ searchQuery: '' }">
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Riwayat Reservasi Kursus</h1>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <a href="{{ route('student.dashboard') }}" class="hover:text-slate-700 transition-colors">Layanan Kursus</a>
+                <span>/</span>
+                <span class="text-slate-900 font-extrabold">Riwayat Reservasi Kursus</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Riwayat Reservasi Kursus</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Histori pendaftaran pelatihan fotografi, rincian pembayaran, kode transaksi, dan status akses kelas akademi Anda.</p>
         </div>
-        <a href="{{ route('public.courses') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md inline-flex items-center gap-2 self-start sm:self-auto hover:scale-[1.02] transition-transform">
-            <i class="ph-duotone ph-plus text-sm"></i>
-            <span>Daftar Kursus Baru</span>
-        </a>
     </div>
 
     <!-- Quick Stats Grid -->
@@ -67,6 +70,24 @@
         </div>
     </div>
 
+    <!-- Control Bar: Search & Action Button -->
+    <div class="clean-card p-4 rounded-3xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- Search Input -->
+        <div class="relative w-full sm:w-72">
+            <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" 
+                   x-model="searchQuery" 
+                   placeholder="Cari kursus atau no. reservasi..." 
+                   class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all">
+        </div>
+
+        <!-- Tombol Daftar Kursus Baru -->
+        <a href="{{ route('public.courses') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 transition-all whitespace-nowrap">
+            <i class="ph-duotone ph-plus-circle text-emerald-400 text-base"></i>
+            <span>Daftar Kursus Baru</span>
+        </a>
+    </div>
+
     <!-- Course Reservations List -->
     <div class="space-y-4">
         <div class="flex items-center justify-between">
@@ -86,7 +107,11 @@
                         $invoice = $pembayaran?->invoice;
                         $isPaid = true;
                     @endphp
-                    <div class="clean-card p-6 sm:p-7 rounded-3xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border border-slate-200/80 hover:shadow-md transition-shadow bg-white">
+                    <div x-show="!searchQuery || '{{ strtolower(addslashes(($e->kursus->nama ?? '') . ' ' . ($e->nomor_reservasi ?? '')))}}'.includes(searchQuery.toLowerCase())"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="clean-card p-6 sm:p-7 rounded-3xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border border-slate-200/80 hover:shadow-md transition-shadow bg-white">
                         <div class="space-y-3 flex-1">
                             <div class="flex flex-wrap items-center gap-2.5">
                                 <span class="font-mono text-xs font-extrabold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
@@ -142,7 +167,11 @@
                                 default => 'bg-amber-50 text-amber-800 border-amber-200',
                             };
                         @endphp
-                        <div class="clean-card p-6 sm:p-7 rounded-3xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border border-slate-200/80 hover:shadow-md transition-shadow bg-white">
+                        <div x-show="!searchQuery || '{{ strtolower(addslashes(($cp->kursus->nama ?? '') . ' ' . ($cp->nomor_transaksi ?? '')))}}'.includes(searchQuery.toLowerCase())"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 translate-y-2"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             class="clean-card p-6 sm:p-7 rounded-3xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 border border-slate-200/80 hover:shadow-md transition-shadow bg-white">
                             <div class="space-y-3 flex-1">
                                 <div class="flex flex-wrap items-center gap-2.5">
                                     <span class="font-mono text-xs font-extrabold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">

@@ -34,13 +34,6 @@
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Layanan Fotografi Saya</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Kelola seluruh sesi pemotretan Anda, kepastian jadwal studio, bukti pelunasan invoice, dan kurasi galeri hasil foto.</p>
         </div>
-
-        <div class="flex items-center gap-2.5 self-start sm:self-auto">
-            <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md inline-flex items-center gap-2 hover:scale-[1.02] transition-transform">
-                <i class="ph-duotone ph-plus-circle text-sm text-emerald-400"></i>
-                <span>Reservasi Layanan Baru</span>
-            </a>
-        </div>
     </div>
 
     @php
@@ -145,10 +138,10 @@
         </div>
     @endif
 
-    <!-- Control Bar: Tabs & Search Filter -->
-    <div class="clean-card p-3 sm:p-4 rounded-3xl bg-white border border-slate-200/80 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+    <!-- Control Bar: Tabs, Search & Action Button -->
+    <div class="clean-card p-4 rounded-3xl bg-white border border-slate-200/90 shadow-2xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
         <!-- Interactive Category Tabs -->
-        <div class="flex items-center gap-1 overflow-x-auto p-1 bg-slate-100 rounded-2xl no-scrollbar">
+        <div class="flex items-center gap-1 overflow-x-auto p-1 bg-slate-100 rounded-2xl no-scrollbar text-xs">
             <button @click="activeTab = 'all'" 
                     :class="activeTab === 'all' ? 'bg-white text-slate-900 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
                     class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
@@ -198,13 +191,22 @@
             </button>
         </div>
 
-        <!-- Quick Filter Input -->
-        <div class="relative w-full md:w-72">
-            <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-            <input type="text" 
-                   x-model="searchQuery" 
-                   placeholder="Cari kode booking / layanan..." 
-                   class="w-full pl-9 pr-3.5 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all">
+        <!-- Right Side: Search Input + Tombol Reservasi Layanan Baru -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <!-- Quick Filter Input -->
+            <div class="relative w-full sm:w-64">
+                <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" 
+                       x-model="searchQuery" 
+                       placeholder="Cari kode booking / layanan..." 
+                       class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all">
+            </div>
+
+            <!-- Tombol Reservasi Layanan Baru -->
+            <a href="{{ route('customer.bookings.create') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 transition-all whitespace-nowrap">
+                <i class="ph-duotone ph-plus-circle text-emerald-400 text-base"></i>
+                <span>Reservasi Layanan Baru</span>
+            </a>
         </div>
     </div>
 

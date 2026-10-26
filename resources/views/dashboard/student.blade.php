@@ -3,18 +3,18 @@
 @section('title', 'Kursus Akademi Saya — RanggaMotret.id')
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-8" x-data="{ activeFilter: 'all', searchQuery: '' }">
     <!-- Header Section -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
         <div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Kursus Akademi Saya</h1>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5">
+                <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
+                <span>/</span>
+                <span class="text-slate-900 font-extrabold">Layanan Kursus</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Kursus Akademi Saya</h1>
             <p class="text-xs text-slate-500 font-medium mt-1">Akses materi pelatihan, pantau progress modul belajar, kerjakan kuis evaluasi, dan raih sertifikat resmi.</p>
         </div>
-
-        <a href="{{ route('public.courses') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold shadow-md inline-flex items-center gap-2 self-start sm:self-auto hover:scale-[1.02] transition-transform">
-            <i class="ph-duotone ph-magnifying-glass text-sm"></i>
-            <span>Jelajahi Katalog Kursus</span>
-        </a>
     </div>
 
     <!-- Quick Stats Grid -->
@@ -165,23 +165,69 @@
         </div>
     @endif
 
-    <!-- Enrolled Courses Grid -->
-    <div class="space-y-4">
-        <div class="flex items-center justify-between">
-            <h2 class="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                <i class="ph-duotone ph-chalkboard text-slate-700"></i>
-                <span>Daftar Kursus Saya</span>
-            </h2>
-            <span class="text-xs text-slate-500 font-semibold">{{ $enrollments->count() }} Kursus Terdaftar</span>
+    <!-- Control Bar: Tabs, Search & Action Button -->
+    <div class="clean-card p-4 rounded-3xl bg-white border border-slate-200/90 shadow-2xs flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <!-- Interactive Category Tabs -->
+        <div class="flex items-center gap-1 overflow-x-auto p-1 bg-slate-100 rounded-2xl no-scrollbar text-xs">
+            <button type="button" @click="activeFilter = 'all'" 
+                    :class="activeFilter === 'all' ? 'bg-white text-slate-900 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
+                <i class="ph-duotone ph-graduation-cap"></i>
+                <span>Semua Kelas</span>
+                <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-200/70 text-slate-700 ml-1">{{ $totalEnrolled ?? 0 }}</span>
+            </button>
+
+            <button type="button" @click="activeFilter = 'in_progress'" 
+                    :class="activeFilter === 'in_progress' ? 'bg-white text-amber-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
+                <i class="ph-duotone ph-book-open"></i>
+                <span>Sedang Belajar</span>
+                @if(($inProgressCourses ?? 0) > 0)
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 ml-1">{{ $inProgressCourses }}</span>
+                @endif
+            </button>
+
+            <button type="button" @click="activeFilter = 'completed'" 
+                    :class="activeFilter === 'completed' ? 'bg-white text-emerald-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
+                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
+                <i class="ph-duotone ph-check-circle"></i>
+                <span>Tuntas Selesai</span>
+                @if(($completedCourses ?? 0) > 0)
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 ml-1">{{ $completedCourses }}</span>
+                @endif
+            </button>
         </div>
 
+        <!-- Right Side: Search Input + Tombol Jelajahi Katalog Kursus -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+            <div class="relative w-full sm:w-64">
+                <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" 
+                       x-model="searchQuery" 
+                       placeholder="Cari kursus saya..." 
+                       class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all">
+            </div>
+
+            <a href="{{ route('public.courses') }}" class="btn-dark px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center justify-center gap-2 shadow-sm hover:scale-[1.02] active:scale-95 transition-all whitespace-nowrap">
+                <i class="ph-duotone ph-magnifying-glass text-emerald-400 text-base"></i>
+                <span>Jelajahi Katalog Kursus</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Enrolled Courses Grid -->
+    <div class="space-y-4">
         @if($enrollments->isNotEmpty())
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($enrollments as $e)
                     @php
                         $isCompleted = ($e->progress_persen >= 100);
                     @endphp
-                    <div class="clean-card rounded-3xl overflow-hidden flex flex-col justify-between group border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
+                    <div x-show="(activeFilter === 'all' || (activeFilter === 'completed' && {{ $isCompleted ? 'true' : 'false' }}) || (activeFilter === 'in_progress' && {{ !$isCompleted ? 'true' : 'false' }})) && (!searchQuery || '{{ strtolower(addslashes($e->kursus->nama ?? '')) }}'.includes(searchQuery.toLowerCase()))"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 translate-y-2"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         class="clean-card rounded-3xl overflow-hidden flex flex-col justify-between group border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
                         <div>
                             <!-- Thumbnail with Badges -->
                             <div class="aspect-16/10 overflow-hidden relative bg-slate-200">
