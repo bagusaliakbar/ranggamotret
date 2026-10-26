@@ -251,5 +251,43 @@ test('consultation supports two-way threaded chat between customer and owner in 
     $this->actingAs($owner)->get('/admin/consultations')
         ->assertStatus(200)
         ->assertSee('Ruang Diskusi Konsultasi');
+
+    // 6. Pelanggan mengakhiri chat (End Chat / Selesai)
+    $this->actingAs($pelanggan)->post("/customer/consultations/{$konsultasi->id}/close")
+        ->assertSessionHas('success');
+
+    $konsultasi->refresh();
+    expect($konsultasi->status)->toBe('selesai');
+    expect($konsultasi->chat_messages)->toHaveCount(4);
+    expect($konsultasi->chat_messages[3]['sender'])->toBe('system');
+    expect($konsultasi->chat_messages[3]['pesan'])->toContain('diselesaikan oleh klien');
+
+    // Tampilan portal pelanggan setelah chat selesai menampilkan banner & tombol booking
+    $this->actingAs($pelanggan)->get('/customer/consultations')
+        ->assertStatus(200)
+        ->assertSee('Percakapan Konsultasi Telah Selesai')
+        ->assertSee('Lanjut Booking Foto');
+
+    // 7. Pelanggan membuka kembali chat (Reopen)
+    $this->actingAs($pelanggan)->post("/customer/consultations/{$konsultasi->id}/reopen")
+        ->assertSessionHas('success');
+
+    $konsultasi->refresh();
+    expect($konsultasi->status)->toBe('pending');
+
+    // 8. Owner mengakhiri konsultasi
+    $this->actingAs($owner)->post("/admin/consultations/{$konsultasi->id}/close")
+        ->assertSessionHas('success');
+
+    $konsultasi->refresh();
+    expect($konsultasi->status)->toBe('selesai');
+
+    // 9. Owner membuka kembali konsultasi
+    $this->actingAs($owner)->post("/admin/consultations/{$konsultasi->id}/reopen")
+        ->assertSessionHas('success');
+
+    $konsultasi->refresh();
+    expect($konsultasi->status)->toBe('replied');
 });
+
 

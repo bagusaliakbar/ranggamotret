@@ -28,7 +28,7 @@
     </div>
 
     <!-- Quick Stats Cards (Ringkasan Metrik Konsultasi) -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <!-- 1. Total Permintaan Konsultasi -->
         <a href="{{ route('admin.consultations.index') }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-slate-400 transition-all">
             <div class="flex items-center justify-between">
@@ -56,13 +56,25 @@
         <!-- 3. Selesai Ditanggapi -->
         <a href="{{ route('admin.consultations.index', ['status' => 'replied']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-emerald-400 transition-all">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Tuntas Ditanggapi</span>
+                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Sudah Dibalas</span>
                 <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-check-circle"></i>
+                    <i class="ph-duotone ph-chat-circle-dots"></i>
                 </div>
             </div>
             <div class="text-2xl font-black text-emerald-600">{{ number_format($countReplied) }}</div>
             <div class="text-[11px] text-slate-500 font-medium">Balasan rekomendasi terkirim</div>
+        </a>
+
+        <!-- 4. Konsultasi Selesai -->
+        <a href="{{ route('admin.consultations.index', ['status' => 'selesai']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-blue-400 transition-all">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] sm:text-xs font-bold text-blue-700 uppercase tracking-wider">Konsultasi Selesai</span>
+                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+                    <i class="ph-duotone ph-check-circle"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-blue-600">{{ number_format($countSelesai ?? 0) }}</div>
+            <div class="text-[11px] text-slate-500 font-medium">Diskusi tuntas & terjawab</div>
         </a>
     </div>
 
@@ -83,6 +95,7 @@
                     <option value="all">Semua Status ({{ $totalConsultations }})</option>
                     <option value="pending" {{ ($status ?? '') === 'pending' ? 'selected' : '' }}>Menunggu Tanggapan ({{ $countPending }})</option>
                     <option value="replied" {{ ($status ?? '') === 'replied' ? 'selected' : '' }}>Sudah Dibalas ({{ $countReplied }})</option>
+                    <option value="selesai" {{ ($status ?? '') === 'selesai' ? 'selected' : '' }}>Konsultasi Selesai ({{ $countSelesai ?? 0 }})</option>
                 </select>
             </div>
 
@@ -143,9 +156,19 @@
                                 <p class="line-clamp-2" title="{{ $c->kebutuhan }}">{{ $c->kebutuhan }}</p>
                             </td>
                             <td class="p-4 text-center">
-                                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border {{ $c->status === 'replied' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200' }}">
-                                    {{ $c->status === 'replied' ? 'Sudah Dibalas' : 'Pending' }}
-                                </span>
+                                @if($c->status === 'selesai')
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border bg-blue-50 text-blue-700 border-blue-200 inline-flex items-center gap-1">
+                                        <i class="ph-duotone ph-check-circle text-xs"></i> Selesai
+                                    </span>
+                                @elseif($c->status === 'replied')
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border bg-emerald-50 text-emerald-700 border-emerald-200 inline-flex items-center gap-1">
+                                        <i class="ph-duotone ph-check text-xs"></i> Sudah Dibalas
+                                    </span>
+                                @else
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border bg-amber-50 text-amber-700 border-amber-200 inline-flex items-center gap-1">
+                                        <i class="ph-duotone ph-clock text-xs"></i> Pending
+                                    </span>
+                                @endif
                             </td>
                             <td class="p-4 text-center">
                                 <button @click="openReply = true" 
@@ -167,20 +190,48 @@
                                                 </h4>
                                                 <p class="text-xs text-slate-500 font-medium">Klien: <strong class="text-slate-800">{{ $c->nama }}</strong> &bull; Layanan: <strong class="text-slate-800">{{ $c->jenis_layanan }}</strong></p>
                                             </div>
-                                            <button @click="openReply = false" class="text-slate-400 hover:text-slate-900 transition-colors p-1 rounded-lg">
-                                                <i class="ph ph-x text-lg"></i>
-                                            </button>
+                                            <div class="flex items-center gap-2">
+                                                @if($c->status === 'selesai')
+                                                    <form method="POST" action="{{ route('admin.consultations.reopen', $c->id) }}" onsubmit="return confirm('Buka kembali sesi konsultasi ini?')">
+                                                        @csrf
+                                                        <button type="submit" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition-all flex items-center gap-1" title="Buka kembali obrolan">
+                                                            <i class="ph-duotone ph-arrow-counter-clockwise text-xs"></i>
+                                                            <span>Buka Lagi</span>
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form method="POST" action="{{ route('admin.consultations.close', $c->id) }}" onsubmit="return confirm('Tandai konsultasi ini telah selesai dan terjawab?')">
+                                                        @csrf
+                                                        <button type="submit" class="px-2.5 py-1 rounded-xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 text-[11px] font-bold transition-all flex items-center gap-1" title="Tandai selesai">
+                                                            <i class="ph-duotone ph-check-circle text-xs text-emerald-600"></i>
+                                                            <span>Tandai Selesai</span>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                <button @click="openReply = false" class="text-slate-400 hover:text-slate-900 transition-colors p-1 rounded-lg">
+                                                    <i class="ph ph-x text-lg"></i>
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <!-- Riwayat Percakapan (Chat History) -->
                                         <div class="space-y-3 max-h-64 overflow-y-auto p-4 rounded-2xl bg-slate-50 border border-slate-100">
                                             @forelse($c->chat_messages as $msg)
-                                                @if(($msg['sender'] ?? '') === 'owner')
+                                                @if(($msg['sender'] ?? '') === 'system')
+                                                    <!-- Bubble Informasi Sistem (Tengah) -->
+                                                    <div class="my-2 flex items-center justify-center">
+                                                        <div class="px-3 py-1 rounded-full bg-slate-200/90 text-slate-600 text-[10px] font-bold inline-flex items-center gap-1.5 border border-slate-300">
+                                                            <i class="ph-duotone ph-info text-xs text-slate-500"></i>
+                                                            <span>{{ $msg['pesan'] ?? '' }}</span>
+                                                            <span class="text-[9px] text-slate-400">&bull; {{ $msg['waktu'] ?? '' }}</span>
+                                                        </div>
+                                                    </div>
+                                                @elseif(($msg['sender'] ?? '') === 'owner')
                                                     <!-- Bubble Owner (Kanan) -->
                                                     <div class="flex items-start justify-end gap-2 max-w-md ml-auto">
                                                         <div class="space-y-1 text-right">
                                                             <div class="flex items-center justify-end gap-1.5">
-                                                                <span class="text-[9px] font-bold text-slate-400">{{ $msg['waktu'] ?? '' }}</span>
+                                                                 <span class="text-[9px] font-bold text-slate-400">{{ $msg['waktu'] ?? '' }}</span>
                                                                 <span class="text-[10px] font-extrabold text-emerald-700">Anda (Owner)</span>
                                                             </div>
                                                             <div class="p-3 rounded-2xl rounded-tr-xs bg-emerald-600 text-white text-xs leading-relaxed font-medium text-left shadow-2xs">

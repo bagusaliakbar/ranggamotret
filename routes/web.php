@@ -139,6 +139,8 @@ Route::middleware(['auth', 'role:pelanggan,owner'])->group(function () {
     Route::get('/customer/consultations', [KonsultasiController::class, 'customerIndex'])->name('customer.consultations.index');
     Route::get('/riwayat-konsultasi', [KonsultasiController::class, 'customerIndex'])->name('konsultasi.riwayat');
     Route::post('/customer/consultations/{id}/reply', [KonsultasiController::class, 'customerReply'])->name('customer.consultations.reply');
+    Route::post('/customer/consultations/{id}/close', [KonsultasiController::class, 'customerClose'])->name('customer.consultations.close');
+    Route::post('/customer/consultations/{id}/reopen', [KonsultasiController::class, 'customerReopen'])->name('customer.consultations.reopen');
 });
 
 // ==========================================
@@ -224,6 +226,8 @@ Route::middleware(['auth', 'role:owner'])->prefix('admin')->name('admin.')->grou
     // Konsultasi Fotografer
     Route::get('/consultations', [KonsultasiController::class, 'adminIndex'])->name('consultations.index');
     Route::post('/consultations/{id}/reply', [KonsultasiController::class, 'adminReply'])->name('consultations.reply');
+    Route::post('/consultations/{id}/close', [KonsultasiController::class, 'adminClose'])->name('consultations.close');
+    Route::post('/consultations/{id}/reopen', [KonsultasiController::class, 'adminReopen'])->name('consultations.reopen');
 
     // Kelola Portofolio & Album Foto (Owner / Admin)
     Route::get('/portofolio', [PortofolioController::class, 'adminIndex'])->name('portofolio.index');

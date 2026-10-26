@@ -134,6 +134,7 @@ class KonsultasiController extends Controller
         $totalConsultations = Konsultasi::count();
         $countPending = Konsultasi::where('status', 'pending')->count();
         $countReplied = Konsultasi::where('status', 'replied')->count();
+        $countSelesai = Konsultasi::where('status', 'selesai')->count();
 
         return view('konsultasi.admin', compact(
             'consultations',
@@ -141,7 +142,8 @@ class KonsultasiController extends Controller
             'status',
             'totalConsultations',
             'countPending',
-            'countReplied'
+            'countReplied',
+            'countSelesai'
         ));
     }
 
@@ -179,6 +181,41 @@ class KonsultasiController extends Controller
     }
 
     /**
+     * Owner menandai percakapan konsultasi telah selesai
+     */
+    public function adminClose(Request $request, $id)
+    {
+        $konsultasi = Konsultasi::findOrFail($id);
+        $konsultasi->status = 'selesai';
+        $konsultasi->addMessage('system', 'Sistem', 'Percakapan konsultasi ditandai selesai oleh Owner RanggaMotret.');
+        $konsultasi->save();
+
+        if ($konsultasi->user_id) {
+            Notifikasi::create([
+                'user_id' => $konsultasi->user_id,
+                'judul' => 'Konsultasi Selesai',
+                'pesan' => 'Fotografer RanggaMotret telah menandai sesi konsultasi ' . $konsultasi->jenis_layanan . ' telah selesai.',
+                'link' => '/customer/consultations',
+            ]);
+        }
+
+        return back()->with('success', 'Sesi konsultasi berhasil ditandai selesai.');
+    }
+
+    /**
+     * Owner membuka kembali percakapan konsultasi
+     */
+    public function adminReopen(Request $request, $id)
+    {
+        $konsultasi = Konsultasi::findOrFail($id);
+        $konsultasi->status = 'replied';
+        $konsultasi->addMessage('system', 'Sistem', 'Percakapan konsultasi dibuka kembali oleh Owner.');
+        $konsultasi->save();
+
+        return back()->with('success', 'Percakapan konsultasi berhasil dibuka kembali.');
+    }
+
+    /**
      * Pelanggan mengirimkan balasan ke dalam percakapan konsultasi
      */
     public function customerReply(Request $request, $id)
@@ -210,6 +247,60 @@ class KonsultasiController extends Controller
     }
 
     /**
+     * Pelanggan mengakhiri / menandai konsultasi telah selesai (End Chat)
+     */
+    public function customerClose(Request $request, $id)
+    {
+        $konsultasi = Konsultasi::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $konsultasi->status = 'selesai';
+        $konsultasi->addMessage('system', 'Sistem', 'Percakapan konsultasi diselesaikan oleh klien.');
+        $konsultasi->save();
+
+        // Notifikasi ke Owner
+        $owner = User::where('role', 'owner')->first();
+        if ($owner) {
+            Notifikasi::create([
+                'user_id' => $owner->id,
+                'judul' => 'Konsultasi Diselesaikan Klien',
+                'pesan' => Auth::user()->name . ' telah menandai sesi konsultasi ' . $konsultasi->jenis_layanan . ' sebagai selesai.',
+                'link' => '/admin/consultations',
+            ]);
+        }
+
+        return back()->with('success', 'Percakapan konsultasi berhasil diakhiri. Silakan lanjutkan ke reservasi sesi foto!');
+    }
+
+    /**
+     * Pelanggan membuka kembali percakapan konsultasi
+     */
+    public function customerReopen(Request $request, $id)
+    {
+        $konsultasi = Konsultasi::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $konsultasi->status = 'pending';
+        $konsultasi->addMessage('system', 'Sistem', 'Percakapan konsultasi dibuka kembali oleh klien.');
+        $konsultasi->save();
+
+        // Notifikasi ke Owner
+        $owner = User::where('role', 'owner')->first();
+        if ($owner) {
+            Notifikasi::create([
+                'user_id' => $owner->id,
+                'judul' => 'Konsultasi Dibuka Kembali',
+                'pesan' => Auth::user()->name . ' membuka kembali percakapan konsultasi ' . $konsultasi->jenis_layanan . '.',
+                'link' => '/admin/consultations',
+            ]);
+        }
+
+        return back()->with('success', 'Percakapan konsultasi berhasil dibuka kembali.');
+    }
+
+    /**
      * Tampilan Riwayat Konsultasi untuk Pelanggan di Dashboard Portal
      */
     public function customerIndex()
@@ -233,6 +324,7 @@ class KonsultasiController extends Controller
             'total' => Konsultasi::where('user_id', Auth::id())->count(),
             'pending' => Konsultasi::where('user_id', Auth::id())->where('status', 'pending')->count(),
             'replied' => Konsultasi::where('user_id', Auth::id())->where('status', 'replied')->count(),
+            'selesai' => Konsultasi::where('user_id', Auth::id())->where('status', 'selesai')->count(),
         ];
 
         return view('konsultasi.customer', compact('consultations', 'layananList', 'stats'));
