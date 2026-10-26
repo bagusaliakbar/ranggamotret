@@ -301,10 +301,15 @@
                         </div>
                     </td>
                     <td>
-                        @if($p->booking)
-                            <div class="font-bold">{{ $p->booking->layanan->nama ?? 'Sesi Pemotretan' }}</div>
+                        @if($p->booking && $p->booking->isKursus())
+                            <div class="font-bold">{{ $p->booking->kursus?->nama ?? 'Kursus Akademi' }}</div>
                             <div style="font-size: 7.5px; color: #64748b;">
-                                Paket: {{ $p->booking->paket->nama_paket ?? '-' }}
+                                Tingkat: {{ ucfirst($p->booking->kursus?->level ?? 'Semua') }} • {{ $p->booking->nomor_booking }}
+                            </div>
+                        @elseif($p->booking)
+                            <div class="font-bold">{{ $p->booking->layanan?->nama ?? 'Sesi Pemotretan' }}</div>
+                            <div style="font-size: 7.5px; color: #64748b;">
+                                Paket: {{ $p->booking->paket?->nama_paket ?? '-' }}
                             </div>
                         @elseif($p->kursus)
                             <div class="font-bold">{{ $p->kursus->nama }}</div>

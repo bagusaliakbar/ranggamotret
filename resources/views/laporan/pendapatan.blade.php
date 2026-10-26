@@ -212,13 +212,21 @@
 
                             <!-- 3. Layanan / Kursus -->
                             <td class="p-4">
-                                @if($p->booking)
+                                @if($p->booking && $p->booking->isKursus())
                                     <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                        <i class="ph-duotone ph-camera text-slate-600"></i>
-                                        <span>{{ $p->booking->layanan->nama ?? 'Sesi Pemotretan' }}</span>
+                                        <i class="ph-duotone ph-graduation-cap text-slate-600"></i>
+                                        <span>{{ $p->booking->kursus?->nama ?? 'Kursus Akademi' }}</span>
                                     </div>
                                     <div class="text-[10px] text-slate-500 font-medium mt-0.5">
-                                        Paket: {{ $p->booking->paket->nama_paket ?? '-' }}
+                                        Akademi • {{ ucfirst($p->booking->kursus?->level ?? 'Semua') }} • {{ $p->booking->nomor_booking }}
+                                    </div>
+                                @elseif($p->booking)
+                                    <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                                        <i class="ph-duotone ph-camera text-slate-600"></i>
+                                        <span>{{ $p->booking->layanan?->nama ?? 'Sesi Pemotretan' }}</span>
+                                    </div>
+                                    <div class="text-[10px] text-slate-500 font-medium mt-0.5">
+                                        Paket: {{ $p->booking->paket?->nama_paket ?? '-' }}
                                     </div>
                                 @elseif($p->kursus)
                                     <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">

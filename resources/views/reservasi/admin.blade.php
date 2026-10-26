@@ -158,9 +158,14 @@
                                         {{ $b->customer->phone ?? ($b->customer->email ?? '-') }}</div>
                                 </td>
                                 <td class="p-4">
-                                    <div class="font-extrabold text-slate-900">{{ $b->layanan->nama ?? 'Layanan' }}</div>
-                                    <div class="text-[11px] text-slate-500 font-semibold">
-                                        {{ $b->paket->nama_paket ?? 'Paket Foto' }}</div>
+                                    @if($b->isKursus())
+                                        <div class="font-extrabold text-slate-900">{{ $b->kursus?->nama ?? 'Kursus Akademi' }}</div>
+                                        <div class="text-[11px] text-purple-700 font-semibold">Akademi • {{ $b->kursus?->level ?? 'Semua Level' }}</div>
+                                    @else
+                                        <div class="font-extrabold text-slate-900">{{ $b->layanan?->nama ?? 'Layanan' }}</div>
+                                        <div class="text-[11px] text-slate-500 font-semibold">
+                                            {{ $b->paket?->nama_paket ?? 'Paket Foto' }}</div>
+                                    @endif
                                 </td>
                                 <td class="p-4">
                                     <div class="font-bold text-slate-900 inline-flex items-center gap-1.5">

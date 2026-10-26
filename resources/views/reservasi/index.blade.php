@@ -126,7 +126,7 @@
                 <a href="{{ route('payments.create', ['booking_id' => $unpaidList->first()->id]) }}" 
                    class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 active:scale-95 transition-all">
                     <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                    <span>Bayar Sekarang (Rp {{ number_format($unpaidList->first()->paket->harga ?? 0, 0, ',', '.') }})</span>
+                    <span>Bayar Sekarang (Rp {{ number_format($unpaidList->first()->paket?->harga ?? ($unpaidList->first()->pembayaran?->jumlah ?? 0), 0, ',', '.') }})</span>
                 </a>
             @else
                 <button @click="activeTab = 'unpaid'" 

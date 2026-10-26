@@ -47,7 +47,7 @@ class LaporanController extends Controller
         $kategori = $request->query('kategori'); // all, foto, kursus
         $metode = $request->query('metode');
 
-        $query = Pembayaran::with(['user', 'booking.layanan', 'booking.paket', 'kursus', 'invoice'])
+        $query = Pembayaran::with(['user', 'booking.layanan', 'booking.paket', 'booking.kursus', 'kursus', 'invoice'])
             ->where('status', 'Dibayar');
 
         if ($startDate) {
@@ -279,11 +279,13 @@ class LaporanController extends Controller
         // 5. Data Rows
         $row = 12;
         foreach ($pembayarans as $index => $p) {
-            $isCourse = !empty($p->kursus_id);
+            $isCourse = !empty($p->kursus_id) || ($p->booking && $p->booking->isKursus());
             $isGateway = str_contains($p->metode_pembayaran ?? '', 'Midtrans') || !empty($p->snap_token);
             $layananName = '-';
-            if ($p->booking) {
-                $layananName = ($p->booking->layanan->nama ?? 'Sesi Pemotretan') . ' - ' . ($p->booking->paket->nama_paket ?? '-');
+            if ($p->booking && $p->booking->isKursus()) {
+                $layananName = ($p->booking->kursus?->nama ?? 'Kursus Akademi') . ' (' . ucfirst($p->booking->kursus?->level ?? 'Semua') . ')';
+            } elseif ($p->booking) {
+                $layananName = ($p->booking->layanan?->nama ?? 'Sesi Pemotretan') . ' - ' . ($p->booking->paket?->nama_paket ?? '-');
             } elseif ($p->kursus) {
                 $layananName = $p->kursus->nama . ' (' . ucfirst($p->kursus->level ?? 'Semua') . ')';
             }
@@ -361,7 +363,11 @@ class LaporanController extends Controller
         $status = $request->query('status');
 
         // 1. Data Reservasi Fotografi
-        $queryFoto = Reservasi::with(['customer', 'layanan', 'paket', 'pembayaran'])
+        $queryFoto = Reservasi::where(function($q) {
+                $q->where('tipe', 'fotografi')
+                  ->orWhereNull('tipe');
+            })
+            ->with(['customer', 'layanan', 'paket', 'kursus', 'pembayaran'])
             ->whereDate('created_at', '>=', $startDate)
             ->whereDate('created_at', '<=', $endDate);
 
@@ -391,12 +397,14 @@ class LaporanController extends Controller
                 $combined->push((object)[
                     'id' => $fb->id,
                     'kode' => $fb->nomor_booking,
-                    'tipe' => 'Fotografi',
-                    'nama_pelanggan' => $fb->customer->name ?? 'Tamu',
-                    'kontak' => $fb->customer->phone ?? '-',
-                    'item' => ($fb->layanan->nama ?? 'Sesi Foto') . ' (' . ($fb->paket->nama_paket ?? '-') . ')',
-                    'jadwal_event' => date('d M Y', strtotime($fb->tanggal)) . ' ' . substr($fb->waktu, 0, 5) . ' WIB',
-                    'biaya' => $fb->paket->harga ?? ($fb->pembayaran->jumlah ?? 0),
+                    'tipe' => $fb->isKursus() ? 'Kursus' : 'Fotografi',
+                    'nama_pelanggan' => $fb->customer?->name ?? 'Tamu',
+                    'kontak' => $fb->customer?->phone ?? ($fb->customer?->email ?? '-'),
+                    'item' => $fb->isKursus() 
+                        ? ($fb->kursus?->nama ?? 'Kursus Akademi') . ' (' . ($fb->kursus?->level ?? 'Semua') . ')'
+                        : ($fb->layanan?->nama ?? 'Sesi Foto') . ' (' . ($fb->paket?->nama_paket ?? '-') . ')',
+                    'jadwal_event' => $fb->isKursus() ? 'Akademi LMS (Online)' : (date('d M Y', strtotime($fb->tanggal)) . ' ' . substr($fb->waktu, 0, 5) . ' WIB'),
+                    'biaya' => $fb->isKursus() ? ($fb->kursus?->harga ?? ($fb->pembayaran?->jumlah ?? 0)) : ($fb->paket?->harga ?? ($fb->pembayaran?->jumlah ?? 0)),
                     'status' => $fb->status,
                     'tanggal_daftar' => $fb->created_at,
                     'detail_url' => route('admin.bookings.show', $fb->id),

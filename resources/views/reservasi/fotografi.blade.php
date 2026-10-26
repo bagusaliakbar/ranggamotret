@@ -101,11 +101,11 @@
                     <a href="{{ route('payments.create', ['booking_id' => $unpaidBookings->first()->id]) }}" 
                        class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 transition-all">
                         <i class="ph-duotone ph-credit-card text-emerald-400"></i>
-                        <span>Bayar via Midtrans (Rp {{ number_format($unpaidBookings->first()->paket->harga ?? 0, 0, ',', '.') }})</span>
+                        <span>Bayar via Midtrans (Rp {{ number_format($unpaidBookings->first()->paket?->harga ?? ($unpaidBookings->first()->pembayaran?->jumlah ?? 0), 0, ',', '.') }})</span>
                     </a>
                 @endif
             </div>
-        @endifif
+        @endif
 
         @if($bookings->isNotEmpty())
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -189,7 +189,7 @@
                                     </div>
                                     <div class="flex items-center gap-2 pt-1 border-t border-slate-200/60 text-[11px] text-slate-500">
                                         <i class="ph-duotone ph-users text-slate-400"></i>
-                                        <span>Kru: {{ $b->paket->jumlah_fotografer ?? 1 }} Fotografer • {{ $b->paket->durasi ?? 'Sesi' }}</span>
+                                        <span>Kru: {{ $b->paket?->jumlah_fotografer ?? 1 }} Fotografer • {{ $b->paket?->durasi ?? 'Sesi' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -207,7 +207,7 @@
                             @if(!$isPaid)
                                 <a href="{{ route('payments.create', ['booking_id' => $b->id]) }}" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.01] active:scale-95">
                                     <i class="ph-duotone ph-credit-card text-emerald-400 text-base"></i>
-                                    <span>Bayar via Midtrans (Rp {{ number_format($b->paket->harga ?? 0, 0, ',', '.') }})</span>
+                                    <span>Bayar via Midtrans (Rp {{ number_format($b->paket?->harga ?? ($b->pembayaran?->jumlah ?? 0), 0, ',', '.') }})</span>
                                 </a>
                             @endif
 

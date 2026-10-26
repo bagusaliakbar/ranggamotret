@@ -9,11 +9,20 @@
 @endpush
 
 @php
-    $totalHarga = $booking ? ($booking->paket->harga ?? 0) : ($kursus->harga ?? 0);
-    $kodeTagihan = $booking ? $booking->nomor_booking : ('KURSUS-' . ($kursus->id ?? 'INV'));
-    $namaItem = $booking ? ($booking->layanan->nama ?? 'Sesi Pemotretan') : ($kursus->nama ?? 'Akses Kursus Akademi');
-    $subJudulItem = $booking ? ('Paket ' . ($booking->paket->nama_paket ?? 'Fotografi')) : 'Akses Penuh Materi & Sertifikat';
-    $thumbnailItem = $booking ? ($booking->layanan->thumbnail ?? null) : ($kursus->thumbnail ?? null);
+    $isKursus = ($kursus !== null) || ($booking && $booking->isKursus());
+    $totalHarga = $booking 
+        ? ($booking->isKursus() ? ($booking->kursus?->harga ?? ($booking->pembayaran?->jumlah ?? 0)) : ($booking->paket?->harga ?? 0)) 
+        : ($kursus?->harga ?? 0);
+    $kodeTagihan = $booking ? $booking->nomor_booking : ('KURSUS-' . ($kursus?->id ?? 'INV'));
+    $namaItem = $booking 
+        ? ($booking->isKursus() ? ($booking->kursus?->nama ?? 'Kursus Akademi Fotografi') : ($booking->layanan?->nama ?? 'Sesi Pemotretan')) 
+        : ($kursus?->nama ?? 'Akses Kursus Akademi');
+    $subJudulItem = $booking 
+        ? ($booking->isKursus() ? ('Level ' . ($booking->kursus?->level ?? 'Semua Level')) : ('Paket ' . ($booking->paket?->nama_paket ?? 'Fotografi'))) 
+        : 'Akses Penuh Materi & Sertifikat';
+    $thumbnailItem = $booking 
+        ? ($booking->isKursus() ? ($booking->kursus?->thumbnail ?? null) : ($booking->layanan?->thumbnail ?? null)) 
+        : ($kursus?->thumbnail ?? null);
     $isSandbox = config('midtrans.is_production') == false;
 @endphp
 

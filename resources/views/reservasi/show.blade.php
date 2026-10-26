@@ -45,50 +45,100 @@
     <!-- Booking Details Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 space-y-6">
-            <!-- Layanan Card -->
-            <div class="clean-card p-6 rounded-2xl space-y-4">
-                <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Informasi Sesi Fotografi</h3>
-                <div class="grid grid-cols-2 gap-4 text-xs">
-                    <div>
-                        <span class="text-slate-500 font-medium block">Layanan:</span>
-                        <span class="font-extrabold text-slate-900 text-sm">{{ $booking->layanan?->nama ?? 'Layanan Pemotretan' }}</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-500 font-medium block">Paket:</span>
-                        <span class="font-extrabold text-slate-900 text-sm">{{ $booking->paket?->nama_paket ?? '-' }}</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-500 font-medium block">Tanggal Pemotretan:</span>
-                        <span class="font-bold text-slate-900">{{ date('d F Y', strtotime($booking->tanggal)) }}</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-500 font-medium block">Waktu Sesi:</span>
-                        <span class="font-bold text-slate-900">{{ substr($booking->waktu, 0, 5) }} WIB</span>
-                    </div>
-                    <div class="col-span-2">
-                        <span class="text-slate-500 font-medium block">Lokasi:</span>
-                        <span class="font-bold text-slate-900">{{ $booking->lokasi }}</span>
-                    </div>
-                    <div class="col-span-2">
-                        <span class="text-slate-500 font-medium block">Catatan Tambahan:</span>
-                        <span class="text-slate-700 italic">{{ $booking->kebutuhan_khusus ?? '-' }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Proofing Gallery -->
-            @if($booking->galeriFotos->count() > 0)
-                <div class="clean-card p-6 rounded-2xl space-y-4 border-purple-200 bg-purple-50/20">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            @if($booking->isKursus())
+                <!-- Kursus Card -->
+                <div class="clean-card p-6 rounded-2xl space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Informasi Kursus Akademi</h3>
+                    <div class="grid grid-cols-2 gap-4 text-xs">
                         <div>
-                            <h3 class="font-bold text-slate-900 text-base">Galeri Proofing Foto</h3>
-                            <p class="text-xs text-slate-600 font-medium">Tersedia {{ $booking->galeriFotos->count() }} foto untuk ditinjau dan dipilih.</p>
+                            <span class="text-slate-500 font-medium block">Program Kursus:</span>
+                            <span class="font-extrabold text-slate-900 text-sm">{{ $booking->kursus?->nama ?? 'Kursus Fotografi' }}</span>
                         </div>
-                        <a href="{{ route('customer.proofing.show', $booking->id) }}" class="px-5 py-2.5 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 shadow-md">
-                            Buka Panel Proofing
-                        </a>
+                        <div>
+                            <span class="text-slate-500 font-medium block">Level Kompetensi:</span>
+                            <span class="font-extrabold text-slate-900 text-sm">{{ $booking->kursus?->level ?? 'Semua Level' }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 font-medium block">Tanggal Mulai:</span>
+                            <span class="font-bold text-slate-900">{{ date('d F Y', strtotime($booking->tanggal)) }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 font-medium block">Waktu Sesi:</span>
+                            <span class="font-bold text-slate-900">{{ substr($booking->waktu, 0, 5) }} WIB</span>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-slate-500 font-medium block">Tipe / Lokasi:</span>
+                            <span class="font-bold text-slate-900">{{ $booking->lokasi ?: 'LMS Online & Studio RanggaMotret' }}</span>
+                        </div>
+                        @if($booking->kebutuhan_khusus)
+                            <div class="col-span-2">
+                                <span class="text-slate-500 font-medium block">Catatan Pendaftaran:</span>
+                                <span class="text-slate-700 italic">{{ $booking->kebutuhan_khusus }}</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
+
+                <!-- LMS Link Card if Dibayar / Disetujui -->
+                @if(in_array($booking->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai']))
+                    <div class="clean-card p-6 rounded-2xl space-y-4 border-indigo-200 bg-indigo-50/30">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Portal Belajar LMS</h3>
+                                <p class="text-xs text-slate-600 font-medium">Akses modul materi, video pembelajaran, dan tugas praktik.</p>
+                            </div>
+                            <a href="{{ route('customer.courses.learn', $booking->kursus_id ?? 1) }}" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 shadow-md flex items-center gap-2">
+                                <i class="ph-duotone ph-graduation-cap text-base"></i> Masuk Kelas
+                            </a>
+                        </div>
+                    </div>
+                @endif
+            @else
+                <!-- Layanan Card -->
+                <div class="clean-card p-6 rounded-2xl space-y-4">
+                    <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Informasi Sesi Fotografi</h3>
+                    <div class="grid grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <span class="text-slate-500 font-medium block">Layanan:</span>
+                            <span class="font-extrabold text-slate-900 text-sm">{{ $booking->layanan?->nama ?? 'Layanan Pemotretan' }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 font-medium block">Paket:</span>
+                            <span class="font-extrabold text-slate-900 text-sm">{{ $booking->paket?->nama_paket ?? '-' }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 font-medium block">Tanggal Pemotretan:</span>
+                            <span class="font-bold text-slate-900">{{ date('d F Y', strtotime($booking->tanggal)) }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 font-medium block">Waktu Sesi:</span>
+                            <span class="font-bold text-slate-900">{{ substr($booking->waktu, 0, 5) }} WIB</span>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-slate-500 font-medium block">Lokasi:</span>
+                            <span class="font-bold text-slate-900">{{ $booking->lokasi }}</span>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-slate-500 font-medium block">Catatan Tambahan:</span>
+                            <span class="text-slate-700 italic">{{ $booking->kebutuhan_khusus ?? '-' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proofing Gallery -->
+                @if($booking->galeriFotos->count() > 0)
+                    <div class="clean-card p-6 rounded-2xl space-y-4 border-purple-200 bg-purple-50/20">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Galeri Proofing Foto</h3>
+                                <p class="text-xs text-slate-600 font-medium">Tersedia {{ $booking->galeriFotos->count() }} foto untuk ditinjau dan dipilih.</p>
+                            </div>
+                            <a href="{{ route('customer.proofing.show', $booking->id) }}" class="px-5 py-2.5 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 shadow-md">
+                                Buka Panel Proofing
+                            </a>
+                        </div>
+                    </div>
+                @endif
             @endif
         </div>
 
@@ -97,14 +147,25 @@
             <div class="clean-card p-6 rounded-2xl space-y-4">
                 <h3 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-3">Rincian Pembayaran</h3>
                 <div class="space-y-2 text-xs">
-                    <div class="flex justify-between text-slate-600 font-medium">
-                        <span>Harga Paket ({{ $booking->paket->nama_paket }})</span>
-                        <span class="font-bold text-slate-900">Rp {{ number_format($booking->paket->harga ?? 0, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="flex justify-between text-slate-900 font-extrabold text-sm pt-2 border-t border-slate-100">
-                        <span>Total Tagihan</span>
-                        <span class="text-slate-900">Rp {{ number_format($booking->paket->harga ?? 0, 0, ',', '.') }}</span>
-                    </div>
+                    @if($booking->isKursus())
+                        <div class="flex justify-between text-slate-600 font-medium">
+                            <span>Biaya Kursus ({{ $booking->kursus?->nama ?? 'Akademi' }})</span>
+                            <span class="font-bold text-slate-900">Rp {{ number_format($booking->kursus?->harga ?? ($booking->pembayaran?->jumlah ?? 0), 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-slate-900 font-extrabold text-sm pt-2 border-t border-slate-100">
+                            <span>Total Tagihan</span>
+                            <span class="text-slate-900">Rp {{ number_format($booking->kursus?->harga ?? ($booking->pembayaran?->jumlah ?? 0), 0, ',', '.') }}</span>
+                        </div>
+                    @else
+                        <div class="flex justify-between text-slate-600 font-medium">
+                            <span>Harga Paket ({{ $booking->paket?->nama_paket ?? 'Paket Foto' }})</span>
+                            <span class="font-bold text-slate-900">Rp {{ number_format($booking->paket?->harga ?? ($booking->pembayaran?->jumlah ?? 0), 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-slate-900 font-extrabold text-sm pt-2 border-t border-slate-100">
+                            <span>Total Tagihan</span>
+                            <span class="text-slate-900">Rp {{ number_format($booking->paket?->harga ?? ($booking->pembayaran?->jumlah ?? 0), 0, ',', '.') }}</span>
+                        </div>
+                    @endif
                 </div>
 
                 @if(!$booking->pembayaran || $booking->pembayaran->status !== 'Dibayar')

@@ -156,11 +156,11 @@
                 <tbody class="divide-y divide-slate-100 font-medium">
                     @forelse($pembayarans as $p)
                         @php
-                            $isCourse = !empty($p->kursus_id) || str_contains($p->nomor_transaksi, 'KRS');
+                            $isCourse = !empty($p->kursus_id) || str_contains($p->nomor_transaksi, 'KRS') || ($p->booking && $p->booking->isKursus());
                             $isBooking = !empty($p->booking_id) || str_contains($p->nomor_transaksi, 'BK');
                             $isGateway = str_contains($p->metode_pembayaran ?? '', 'Midtrans') || !empty($p->snap_token);
                         @endphp
-                        <tr x-show="(activeTab === 'all' || (activeTab === 'paid' && '{{ $p->status }}' === 'Dibayar') || (activeTab === 'unpaid' && '{{ $p->status }}' !== 'Dibayar')) && (!searchQuery || '{{ strtolower(addslashes($p->nomor_transaksi . ' ' . ($p->booking->layanan->nama ?? '') . ' ' . ($p->kursus->nama ?? '') . ' ' . ($p->invoice->nomor_invoice ?? ''))) }}'.includes(searchQuery.toLowerCase()))"
+                        <tr x-show="(activeTab === 'all' || (activeTab === 'paid' && '{{ $p->status }}' === 'Dibayar') || (activeTab === 'unpaid' && '{{ $p->status }}' !== 'Dibayar')) && (!searchQuery || '{{ strtolower(addslashes($p->nomor_transaksi . ' ' . ($p->booking?->layanan?->nama ?? ($p->booking?->kursus?->nama ?? '')) . ' ' . ($p->kursus?->nama ?? '') . ' ' . ($p->invoice?->nomor_invoice ?? ''))) }}'.includes(searchQuery.toLowerCase()))"
                             class="hover:bg-slate-50/80 transition-colors {{ $p->status === 'Belum Dibayar' ? 'bg-amber-50/20' : '' }}">
                             
                             <!-- 1. Kode Transaksi -->
@@ -181,13 +181,21 @@
 
                             <!-- 2. Layanan / Program (Jelas untuk Booking Foto & Kursus) -->
                             <td class="p-4">
-                                @if($p->booking)
+                                @if($p->booking && $p->booking->isKursus())
                                     <div class="font-black text-slate-900 text-xs flex items-center gap-1.5">
-                                        <i class="ph-duotone ph-camera text-slate-600"></i>
-                                        <span>{{ $p->booking->layanan->nama ?? 'Sesi Pemotretan' }}</span>
+                                        <i class="ph-duotone ph-graduation-cap text-slate-600"></i>
+                                        <span>{{ $p->booking->kursus?->nama ?? 'Kursus Akademi' }}</span>
                                     </div>
                                     <div class="text-[10px] text-slate-500 font-medium mt-0.5">
-                                        Paket: <strong>{{ $p->booking->paket->nama_paket ?? '-' }}</strong> • Kode: <code class="font-mono text-slate-700">{{ $p->booking->nomor_booking }}</code>
+                                        Akademi • Level: <strong>{{ ucfirst($p->booking->kursus?->level ?? 'Semua') }}</strong> • <code class="font-mono text-slate-700">{{ $p->booking->nomor_booking }}</code>
+                                    </div>
+                                @elseif($p->booking)
+                                    <div class="font-black text-slate-900 text-xs flex items-center gap-1.5">
+                                        <i class="ph-duotone ph-camera text-slate-600"></i>
+                                        <span>{{ $p->booking->layanan?->nama ?? 'Sesi Pemotretan' }}</span>
+                                    </div>
+                                    <div class="text-[10px] text-slate-500 font-medium mt-0.5">
+                                        Paket: <strong>{{ $p->booking->paket?->nama_paket ?? '-' }}</strong> • Kode: <code class="font-mono text-slate-700">{{ $p->booking->nomor_booking }}</code>
                                     </div>
                                 @elseif($p->kursus)
                                     <div class="font-black text-slate-900 text-xs flex items-center gap-1.5">

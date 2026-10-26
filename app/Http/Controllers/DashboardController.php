@@ -52,7 +52,7 @@ class DashboardController extends Controller
         $pendingConsultations = Konsultasi::where('status', 'pending')->count();
 
         $recentBookings = Reservasi::where('tipe', 'fotografi')->with(['customer', 'layanan'])->latest()->take(5)->get();
-        $recentPayments = Pembayaran::with(['user', 'reservasi.layanan', 'kursus'])->latest()->take(5)->get();
+        $recentPayments = Pembayaran::with(['user', 'reservasi.layanan', 'reservasi.kursus', 'kursus'])->latest()->take(5)->get();
 
         return view('dashboard.admin', compact(
             'totalBooking',

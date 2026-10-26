@@ -164,9 +164,12 @@
                             <td class="p-4">
                                 <div class="font-extrabold text-slate-900">{{ $p->user->name ?? 'Pelanggan' }}</div>
                                 <div class="text-[11px] text-slate-500 mt-0.5 truncate max-w-xs flex items-center gap-1">
-                                    @if($p->booking)
+                                    @if($p->booking && $p->booking->isKursus())
+                                        <i class="ph-duotone ph-graduation-cap text-slate-500"></i>
+                                        <span>{{ $p->booking->kursus?->nama ?? 'Kursus' }} ({{ $p->booking->nomor_booking }})</span>
+                                    @elseif($p->booking)
                                         <i class="ph-duotone ph-camera text-slate-500"></i>
-                                        <span>{{ $p->booking->layanan->nama ?? 'Sesi Foto' }} ({{ $p->booking->nomor_booking }})</span>
+                                        <span>{{ $p->booking->layanan?->nama ?? 'Sesi Foto' }} ({{ $p->booking->nomor_booking }})</span>
                                     @elseif($p->kursus)
                                         <i class="ph-duotone ph-graduation-cap text-slate-500"></i>
                                         <span>{{ $p->kursus->nama }}</span>

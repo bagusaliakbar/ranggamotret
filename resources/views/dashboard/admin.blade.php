@@ -195,7 +195,7 @@
                                     </span>
                                 </div>
                                 <div class="flex items-center gap-2 mt-1 text-[11px] text-slate-500 font-medium">
-                                    <span class="text-slate-800 font-semibold">{{ $rb->layanan->nama ?? 'Layanan Foto' }}</span>
+                                    <span class="text-slate-800 font-semibold">{{ $rb->isKursus() ? ($rb->kursus?->nama ?? 'Kursus Akademi') : ($rb->layanan?->nama ?? 'Layanan Foto') }}</span>
                                     <span>&bull;</span>
                                     <span class="inline-flex items-center gap-1">
                                         <i class="ph-duotone ph-calendar-blank text-slate-400"></i>

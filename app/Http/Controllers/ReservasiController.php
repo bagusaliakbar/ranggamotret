@@ -286,7 +286,7 @@ class ReservasiController extends Controller
     public function customerShow($id)
     {
         $booking = Reservasi::where('user_id', Auth::id())
-            ->with(['layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])
+            ->with(['layanan', 'paket', 'kursus', 'pembayaran.invoice', 'galeriFotos'])
             ->findOrFail($id);
 
         return view('reservasi.show', compact('booking'));
@@ -304,7 +304,7 @@ class ReservasiController extends Controller
         $status = $request->query('status');
         $search = $request->query('search');
 
-        $query = Reservasi::with(['customer', 'layanan', 'paket', 'pembayaran']);
+        $query = Reservasi::with(['customer', 'layanan', 'paket', 'kursus', 'pembayaran']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -351,7 +351,7 @@ class ReservasiController extends Controller
      */
     public function adminShow($id)
     {
-        $booking = Reservasi::with(['customer', 'layanan', 'paket', 'pembayaran.invoice', 'galeriFotos'])->findOrFail($id);
+        $booking = Reservasi::with(['customer', 'layanan', 'paket', 'kursus', 'pembayaran.invoice', 'galeriFotos'])->findOrFail($id);
         return view('reservasi.admin-show', compact('booking'));
     }
 
