@@ -64,7 +64,7 @@
     @if($booking->galeriFotos->isEmpty())
         <div class="clean-card p-16 text-center rounded-3xl space-y-4 shadow-sm border border-slate-200 bg-white max-w-lg mx-auto">
             <div class="w-16 h-16 rounded-2xl bg-slate-100 text-slate-700 text-2xl flex items-center justify-center mx-auto border border-slate-200">
-                <i class="fa-solid fa-camera animate-pulse text-slate-800"></i>
+                <i class="ph-duotone ph-camera animate-pulse text-3xl text-slate-800"></i>
             </div>
             <h3 class="font-black text-lg text-slate-900">Foto Sedang Dalam Proses Sortir</h3>
             <p class="text-xs text-slate-600 leading-relaxed font-medium">
@@ -83,7 +83,7 @@
                 <button type="button" @click="activeFilter = 'selected'"
                         class="px-4 py-2 rounded-xl transition-all shadow-sm border flex items-center gap-1.5"
                         :class="activeFilter === 'selected' ? 'bg-amber-500 text-slate-900 border-amber-500' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
-                    <i class="fa-solid fa-star text-xs"></i>
+                    <i class="ph-fill ph-star text-sm"></i>
                     <span>Foto Terpilih (<span x-text="selectedCount"></span>)</span>
                 </button>
                 <button type="button" @click="activeFilter = 'unselected'"
@@ -93,8 +93,8 @@
                 </button>
             </div>
 
-            <div class="text-[11px] text-slate-500 font-medium">
-                <i class="fa-solid fa-keyboard mr-1 text-slate-400"></i> Tips: Klik foto untuk zoom layar penuh.
+            <div class="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+                <i class="ph-duotone ph-keyboard text-slate-400 text-sm"></i> Tips: Klik foto untuk zoom layar penuh.
             </div>
         </div>
 
@@ -112,13 +112,13 @@
                         
                         <!-- Selected Ribbon Indicator -->
                         <div x-show="foto.is_selected" class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-amber-400 text-slate-900 text-[10px] font-black uppercase tracking-wider shadow-md flex items-center gap-1">
-                            <i class="fa-solid fa-star text-[9px]"></i> Terpilih
+                            <i class="ph-fill ph-star text-[11px]"></i> Terpilih
                         </div>
 
                         <!-- Zoom Icon on Hover -->
                         <div class="absolute inset-0 bg-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <span class="w-10 h-10 rounded-full bg-white/90 text-slate-900 flex items-center justify-center shadow-lg text-sm">
-                                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            <span class="w-10 h-10 rounded-full bg-white/90 text-slate-900 flex items-center justify-center shadow-lg text-base">
+                                <i class="ph-bold ph-magnifying-glass-plus"></i>
                             </span>
                         </div>
                     </div>
@@ -136,14 +136,14 @@
                                     class="w-9 h-9 rounded-xl flex items-center justify-center text-sm transition-all shadow-sm active:scale-90 border"
                                     :class="foto.is_selected ? 'bg-amber-400 text-slate-900 border-amber-500 shadow-amber-300' : 'bg-slate-50 text-slate-400 hover:text-amber-500 border-slate-200 hover:bg-white'"
                                     :title="foto.is_selected ? 'Hapus pilihan' : 'Pilih foto ini'">
-                                <i class="fa-solid fa-star"></i>
+                                <i :class="foto.is_selected ? 'ph-fill ph-star text-base' : 'ph-duotone ph-star text-base'"></i>
                             </button>
 
                             <!-- Download Single Photo -->
                             <a :href="foto.foto_path" download 
-                               class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center text-xs transition-colors"
+                               class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center text-base transition-colors"
                                title="Unduh resolusi tinggi">
-                                <i class="fa-solid fa-download"></i>
+                                <i class="ph-duotone ph-download-simple"></i>
                             </a>
                         </div>
                     </div>
@@ -181,7 +181,7 @@
              x-transition:leave="transition ease-in duration-200"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6"
+             class="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[9999] bg-slate-950/98 backdrop-blur-2xl flex flex-col justify-between p-4 sm:p-6"
              style="display: none;">
             
             <!-- Modal Top Bar -->
@@ -196,18 +196,18 @@
                 <div class="flex items-center gap-3">
                     <!-- Toggle Star in Lightbox -->
                     <button type="button" @click="toggleSelect(activePhoto?.id)" 
-                            class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md"
+                            class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md active:scale-95"
                             :class="activePhoto?.is_selected ? 'bg-amber-400 text-slate-900' : 'bg-white/10 text-white hover:bg-white/20'">
-                        <i class="fa-solid fa-star"></i>
+                        <i :class="activePhoto?.is_selected ? 'ph-fill ph-star text-base' : 'ph-duotone ph-star text-base'"></i>
                         <span x-text="activePhoto?.is_selected ? 'Foto Terpilih' : 'Tandai Bintang'"></span>
                     </button>
 
-                    <a :href="activePhoto?.foto_path" download class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-sm" title="Unduh Resolusi Penuh">
-                        <i class="fa-solid fa-download"></i>
+                    <a :href="activePhoto?.foto_path" download class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-lg" title="Unduh Resolusi Penuh">
+                        <i class="ph-duotone ph-download-simple"></i>
                     </a>
 
-                    <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-base" title="Tutup (Esc)">
-                        <i class="fa-solid fa-xmark"></i>
+                    <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-lg" title="Tutup (Esc)">
+                        <i class="ph-bold ph-x"></i>
                     </button>
                 </div>
             </div>
@@ -215,8 +215,8 @@
             <!-- Modal Center Canvas -->
             <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
                 <!-- Prev Button -->
-                <button @click="prevPhoto()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Sebelumnya (Panah Kiri)">
-                    <i class="fa-solid fa-chevron-left"></i>
+                <button @click="prevPhoto()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-xl" title="Foto Sebelumnya (Panah Kiri)">
+                    <i class="ph-bold ph-caret-left"></i>
                 </button>
 
                 <!-- Fullscreen Image -->
@@ -227,15 +227,15 @@
                 </div>
 
                 <!-- Next Button -->
-                <button @click="nextPhoto()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Selanjutnya (Panah Kanan)">
-                    <i class="fa-solid fa-chevron-right"></i>
+                <button @click="nextPhoto()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-xl" title="Foto Selanjutnya (Panah Kanan)">
+                    <i class="ph-bold ph-caret-right"></i>
                 </button>
             </div>
 
             <!-- Modal Bottom Notes Drawer -->
             <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 max-w-4xl mx-auto w-full">
                 <div class="flex-1 w-full flex items-center gap-3">
-                    <i class="fa-solid fa-comment-pen text-slate-400 text-sm"></i>
+                    <i class="ph-duotone ph-note-pencil text-slate-400 text-lg"></i>
                     <input type="text" x-model="activePhotoNotes" @change="savePhotoNotes()" placeholder="Catatan retouching untuk foto ini (misal: tolong bersihkan noda background)..."
                            class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-white transition-colors">
                 </div>
@@ -247,7 +247,7 @@
 
         <!-- Modal Konfirmasi Kirim Kurasi Final -->
         <div x-show="showConfirmModal" x-cloak x-transition.opacity
-            class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+            class="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
             style="display: none;">
             <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-5 border border-slate-200 shadow-2xl text-center"
                 @click.away="showConfirmModal = false">
@@ -281,7 +281,7 @@
 
         <!-- Modal Sukses Kirim Kurasi -->
         <div x-show="showSuccessModal" x-cloak x-transition.opacity
-            class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+            class="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
             style="display: none;">
             <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 border border-slate-200 shadow-2xl text-center">
                 <div class="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-4xl shadow-sm animate-bounce">
