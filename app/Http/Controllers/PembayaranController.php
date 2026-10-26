@@ -404,7 +404,7 @@ class PembayaranController extends Controller
                         ->orWhere('email', 'like', "%{$search}%");
                   })
                   ->orWhereHas('booking', function($bq) use ($search) {
-                      $bq->where('nomor_booking', 'like', "%{$search}%");
+                      $bq->where('nomor_reservasi', 'like', "%{$search}%");
                   });
             });
         }

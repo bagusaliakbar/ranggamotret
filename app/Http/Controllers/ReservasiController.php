@@ -249,9 +249,11 @@ class ReservasiController extends Controller
             }
         }
 
-        $bookingNumber = 'BK-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        $bookingNumber = 'RSV-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
 
         $booking = Reservasi::create([
+            'tipe' => 'fotografi',
+            'nomor_reservasi' => $bookingNumber,
             'nomor_booking' => $bookingNumber,
             'user_id' => Auth::id(),
             'layanan_id' => $validated['layanan_id'],
@@ -308,7 +310,7 @@ class ReservasiController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('nomor_booking', 'like', "%{$search}%")
+                $q->where('nomor_reservasi', 'like', "%{$search}%")
                   ->orWhere('lokasi', 'like', "%{$search}%")
                   ->orWhereHas('customer', function ($cq) use ($search) {
                       $cq->where('name', 'like', "%{$search}%")

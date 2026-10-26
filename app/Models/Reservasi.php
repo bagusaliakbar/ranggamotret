@@ -18,6 +18,7 @@ class Reservasi extends Model
     protected $fillable = [
         'tipe', // 'fotografi', 'kursus'
         'nomor_reservasi',
+        'nomor_booking', // alias fillable for backward compatibility
         'user_id',
         'layanan_id',
         'paket_id',
@@ -28,6 +29,27 @@ class Reservasi extends Model
         'kebutuhan_khusus',
         'status',
     ];
+
+    /**
+     * Otomatisasi pengisian nomor_reservasi dan tipe
+     */
+    protected static function booted()
+    {
+        static::creating(function ($reservasi) {
+            if (empty($reservasi->tipe)) {
+                $reservasi->tipe = !empty($reservasi->kursus_id) ? 'kursus' : 'fotografi';
+            }
+
+            if (empty($reservasi->nomor_reservasi)) {
+                if (!empty($reservasi->nomor_booking)) {
+                    $reservasi->nomor_reservasi = $reservasi->nomor_booking;
+                } else {
+                    $prefix = ($reservasi->tipe === 'kursus' || !empty($reservasi->kursus_id)) ? 'RSV-KRS-' : 'RSV-';
+                    $reservasi->nomor_reservasi = $prefix . date('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+                }
+            }
+        });
+    }
 
     /**
      * Backward-compatibility accessor untuk nomor_booking
