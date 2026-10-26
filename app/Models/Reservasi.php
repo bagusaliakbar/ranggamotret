@@ -112,6 +112,34 @@ class Reservasi extends Model
             'Terjadwal'
         ]);
     }
+
+    public function getProgressPersenAttribute(): int
+    {
+        if (array_key_exists('progress_persen', $this->attributes)) {
+            return (int) $this->attributes['progress_persen'];
+        }
+
+        if ($this->tipe === 'kursus' && $this->kursus) {
+            return $this->kursus->progressOfUser($this->user_id);
+        }
+
+        return 0;
+    }
+
+    public function getSertifikatAttribute()
+    {
+        if (array_key_exists('sertifikat', $this->relations)) {
+            return $this->relations['sertifikat'];
+        }
+
+        if ($this->tipe === 'kursus' && $this->kursus_id) {
+            return \App\Models\Sertifikat::where('user_id', $this->user_id)
+                ->where('kursus_id', $this->kursus_id)
+                ->first();
+        }
+
+        return null;
+    }
 }
 
 /**

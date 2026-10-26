@@ -9,6 +9,7 @@ use App\Models\Pembayaran;
 use App\Models\Kursus;
 use App\Models\User;
 use App\Models\Konsultasi;
+use App\Models\Sertifikat;
 
 /**
  * Controller Dasbor Terpadu (Unified Adaptive Dashboard)
@@ -97,6 +98,18 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Ambil data kursus akademi terbaru untuk visualisasi progress stepper
+        $latestCourse = Reservasi::where('user_id', $user->id)
+            ->where('tipe', 'kursus')
+            ->with(['kursus.instruktur', 'kursus.moduls.materis', 'pembayaran'])
+            ->latest()
+            ->first();
+
+        if ($latestCourse) {
+            $latestCourse->progress_persen = $latestCourse->kursus ? $latestCourse->kursus->progressOfUser($user->id) : 0;
+            $latestCourse->sertifikat = Sertifikat::where('user_id', $user->id)->where('kursus_id', $latestCourse->kursus_id)->first();
+        }
+
         $enrolledList = Reservasi::where('user_id', $user->id)
             ->where('tipe', 'kursus')
             ->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])
@@ -105,6 +118,11 @@ class DashboardController extends Controller
             ->take(3)
             ->get();
 
+        foreach ($enrolledList as $enroll) {
+            $enroll->progress_persen = $enroll->kursus ? $enroll->kursus->progressOfUser($user->id) : 0;
+            $enroll->sertifikat = Sertifikat::where('user_id', $user->id)->where('kursus_id', $enroll->kursus_id)->first();
+        }
+
         return view('dashboard.customer', compact(
             'totalBookings',
             'activeBookings',
@@ -112,7 +130,8 @@ class DashboardController extends Controller
             'enrolledCourses',
             'pendingPayments',
             'recentBookings',
-            'enrolledList'
+            'enrolledList',
+            'latestCourse'
         ));
     }
 }
