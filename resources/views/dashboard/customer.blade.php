@@ -273,20 +273,6 @@
                     @endforelse
                 </div>
             </div>
-
-            <!-- Quick Assistance Card -->
-            <div class="clean-card p-6 rounded-3xl bg-slate-900 text-white space-y-3 shadow-xl">
-                <div class="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-white text-xs">
-                    <i class="ph-duotone ph-chats-circle text-base"></i>
-                </div>
-                <div>
-                    <h4 class="font-black text-sm text-white">Butuh Konsultasi Konsep?</h4>
-                    <p class="text-xs text-slate-300 mt-1 leading-relaxed font-medium">Tim kreatif kami siap membantu moodboard, rekomendasi venue, dan persiapan busana pemotretan Anda.</p>
-                </div>
-                <a href="{{ route('customer.consultations.index') }}" class="w-full bg-white text-slate-900 hover:bg-slate-100 py-2.5 rounded-xl text-xs font-black text-center block shadow-sm transition-colors">
-                    Riwayat & Konsultasi
-                </a>
-            </div>
         </div>
 
     </div>
