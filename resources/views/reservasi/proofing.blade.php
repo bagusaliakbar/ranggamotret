@@ -173,139 +173,145 @@
         </div>
 
         <!-- Fullscreen High-Resolution Lightbox Modal -->
-        <div x-show="showLightbox" 
-             x-cloak
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 top-0 left-0 right-0 bottom-0 w-screen h-screen z-[99999] bg-black flex flex-col justify-between p-4 sm:p-6"
-             style="display: none; background-color: #000000;">
-            
-            <!-- Modal Top Bar -->
-            <div class="flex items-center justify-between text-white border-b border-white/10 pb-4">
-                <div class="flex items-center gap-3">
-                    <span class="px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-mono font-bold"
-                          x-text="(activePhotoIndex + 1) + ' / ' + photos.length">
-                    </span>
-                    <span class="font-mono font-black text-white text-sm" x-text="activePhoto?.code"></span>
+        <template x-teleport="body">
+            <div x-show="showLightbox" 
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 top-0 left-0 right-0 bottom-0 w-screen h-screen z-[99999] bg-black flex flex-col justify-between p-4 sm:p-6"
+                 style="display: none; background-color: #000000;">
+                
+                <!-- Modal Top Bar -->
+                <div class="flex items-center justify-between text-white border-b border-white/10 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-mono font-bold"
+                              x-text="(activePhotoIndex + 1) + ' / ' + photos.length">
+                        </span>
+                        <span class="font-mono font-black text-white text-sm" x-text="activePhoto?.code"></span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <!-- Toggle Star in Lightbox -->
+                        <button type="button" @click="toggleSelect(activePhoto?.id)" 
+                                class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md active:scale-95"
+                                :class="activePhoto?.is_selected ? 'bg-amber-400 text-slate-900' : 'bg-white/10 text-white hover:bg-white/20'">
+                            <i :class="activePhoto?.is_selected ? 'ph-fill ph-star text-base' : 'ph-duotone ph-star text-base'"></i>
+                            <span x-text="activePhoto?.is_selected ? 'Foto Terpilih' : 'Tandai Bintang'"></span>
+                        </button>
+
+                        <a :href="activePhoto?.foto_path" download class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-lg" title="Unduh Resolusi Penuh">
+                            <i class="ph-duotone ph-download-simple"></i>
+                        </a>
+
+                        <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-lg" title="Tutup (Esc)">
+                            <i class="ph-bold ph-x"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-3">
-                    <!-- Toggle Star in Lightbox -->
-                    <button type="button" @click="toggleSelect(activePhoto?.id)" 
-                            class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md active:scale-95"
-                            :class="activePhoto?.is_selected ? 'bg-amber-400 text-slate-900' : 'bg-white/10 text-white hover:bg-white/20'">
-                        <i :class="activePhoto?.is_selected ? 'ph-fill ph-star text-base' : 'ph-duotone ph-star text-base'"></i>
-                        <span x-text="activePhoto?.is_selected ? 'Foto Terpilih' : 'Tandai Bintang'"></span>
+                <!-- Modal Center Canvas -->
+                <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
+                    <!-- Prev Button -->
+                    <button @click="prevPhoto()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-xl" title="Foto Sebelumnya (Panah Kiri)">
+                        <i class="ph-bold ph-caret-left"></i>
                     </button>
 
-                    <a :href="activePhoto?.foto_path" download class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-lg" title="Unduh Resolusi Penuh">
-                        <i class="ph-duotone ph-download-simple"></i>
-                    </a>
+                    <!-- Fullscreen Image -->
+                    <div class="max-w-5xl max-h-[72vh] flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl">
+                        <img :src="activePhoto?.foto_path" 
+                             :alt="activePhoto?.code" 
+                             class="max-w-full max-h-[72vh] object-contain rounded-2xl transition-all duration-300">
+                    </div>
 
-                    <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-lg" title="Tutup (Esc)">
-                        <i class="ph-bold ph-x"></i>
+                    <!-- Next Button -->
+                    <button @click="nextPhoto()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-xl" title="Foto Selanjutnya (Panah Kanan)">
+                        <i class="ph-bold ph-caret-right"></i>
                     </button>
                 </div>
-            </div>
 
-            <!-- Modal Center Canvas -->
-            <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
-                <!-- Prev Button -->
-                <button @click="prevPhoto()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-xl" title="Foto Sebelumnya (Panah Kiri)">
-                    <i class="ph-bold ph-caret-left"></i>
-                </button>
-
-                <!-- Fullscreen Image -->
-                <div class="max-w-5xl max-h-[72vh] flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl">
-                    <img :src="activePhoto?.foto_path" 
-                         :alt="activePhoto?.code" 
-                         class="max-w-full max-h-[72vh] object-contain rounded-2xl transition-all duration-300">
-                </div>
-
-                <!-- Next Button -->
-                <button @click="nextPhoto()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-xl" title="Foto Selanjutnya (Panah Kanan)">
-                    <i class="ph-bold ph-caret-right"></i>
-                </button>
-            </div>
-
-            <!-- Modal Bottom Notes Drawer -->
-            <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 max-w-4xl mx-auto w-full">
-                <div class="flex-1 w-full flex items-center gap-3">
-                    <i class="ph-duotone ph-note-pencil text-slate-400 text-lg"></i>
-                    <input type="text" x-model="activePhotoNotes" @change="savePhotoNotes()" placeholder="Catatan retouching untuk foto ini (misal: tolong bersihkan noda background)..."
-                           class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-white transition-colors">
-                </div>
-                <div class="text-[11px] text-slate-400 font-medium shrink-0">
-                    Tekan <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px]">Spasi</kbd> untuk pilih bintang
+                <!-- Modal Bottom Notes Drawer -->
+                <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 max-w-4xl mx-auto w-full">
+                    <div class="flex-1 w-full flex items-center gap-3">
+                        <i class="ph-duotone ph-note-pencil text-slate-400 text-lg"></i>
+                        <input type="text" x-model="activePhotoNotes" @change="savePhotoNotes()" placeholder="Catatan retouching untuk foto ini (misal: tolong bersihkan noda background)..."
+                               class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-white transition-colors">
+                    </div>
+                    <div class="text-[11px] text-slate-400 font-medium shrink-0">
+                        Tekan <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px]">Spasi</kbd> untuk pilih bintang
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
 
         <!-- Modal Konfirmasi Kirim Kurasi Final -->
-        <div x-show="showConfirmModal" x-cloak x-transition.opacity
-            class="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
-            style="display: none;">
-            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-5 border border-slate-200 shadow-2xl text-center"
-                @click.away="showConfirmModal = false">
-                <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto text-3xl">
-                    <i class="ph-duotone ph-camera"></i>
-                </div>
-                <div class="space-y-1.5">
-                    <h3 class="text-lg font-black text-slate-900">Kirim Kurasi Foto Final?</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Anda telah memilih <strong class="text-slate-900 font-extrabold" x-text="selectedCount + ' foto'"></strong>. Setelah dikirim, pilihan Anda akan dikunci dan tim fotografer kami akan segera memproses *editing & retouching*.
-                    </p>
-                </div>
-                <div class="flex items-center gap-3 pt-2">
-                    <button type="button" @click="showConfirmModal = false" :disabled="isSubmitting"
-                        class="flex-1 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors">
-                        Tinjau Kembali
-                    </button>
-                    <button type="button" @click="submitFinalProofing()" :disabled="isSubmitting"
-                        class="flex-1 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
-                        <template x-if="isSubmitting">
-                            <i class="ph-duotone ph-spinner animate-spin text-base"></i>
-                        </template>
-                        <template x-if="!isSubmitting">
-                            <i class="ph-duotone ph-paper-plane-tilt text-base"></i>
-                        </template>
-                        <span x-text="isSubmitting ? 'Mengirim...' : 'Ya, Kirim Sekarang'"></span>
-                    </button>
+        <template x-teleport="body">
+            <div x-show="showConfirmModal" x-cloak x-transition.opacity
+                class="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[99999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+                style="display: none;">
+                <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-5 border border-slate-200 shadow-2xl text-center"
+                    @click.away="showConfirmModal = false">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto text-3xl">
+                        <i class="ph-duotone ph-camera"></i>
+                    </div>
+                    <div class="space-y-1.5">
+                        <h3 class="text-lg font-black text-slate-900">Kirim Kurasi Foto Final?</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Anda telah memilih <strong class="text-slate-900 font-extrabold" x-text="selectedCount + ' foto'"></strong>. Setelah dikirim, pilihan Anda akan dikunci dan tim fotografer kami akan segera memproses *editing & retouching*.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 pt-2">
+                        <button type="button" @click="showConfirmModal = false" :disabled="isSubmitting"
+                            class="flex-1 py-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-colors">
+                            Tinjau Kembali
+                        </button>
+                        <button type="button" @click="submitFinalProofing()" :disabled="isSubmitting"
+                            class="flex-1 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                            <template x-if="isSubmitting">
+                                <i class="ph-duotone ph-spinner animate-spin text-base"></i>
+                            </template>
+                            <template x-if="!isSubmitting">
+                                <i class="ph-duotone ph-paper-plane-tilt text-base"></i>
+                            </template>
+                            <span x-text="isSubmitting ? 'Mengirim...' : 'Ya, Kirim Sekarang'"></span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
 
         <!-- Modal Sukses Kirim Kurasi -->
-        <div x-show="showSuccessModal" x-cloak x-transition.opacity
-            class="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[9999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
-            style="display: none;">
-            <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 border border-slate-200 shadow-2xl text-center">
-                <div class="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-4xl shadow-sm animate-bounce">
-                    <i class="ph-duotone ph-check-circle"></i>
-                </div>
-                <div class="space-y-2">
-                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
-                        Kurasi Terkunci
-                    </span>
-                    <h3 class="text-xl font-black text-slate-900">Kurasi Berhasil Dikirim!</h3>
-                    <p class="text-xs text-slate-500 leading-relaxed font-medium" x-text="successMessage"></p>
-                </div>
-                <div class="space-y-2 pt-2">
-                    <a href="{{ route('customer.bookings.show', $booking->id) }}"
-                        class="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
-                        <i class="ph-duotone ph-arrow-left"></i> Kembali ke Detail Reservasi
-                    </a>
-                    <button type="button" @click="showSuccessModal = false"
-                        class="w-full py-2.5 rounded-xl text-slate-500 hover:text-slate-800 font-bold text-xs transition-colors">
-                        Tetap di Halaman Galeri
-                    </button>
+        <template x-teleport="body">
+            <div x-show="showSuccessModal" x-cloak x-transition.opacity
+                class="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[99999] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+                style="display: none;">
+                <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-6 border border-slate-200 shadow-2xl text-center">
+                    <div class="w-20 h-20 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-4xl shadow-sm animate-bounce">
+                        <i class="ph-duotone ph-check-circle"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
+                            Kurasi Terkunci
+                        </span>
+                        <h3 class="text-xl font-black text-slate-900">Kurasi Berhasil Dikirim!</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed font-medium" x-text="successMessage"></p>
+                    </div>
+                    <div class="space-y-2 pt-2">
+                        <a href="{{ route('customer.bookings.show', $booking->id) }}"
+                            class="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
+                            <i class="ph-duotone ph-arrow-left"></i> Kembali ke Detail Reservasi
+                        </a>
+                        <button type="button" @click="showSuccessModal = false"
+                            class="w-full py-2.5 rounded-xl text-slate-500 hover:text-slate-800 font-bold text-xs transition-colors">
+                            Tetap di Halaman Galeri
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </template>
     @endif
 </div>
 
