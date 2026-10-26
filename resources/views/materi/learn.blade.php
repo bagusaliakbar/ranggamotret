@@ -38,7 +38,6 @@
 
 <div class="w-full space-y-6"
      x-data="{ 
-        theaterMode: false,
         activeTab: 'content',
         studentNotes: localStorage.getItem('rm_notes_{{ $kursus->id }}') || '',
         notesSaved: false,
@@ -69,14 +68,6 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-4 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
-                <!-- Theater Mode Toggle Button -->
-                <button type="button" @click="theaterMode = !theaterMode" 
-                        class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5"
-                        :class="theaterMode ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
-                    <i class="fa-solid" :class="theaterMode ? 'fa-compress' : 'fa-expand'"></i>
-                    <span x-text="theaterMode ? 'Mode Standar' : 'Theater Mode'"></span>
-                </button>
-
                 <!-- Progress Indicator -->
                 <div class="w-40 sm:w-44 space-y-1.5">
                     <div class="flex justify-between text-xs font-extrabold">
@@ -104,11 +95,11 @@
             </div>
         </div>
 
-        <!-- Main Classroom Layout Grid (Dynamic Theater Mode) -->
+        <!-- Main Classroom Layout Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
 
-            <!-- LEFT: Main Player Area (8 Cols or 12 Cols in Theater Mode) -->
-            <div :class="theaterMode ? 'lg:col-span-12' : 'lg:col-span-8'" class="space-y-6 transition-all duration-300">
+            <!-- LEFT: Main Player Area (8 Cols) -->
+            <div class="lg:col-span-8 space-y-6 transition-all duration-300">
 
                 <!-- 1. ACTIVE VIEW: IN-PAGE QUIZ EVALUATION -->
                 @if($activeType === 'quiz' && isset($activeQuiz))
@@ -299,8 +290,8 @@
 
             </div>
 
-            <!-- RIGHT: Curriculum & Syllabus Sidebar (4 Cols, Hidden in Theater Mode) -->
-            <div x-show="!theaterMode" class="lg:col-span-4 space-y-4">
+            <!-- RIGHT: Curriculum & Syllabus Sidebar (4 Cols) -->
+            <div class="lg:col-span-4 space-y-4">
                 <div class="clean-card p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-5">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <h3 class="font-extrabold text-sm text-slate-900 uppercase tracking-wider flex items-center gap-2">
