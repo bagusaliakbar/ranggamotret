@@ -347,6 +347,7 @@ erDiagram
         text kebutuhan
         varchar referensi_foto
         text tanggapan_admin
+        json percakapan
         varchar status
         timestamp created_at
         timestamp updated_at
@@ -851,7 +852,7 @@ Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang sa
 - **Nama Tabel:** `konsultasi`
 - **Primary Key:** `id`
 - **Foreign Key:** `user_id` (mengacu ke `users.id` dengan relasi `ON DELETE CASCADE`, Nullable)
-- **Deskripsi Tabel:** Menyimpan permohonan konsultasi konsep pemotretan dari calon klien beserta tanggapan rekomendasi dari fotografer.
+- **Deskripsi Tabel:** Menyimpan permohonan konsultasi konsep pemotretan dari calon klien beserta riwayat percakapan chat dua arah (*two-way discussion thread*) interaktif langsung bersama Owner RanggaMotret.
 
 | Field | Type | Size | Keterangan |
 | :--- | :--- | :--- | :--- |
@@ -867,10 +868,11 @@ Seluruh relasi fisik di atas terbagi ke dalam 6 (enam) domain fungsional yang sa
 | `budget` | DECIMAL | 12,2 | Estimasi kesiapan anggaran dana klien (Nullable) |
 | `kebutuhan` | TEXT | - | Uraian lengkap kebutuhan dan pertanyaan klien (Nullable) |
 | `referensi_foto` | VARCHAR | 255 | Path atau tautan berkas foto inspirasi/moodboard (Nullable) |
-| `tanggapan_admin` | TEXT | - | Jawaban dan arahan konsep resmi dari fotografer (Nullable) |
-| `status` | VARCHAR | 20 | Status penanganan tiket ('pending', 'replied') |
+| `tanggapan_admin` | TEXT | - | Jawaban dan arahan konsep awal dari fotografer (Nullable) |
+| `percakapan` | JSON | - | Riwayat percakapan chat dua arah klien & Owner (array objek JSON: sender, nama, pesan, waktu) (Nullable) |
+| `status` | VARCHAR | 20 | Status alur penanganan tiket ('pending' = Menunggu Tanggapan, 'replied' = Dibalas Owner, 'selesai' = Sesi Chat Ditutup) |
 | `created_at` | TIMESTAMP | - | Waktu pesan konsultasi dikirim klien |
-| `updated_at` | TIMESTAMP | - | Waktu tanggapan admin dikirimkan |
+| `updated_at` | TIMESTAMP | - | Waktu percakapan atau status konsultasi terakhir diperbarui |
 
 ---
 
