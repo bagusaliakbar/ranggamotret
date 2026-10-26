@@ -426,9 +426,6 @@
 
             <div class="border-t border-slate-800 mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-400 gap-4">
                 <div>&copy; {{ date('Y') }} RanggaMotret.id. Hak Cipta Dilindungi Undang-Undang.</div>
-                <div class="flex gap-6">
-                    <a href="{{ route('public.consultation') }}" class="hover:text-white">Konsultasi</a>
-                </div>
             </div>
         </div>
     </footer>
