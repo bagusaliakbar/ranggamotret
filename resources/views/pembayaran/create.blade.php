@@ -117,7 +117,7 @@
                             <!-- QRIS -->
                             <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
-                                    <i class="ph-duotone ph-qrcode"></i>
+                                    <i class="ph-duotone ph-qr-code"></i>
                                 </div>
                                 <div class="min-w-0">
                                     <span class="font-extrabold text-slate-900 block">QRIS (Semua E-Wallet)</span>
