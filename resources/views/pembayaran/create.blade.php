@@ -167,51 +167,31 @@
                             <span>Cara Menyelesaikan Pembayaran:</span>
                         </h4>
                         <ol class="space-y-2 text-xs text-slate-600 font-medium list-decimal list-inside leading-relaxed">
-                            <li>Klik tombol <strong class="text-slate-900">Bayar Sekarang via Midtrans</strong> di bawah atau pada Ringkasan Tagihan.</li>
+                            <li>Klik tombol <strong class="text-slate-900">Bayar Sekarang (Instan)</strong> pada Ringkasan Tagihan di sebelah kanan.</li>
                             <li>Jendela popup resmi Midtrans akan terbuka secara aman di layar Anda.</li>
                             <li>Pilih metode bayar favorit (QRIS, VA Bank, atau E-Wallet), lalu ikuti instruksi pembayaran di layar.</li>
                             <li>Setelah transfer selesai, sistem akan otomatis mendeteksi dan mengonfirmasi pesanan Anda secara langsung.</li>
                         </ol>
                     </div>
 
-                    <!-- Action Trigger Buttons -->
-                    <div class="pt-2 space-y-3">
-                        @if(!empty($snapToken))
-                            <button type="button" @click="payWithSnap()" :disabled="isPaying"
-                                    class="w-full py-4 px-6 rounded-2xl bg-slate-900 hover:bg-black text-white font-extrabold text-sm sm:text-base tracking-wide uppercase shadow-xl shadow-slate-900/15 transition-all flex items-center justify-center gap-2.5 hover:scale-[1.01] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed">
-                                <template x-if="!isPaying">
-                                    <div class="flex items-center gap-2">
-                                        <i class="ph-duotone ph-lightning text-emerald-400 text-xl"></i>
-                                        <span>Buka Jendela Bayar Midtrans</span>
-                                        <i class="ph-duotone ph-arrow-right text-slate-400 text-sm"></i>
-                                    </div>
-                                </template>
-                                <template x-if="isPaying">
-                                    <div class="flex items-center gap-2">
-                                        <i class="ph-duotone ph-spinner ph-spin text-lg"></i>
-                                        <span>Menghubungkan ke Gateway...</span>
-                                    </div>
-                                </template>
-                            </button>
-                        @else
-                            <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
-                                <div class="font-extrabold">Menyiapkan Token Midtrans...</div>
-                                <p class="text-[11px] mt-1">{{ $snapError ?? 'Silakan refresh halaman ini untuk memuat ulang koneksi pembayaran instan.' }}</p>
-                            </div>
-                        @endif
+                    @if(empty($snapToken))
+                        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                            <div class="font-extrabold">Menyiapkan Token Midtrans...</div>
+                            <p class="text-[11px] mt-1">{{ $snapError ?? 'Silakan refresh halaman ini untuk memuat ulang koneksi pembayaran instan.' }}</p>
+                        </div>
+                    @endif
 
-                        @if($booking && $isSandbox)
-                            <!-- Sandbox Test Simulation Button -->
-                            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                                <span class="text-[10px] text-slate-400 font-mono">Mode Pengujian Sandbox:</span>
-                                <a href="{{ route('payments.finish', ['order_id' => $booking->nomor_booking, 'transaction_status' => 'settlement']) }}" 
-                                   class="px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold inline-flex items-center gap-1.5 transition-colors">
-                                    <i class="ph-duotone ph-test-tube text-sm text-emerald-600"></i>
-                                    <span>Simulasi Bayar Berhasil (Sandbox)</span>
-                                </a>
-                            </div>
-                        @endif
-                    </div>
+                    @if($booking && $isSandbox)
+                        <!-- Sandbox Test Simulation Button -->
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-[10px] text-slate-400 font-mono">Mode Pengujian Sandbox:</span>
+                            <a href="{{ route('payments.finish', ['order_id' => $booking->nomor_booking, 'transaction_status' => 'settlement']) }}" 
+                               class="px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold inline-flex items-center gap-1.5 transition-colors">
+                                <i class="ph-duotone ph-test-tube text-sm text-emerald-600"></i>
+                                <span>Simulasi Bayar Berhasil (Sandbox)</span>
+                            </a>
+                        </div>
+                    @endif
 
                 </div>
             </div>
