@@ -442,7 +442,7 @@ class ReservasiController extends Controller
         }
 
         // Notifikasi ke Pelanggan
-        \App\Models\Notifikasi::create([
+        Notifikasi::create([
             'user_id' => Auth::id(),
             'judul' => 'Kurasi Foto Berhasil Dikirim!',
             'pesan' => "Sebanyak {$selectedCount} foto terpilih untuk reservasi {$booking->nomor_booking} telah dikirim ke fotografer dan masuk tahap retouching.",
@@ -452,7 +452,7 @@ class ReservasiController extends Controller
         // Notifikasi ke Owner
         $ownerUser = \App\Models\User::where('role', 'owner')->first();
         if ($ownerUser) {
-            \App\Models\Notifikasi::create([
+            Notifikasi::create([
                 'user_id' => $ownerUser->id,
                 'judul' => "Kurasi Foto Selesai: {$booking->nomor_booking}",
                 'pesan' => "Pelanggan " . Auth::user()->name . " telah mengunci {$selectedCount} foto kurasi untuk diproses retouching & deliverables.",

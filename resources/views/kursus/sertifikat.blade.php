@@ -87,28 +87,6 @@
         </a>
 
         <div class="flex items-center gap-2 flex-wrap">
-            <!-- Copy Verification Link -->
-            <button type="button" @click="copyLink()" 
-                    class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 px-4 py-2.5 rounded-xl font-bold text-xs shadow-sm transition-all flex items-center gap-2">
-                <i class="fa-solid" :class="copied ? 'fa-check text-emerald-600' : 'fa-link'"></i>
-                <span x-text="copied ? 'Tautan Tersalin!' : 'Salin Tautan Verifikasi'"></span>
-            </button>
-
-            <!-- Add to LinkedIn -->
-            @php
-                $linkedInUrl = "https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME"
-                    . "&name=" . urlencode($sertifikat->kursus->nama)
-                    . "&organizationName=" . urlencode("RanggaMotret Academy")
-                    . "&issueYear=" . date('Y', strtotime($sertifikat->tanggal_terbit))
-                    . "&issueMonth=" . date('m', strtotime($sertifikat->tanggal_terbit))
-                    . "&certUrl=" . urlencode(route('public.certificate.verify') . '?code=' . $sertifikat->nomor_sertifikat)
-                    . "&certId=" . urlencode($sertifikat->nomor_sertifikat);
-            @endphp
-            <a href="{{ $linkedInUrl }}" target="_blank" 
-               class="bg-[#0A66C2] hover:bg-[#004182] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-2">
-                <i class="fa-brands fa-linkedin text-sm"></i> Tambahkan ke LinkedIn
-            </a>
-
             <!-- Print / PDF -->
             <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-2">
                 <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
@@ -197,8 +175,8 @@
                         Diterbitkan: <strong class="text-slate-800">{{ date('d F Y', strtotime($sertifikat->tanggal_terbit)) }}</strong>
                     </span>
                     <div class="pt-2">
-                        <p class="font-extrabold text-slate-900 text-xs">{{ $sertifikat->kursus->instruktur->name ?? 'Bagus Ali Akbar' }}</p>
-                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Founder & Owner RanggaMotret</p>
+                        <p class="font-extrabold text-slate-900 text-xs">{{ $sertifikat->kursus->instruktur->name ?? 'Rangga Akbar Wibawa' }}</p>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Owner RanggaMotret.id</p>
                     </div>
                 </div>
             </div>

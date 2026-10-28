@@ -68,7 +68,7 @@
                         <div class="relative">
                             <i class="ph-duotone ph-user absolute left-3.5 top-3.5 text-slate-400 text-base"></i>
                             <input type="text" name="nama" value="{{ old('nama', auth()->user()->name ?? '') }}" required
-                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border @error('nama') border-rose-400 bg-rose-50/50 @else border-slate-200 @enderror focus:border-slate-900 focus:bg-white focus:outline-none text-slate-900 font-medium transition-colors" placeholder="Nama Anda">
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border @error('nama') border-rose-400 bg-rose-50/50 @else border-slate-200 bg-slate-50 @enderror focus:border-slate-900 focus:bg-white focus:outline-none text-slate-900 font-medium transition-colors" placeholder="Nama Anda">
                         </div>
                         @error('nama')
                             <p class="text-rose-600 text-[11px] font-semibold mt-1">{{ $message }}</p>
@@ -80,7 +80,7 @@
                         <div class="relative">
                             <i class="ph-duotone ph-envelope absolute left-3.5 top-3.5 text-slate-400 text-base"></i>
                             <input type="email" name="email" value="{{ old('email', auth()->user()->email ?? '') }}" required
-                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border @error('email') border-rose-400 bg-rose-50/50 @else border-slate-200 @enderror focus:border-slate-900 focus:bg-white focus:outline-none text-slate-900 font-medium transition-colors" placeholder="nama@email.com">
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border @error('email') border-rose-400 bg-rose-50/50 @else border-slate-200 bg-slate-50 @enderror focus:border-slate-900 focus:bg-white focus:outline-none text-slate-900 font-medium transition-colors" placeholder="nama@email.com">
                         </div>
                         @error('email')
                             <p class="text-rose-600 text-[11px] font-semibold mt-1">{{ $message }}</p>
@@ -92,7 +92,7 @@
                         <div class="relative">
                             <i class="ph-duotone ph-whatsapp-logo absolute left-3.5 top-3.5 text-emerald-600 text-base"></i>
                             <input type="text" name="phone" value="{{ old('phone', auth()->user()->phone ?? '') }}" required
-                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border @error('phone') border-rose-400 bg-rose-50/50 @else border-slate-200 @enderror focus:border-slate-900 focus:bg-white focus:outline-none text-slate-900 font-medium transition-colors" placeholder="08123456789">
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border @error('phone') border-rose-400 bg-rose-50/50 @else border-slate-200 bg-slate-50 @enderror focus:border-slate-900 focus:bg-white focus:outline-none text-slate-900 font-medium transition-colors" placeholder="08123456789">
                         </div>
                         @error('phone')
                             <p class="text-rose-600 text-[11px] font-semibold mt-1">{{ $message }}</p>

@@ -393,18 +393,20 @@ class LaporanController extends Controller
         $combined = collect();
 
         if ($tipe === 'semua' || $tipe === 'foto') {
+            /** @var \App\Models\Reservasi $fb */
             foreach ($fotoBookings as $fb) {
+                $isKursus = method_exists($fb, 'isKursus') ? $fb->isKursus() : (($fb->tipe ?? null) === 'kursus');
                 $combined->push((object)[
                     'id' => $fb->id,
                     'kode' => $fb->nomor_booking,
-                    'tipe' => $fb->isKursus() ? 'Kursus' : 'Fotografi',
+                    'tipe' => $isKursus ? 'Kursus' : 'Fotografi',
                     'nama_pelanggan' => $fb->customer?->name ?? 'Tamu',
                     'kontak' => $fb->customer?->phone ?? ($fb->customer?->email ?? '-'),
-                    'item' => $fb->isKursus() 
+                    'item' => $isKursus 
                         ? ($fb->kursus?->nama ?? 'Kursus Akademi') . ' (' . ($fb->kursus?->level ?? 'Semua') . ')'
                         : ($fb->layanan?->nama ?? 'Sesi Foto') . ' (' . ($fb->paket?->nama_paket ?? '-') . ')',
-                    'jadwal_event' => $fb->isKursus() ? 'Akademi LMS (Online)' : (date('d M Y', strtotime($fb->tanggal)) . ' ' . substr($fb->waktu, 0, 5) . ' WIB'),
-                    'biaya' => $fb->isKursus() ? ($fb->kursus?->harga ?? ($fb->pembayaran?->jumlah ?? 0)) : ($fb->paket?->harga ?? ($fb->pembayaran?->jumlah ?? 0)),
+                    'jadwal_event' => $isKursus ? 'Akademi LMS (Online)' : (date('d M Y', strtotime($fb->tanggal)) . ' ' . substr($fb->waktu, 0, 5) . ' WIB'),
+                    'biaya' => $isKursus ? ($fb->kursus?->harga ?? ($fb->pembayaran?->jumlah ?? 0)) : ($fb->paket?->harga ?? ($fb->pembayaran?->jumlah ?? 0)),
                     'status' => $fb->status,
                     'tanggal_daftar' => $fb->created_at,
                     'detail_url' => route('admin.bookings.show', $fb->id),

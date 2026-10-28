@@ -170,7 +170,7 @@
 
                 @if(!$booking->pembayaran || $booking->pembayaran->status !== 'Dibayar')
                     <div class="pt-3 space-y-2">
-                        <a href="{{ route('payments.create', ['booking_id' => $booking->id]) }}" class="btn-dark w-full py-3.5 rounded-xl text-center text-xs font-bold block shadow-md flex items-center justify-center gap-2">
+                        <a href="{{ route('payments.create', ['booking_id' => $booking->id]) }}" class="btn-dark w-full py-3.5 rounded-xl text-center text-xs font-bold shadow-md flex items-center justify-center gap-2">
                             <i class="ph-duotone ph-credit-card text-emerald-400 text-base"></i>
                             <span>Bayar Online via Midtrans (QRIS / VA / E-Wallet)</span>
                         </a>

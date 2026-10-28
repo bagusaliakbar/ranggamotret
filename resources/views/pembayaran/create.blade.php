@@ -9,20 +9,31 @@
 @endpush
 
 @php
-    $isKursus = ($kursus !== null) || ($booking && $booking->isKursus());
-    $totalHarga = $booking 
-        ? ($booking->isKursus() ? ($booking->kursus?->harga ?? ($booking->pembayaran?->jumlah ?? 0)) : ($booking->paket?->harga ?? 0)) 
-        : ($kursus?->harga ?? 0);
-    $kodeTagihan = $booking ? $booking->nomor_booking : ('KURSUS-' . ($kursus?->id ?? 'INV'));
-    $namaItem = $booking 
-        ? ($booking->isKursus() ? ($booking->kursus?->nama ?? 'Kursus Akademi Fotografi') : ($booking->layanan?->nama ?? 'Sesi Pemotretan')) 
-        : ($kursus?->nama ?? 'Akses Kursus Akademi');
-    $subJudulItem = $booking 
-        ? ($booking->isKursus() ? ('Level ' . ($booking->kursus?->level ?? 'Semua Level')) : ('Paket ' . ($booking->paket?->nama_paket ?? 'Fotografi'))) 
-        : 'Akses Penuh Materi & Sertifikat';
-    $thumbnailItem = $booking 
-        ? ($booking->isKursus() ? ($booking->kursus?->thumbnail ?? null) : ($booking->layanan?->thumbnail ?? null)) 
-        : ($kursus?->thumbnail ?? null);
+    $booking = $booking ?? null;
+    $kursus = $kursus ?? null;
+    $isKursus = ($kursus !== null) || ($booking && method_exists($booking, 'isKursus') && $booking->isKursus());
+
+    if ($booking) {
+        $isBookingKursus = method_exists($booking, 'isKursus') ? $booking->isKursus() : false;
+        $totalHarga = $isBookingKursus ? ($booking->kursus?->harga ?? ($booking->pembayaran?->jumlah ?? 0)) : ($booking->paket?->harga ?? 0);
+        $kodeTagihan = $booking->nomor_booking;
+        $namaItem = $isBookingKursus ? ($booking->kursus?->nama ?? 'Kursus Akademi Fotografi') : ($booking->layanan?->nama ?? 'Sesi Pemotretan');
+        $subJudulItem = $isBookingKursus ? ('Level ' . ($booking->kursus?->level ?? 'Semua Level')) : ('Paket ' . ($booking->paket?->nama_paket ?? 'Fotografi'));
+        $thumbnailItem = $isBookingKursus ? ($booking->kursus?->thumbnail ?? null) : ($booking->layanan?->thumbnail ?? null);
+    } elseif ($kursus) {
+        $totalHarga = $kursus->harga ?? 0;
+        $kodeTagihan = 'KURSUS-' . ($kursus->id ?? 'INV');
+        $namaItem = $kursus->nama ?? 'Akses Kursus Akademi';
+        $subJudulItem = 'Akses Penuh Materi & Sertifikat';
+        $thumbnailItem = $kursus->thumbnail ?? null;
+    } else {
+        $totalHarga = 0;
+        $kodeTagihan = 'INV';
+        $namaItem = 'Pesanan';
+        $subJudulItem = '-';
+        $thumbnailItem = null;
+    }
+
     $isSandbox = config('midtrans.is_production') == false;
 @endphp
 
@@ -108,7 +119,7 @@
 
                     <!-- Pilihan Saluran Pembayaran yang Didukung -->
                     <div class="space-y-3 pt-2">
-                        <label class="block text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+                        <label class="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                             <i class="ph-duotone ph-wallet text-slate-600 text-sm"></i>
                             <span>Pilihan Metode Bayar di Midtrans Snap:</span>
                         </label>

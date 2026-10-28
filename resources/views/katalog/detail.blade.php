@@ -270,7 +270,7 @@
                         <!-- Card Action Button -->
                         <div class="p-6 sm:p-8 pt-0">
                             <a href="{{ route('customer.bookings.create', ['layanan_id' => $layanan->id, 'paket_id' => $p->id]) }}" 
-                               class="w-full py-4 rounded-xl text-center text-xs font-bold uppercase tracking-wider block shadow-md hover:shadow-xl transition-all flex items-center justify-center gap-2
+                               class="w-full py-4 rounded-xl text-center text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-xl transition-all flex items-center justify-center gap-2
                                {{ $isPopular ? 'btn-dark text-white' : 'bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-900 border border-slate-200' }}">
                                 <i class="ph-duotone ph-calendar-plus text-base"></i>
                                 <span>Reservasi Paket Ini</span>

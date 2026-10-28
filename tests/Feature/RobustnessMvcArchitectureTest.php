@@ -5,7 +5,10 @@ use App\Models\Katalog;
 use App\Models\Reservasi;
 use App\Models\Jadwal;
 use App\Models\Kursus;
+use App\Models\Materi;
+use App\Models\Konsultasi;
 use App\Models\Portofolio;
+use App\Models\Pembayaran;
 
 test('controllers and routes corresponding to robustness boundaries respond with HTTP 200', function () {
     $user = User::firstOrCreate(
@@ -44,15 +47,15 @@ test('controllers and routes corresponding to robustness boundaries respond with
 
 test('nine robustness diagram entity models are properly registered and functional', function () {
     $robustnessEntities = [
-        \App\Models\User::class,
-        \App\Models\Katalog::class,
-        \App\Models\Kursus::class,
-        \App\Models\Materi::class,
-        \App\Models\Jadwal::class,
-        \App\Models\Reservasi::class,
-        \App\Models\Konsultasi::class,
-        \App\Models\Portofolio::class,
-        \App\Models\Pembayaran::class,
+        User::class,
+        Katalog::class,
+        Kursus::class,
+        Materi::class,
+        Jadwal::class,
+        Reservasi::class,
+        Konsultasi::class,
+        Portofolio::class,
+        Pembayaran::class,
     ];
 
     foreach ($robustnessEntities as $entityClass) {
