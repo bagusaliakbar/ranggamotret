@@ -219,7 +219,7 @@ test('consultation supports two-way threaded chat between customer and owner in 
         'kebutuhan' => 'Bisa untuk foto prewedding di area Lembang?',
     ])->assertSessionHas('success');
 
-    $konsultasi = \App\Models\Konsultasi::where('email', 'bagus.klien@test.com')->first();
+    $konsultasi = Konsultasi::where('email', 'bagus.klien@test.com')->first();
     expect($konsultasi)->not->toBeNull();
     expect($konsultasi->chat_messages)->toHaveCount(1);
     expect($konsultasi->chat_messages[0]['pesan'])->toBe('Bisa untuk foto prewedding di area Lembang?');

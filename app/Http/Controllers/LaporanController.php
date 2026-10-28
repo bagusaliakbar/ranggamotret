@@ -393,7 +393,7 @@ class LaporanController extends Controller
         $combined = collect();
 
         if ($tipe === 'semua' || $tipe === 'foto') {
-            /** @var \App\Models\Reservasi $fb */
+            /** @var Reservasi $fb */
             foreach ($fotoBookings as $fb) {
                 $isKursus = method_exists($fb, 'isKursus') ? $fb->isKursus() : (($fb->tipe ?? null) === 'kursus');
                 $combined->push((object)[
