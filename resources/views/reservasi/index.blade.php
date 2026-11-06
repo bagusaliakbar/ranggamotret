@@ -8,9 +8,6 @@
     searchQuery: '',
     filterStatus(bookingStatus, paymentStatus, hasGallery) {
         if (this.activeTab === 'all') return true;
-        if (this.activeTab === 'unpaid') {
-            return paymentStatus !== 'Dibayar' && !['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai', 'Dibatalkan', 'Ditolak'].includes(bookingStatus);
-        }
         if (this.activeTab === 'scheduled') {
             return ['Dibayar', 'Disetujui', 'Terjadwal'].includes(bookingStatus);
         }
@@ -46,7 +43,7 @@
     @endphp
 
     <!-- Quick Metrics Summary Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <!-- 1. Total Reservasi -->
         <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
             <div class="flex items-center justify-between">
@@ -77,22 +74,7 @@
             <div class="text-[11px] text-slate-500 font-medium">Menunggu hari pelaksanaan</div>
         </div>
 
-        <!-- 3. Menunggu Pembayaran -->
-        <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Menunggu Bayar</span>
-                <div class="w-8 h-8 rounded-xl {{ $unpaidList->count() > 0 ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400' }} flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-credit-card"></i>
-                </div>
-            </div>
-            <div class="flex items-baseline justify-between">
-                <div class="text-2xl font-black {{ $unpaidList->count() > 0 ? 'text-amber-600' : 'text-slate-800' }} tracking-tight">{{ $unpaidList->count() }}</div>
-                <span class="text-[10px] font-bold text-slate-400">Tagihan</span>
-            </div>
-            <div class="text-[11px] text-slate-500 font-medium">Perlu segera diselesaikan</div>
-        </div>
-
-        <!-- 4. Galeri Proofing Siap -->
+        <!-- 3. Galeri Proofing Siap -->
         <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
             <div class="flex items-center justify-between">
                 <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Proofing & Hasil</span>
@@ -128,12 +110,6 @@
                     <i class="ph-duotone ph-credit-card text-emerald-400"></i>
                     <span>Bayar Sekarang (Rp {{ number_format($unpaidList->first()->paket?->harga ?? ($unpaidList->first()->pembayaran?->jumlah ?? 0), 0, ',', '.') }})</span>
                 </a>
-            @else
-                <button @click="activeTab = 'unpaid'" 
-                        class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-black inline-flex items-center gap-2 shadow-sm shrink-0 whitespace-nowrap hover:scale-105 active:scale-95 transition-all">
-                    <i class="ph-duotone ph-funnel"></i>
-                    <span>Tampilkan Tagihan ({{ $unpaidList->count() }})</span>
-                </button>
             @endif
         </div>
     @endif
@@ -157,16 +133,6 @@
                 <span>Jadwal Aktif</span>
                 @if($activeList->count() > 0)
                     <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-100 text-emerald-800 ml-1">{{ $activeList->count() }}</span>
-                @endif
-            </button>
-
-            <button @click="activeTab = 'unpaid'" 
-                    :class="activeTab === 'unpaid' ? 'bg-white text-amber-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
-                    class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
-                <i class="ph-duotone ph-credit-card"></i>
-                <span>Menunggu Bayar</span>
-                @if($unpaidList->count() > 0)
-                    <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 ml-1">{{ $unpaidList->count() }}</span>
                 @endif
             </button>
 
