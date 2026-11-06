@@ -563,12 +563,37 @@ class KursusController extends Controller
             'level' => 'required|in:Pemula,Menengah,Mahir',
             'instruktur_id' => 'nullable|exists:users,id',
             'thumbnail' => 'nullable|string',
+            'thumbnail_url' => 'nullable|string|max:1000',
+            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'status' => 'required|in:aktif,draft',
         ]);
 
         $validated['instruktur_id'] = $validated['instruktur_id'] ?? Auth::id();
 
         $kursus = Kursus::findOrFail($id);
+
+        if ($request->hasFile('thumbnail_file')) {
+            $file = $request->file('thumbnail_file');
+            $uploadDir = public_path('uploads/kursus');
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+
+            if ($kursus->thumbnail && str_starts_with($kursus->thumbnail, '/uploads/kursus/')) {
+                $oldFile = public_path(ltrim($kursus->thumbnail, '/'));
+                if (is_file($oldFile)) {
+                    @unlink($oldFile);
+                }
+            }
+            $validated['thumbnail'] = '/uploads/kursus/' . $filename;
+        } elseif (array_key_exists('thumbnail_url', $validated)) {
+            $validated['thumbnail'] = trim((string) $validated['thumbnail_url']);
+        }
+
+        unset($validated['thumbnail_url'], $validated['thumbnail_file']);
+
         $kursus->update($validated);
 
         return back()->with('success', 'Data kursus berhasil diperbarui.');
