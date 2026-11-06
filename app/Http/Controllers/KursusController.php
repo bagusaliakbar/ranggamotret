@@ -54,7 +54,7 @@ class KursusController extends Controller
      */
     public function detail($id)
     {
-        $kursus = Kursus::with(['instruktur', 'moduls.materis'])->findOrFail($id);
+        $kursus = Kursus::with(['instruktur', 'moduls.materis', 'moduls.quizs'])->findOrFail($id);
         $isEnrolled = Auth::check() && Reservasi::where('user_id', Auth::id())->where('kursus_id', $id)->whereIn('status', ['Dibayar', 'Selesai', 'aktif'])->exists();
 
         return view('kursus.detail', compact('kursus', 'isEnrolled'));

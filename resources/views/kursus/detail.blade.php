@@ -116,7 +116,7 @@
                                     <span>{{ $cleanTitle }}</span>
                                 </h4>
                                 <span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[11px] font-bold border border-slate-200">
-                                    {{ $modul->materis->count() }} Materi
+                                    {{ $modul->materis->count() }} Materi{{ $modul->quizs->count() > 0 ? ' · ' . $modul->quizs->count() . ' Kuis' : '' }}
                                 </span>
                             </div>
 

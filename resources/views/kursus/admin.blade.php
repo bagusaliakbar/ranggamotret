@@ -275,7 +275,7 @@
                                                 <span class="font-bold text-slate-900 text-xs truncate">{{ $mod->judul }}</span>
                                                 <span
                                                     class="px-2 py-0.5 rounded text-[9px] font-bold bg-white text-slate-500 border border-slate-200 shrink-0">
-                                                    {{ $mod->materis->count() }} Materi
+                                                    {{ $mod->materis->count() }} Materi{{ $mod->quizs->count() > 0 ? ' · ' . $mod->quizs->count() . ' Kuis' : '' }}
                                                 </span>
                                                 <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform"
                                                     :class="expanded ? 'rotate-180' : ''"></i>
