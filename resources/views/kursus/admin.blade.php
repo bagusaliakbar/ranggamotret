@@ -768,7 +768,8 @@
                     </div>
 
                     <!-- Fields Khusus Kuis Evaluasi Pilihan Ganda (Mendukung Multiple Butir Soal) -->
-                    <div x-show="materiType === 'quiz'" class="space-y-5 bg-blue-50/50 p-4 sm:p-5 rounded-2xl border border-blue-200/70">
+                    <template x-if="materiType === 'quiz'">
+                    <div class="space-y-5 bg-blue-50/50 p-4 sm:p-5 rounded-2xl border border-blue-200/70">
                         <!-- Parameter Global Kuis -->
                         <div class="flex items-center justify-between pb-3 border-b border-blue-200/60">
                             <span class="font-extrabold text-blue-900 text-xs flex items-center gap-1.5">
@@ -869,6 +870,7 @@
                             </button>
                         </div>
                     </div>
+                    </template>
                 </div>
 
                 <!-- Modal Sticky Footer Action Bar -->
