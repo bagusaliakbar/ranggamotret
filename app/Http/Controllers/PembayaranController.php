@@ -164,7 +164,7 @@ class PembayaranController extends Controller
     /**
      * URL kembalian setelah transaksi Snap Midtrans
      */
-    public function paymentFinish(Request $request)
+    public function paymentFinish(Request $request, MidtransService $midtransService)
     {
         $orderId = $request->query('order_id');
         $transactionStatus = $request->query('transaction_status');
@@ -214,6 +214,7 @@ class PembayaranController extends Controller
                         $pembayaran->reservasi_id = $reservasiKursus->id;
                         $pembayaran->tanggal_pembayaran = Carbon::now();
                         $pembayaran->save();
+                        $midtransService->refreshChannel($pembayaran);
 
                         // 3. Invoice
                         Invoice::firstOrCreate(
@@ -249,7 +250,7 @@ class PembayaranController extends Controller
                             ]
                         );
 
-                        Pembayaran::firstOrCreate(
+                        $pendingKursus = Pembayaran::firstOrCreate(
                             ['nomor_transaksi' => 'TRX-' . $orderId],
                             [
                                 'user_id' => $userId,
@@ -261,6 +262,7 @@ class PembayaranController extends Controller
                                 'tanggal_pembayaran' => Carbon::now(),
                             ]
                         );
+                        $midtransService->refreshChannel($pendingKursus);
                     }
                     return redirect()->route('student.dashboard')
                         ->with('info', 'Status transaksi kursus Anda sedang diproses.');
@@ -293,6 +295,7 @@ class PembayaranController extends Controller
                     $pembayaran->reservasi_id = $booking->id;
                     $pembayaran->tanggal_pembayaran = Carbon::now();
                     $pembayaran->save();
+                    $midtransService->refreshChannel($pembayaran);
 
                     Invoice::firstOrCreate(
                         ['pembayaran_id' => $pembayaran->id],
@@ -310,7 +313,7 @@ class PembayaranController extends Controller
                     return redirect()->route('customer.bookings.show', $booking->id)
                         ->with('success', 'Pembayaran berhasil dikonfirmasi! Jadwal sesi pemotretan Anda telah terverifikasi.');
                 } elseif ($transactionStatus === 'pending') {
-                    Pembayaran::firstOrCreate(
+                    $pendingBooking = Pembayaran::firstOrCreate(
                         ['reservasi_id' => $booking->id],
                         [
                             'nomor_transaksi' => 'TRX-' . str_replace(['RSV-', 'BK-'], '', $orderId),
@@ -322,6 +325,7 @@ class PembayaranController extends Controller
                             'tanggal_pembayaran' => Carbon::now(),
                         ]
                     );
+                    $midtransService->refreshChannel($pendingBooking);
                     return redirect()->route('customer.bookings.show', $booking->id)
                         ->with('info', 'Pembayaran Anda sedang menunggu penyelesaian.');
                 }
@@ -339,6 +343,9 @@ class PembayaranController extends Controller
     public function syncStatus($id, MidtransService $midtransService)
     {
         $pembayaran = Pembayaran::findOrFail($id);
+
+        // Lengkapi detail channel pembayaran (VA bank, QRIS, dll.) dari Midtrans
+        $midtransService->refreshChannel($pembayaran);
         
         $orderId = $pembayaran->reservasi ? $pembayaran->reservasi->nomor_reservasi : null;
         if (!$orderId && $pembayaran->kursus_id) {

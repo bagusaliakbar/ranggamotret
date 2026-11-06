@@ -322,6 +322,48 @@ class MidtransService
     }
 
     /**
+     * Ambil detail channel pembayaran (payment_type, bank VA, acquirer, dll.) dari API
+     * status Midtrans dan simpan ke pembayaran tanpa mengubah status transaksi.
+     * Berguna saat webhook tidak sampai (mis. lokal/localhost). Best-effort: tidak melempar error.
+     */
+    public function refreshChannel(Pembayaran $pembayaran): bool
+    {
+        $this->initMidtrans();
+
+        $trx = (string) $pembayaran->nomor_transaksi;
+        $raw = str_starts_with($trx, 'TRX-') ? substr($trx, 4) : $trx;
+
+        $candidates = array_values(array_unique(array_filter([
+            $pembayaran->reservasi?->nomor_reservasi,
+            $raw,
+            'RSV-' . $raw,
+            'BK-' . $raw,
+        ])));
+
+        foreach ($candidates as $orderId) {
+            try {
+                $payload = json_decode(json_encode(\Midtrans\Transaction::status($orderId)), true);
+            } catch (\Throwable $e) {
+                continue;
+            }
+
+            $paymentType = $payload['payment_type'] ?? null;
+            if (!is_array($payload) || !$paymentType) {
+                continue;
+            }
+
+            $pembayaran->payment_type = $paymentType;
+            $pembayaran->payload_response = $payload;
+            $pembayaran->metode_pembayaran = 'Midtrans (' . strtoupper($paymentType) . ')';
+            $pembayaran->save();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Query Midtrans Transaction Status directly via API and sync local database.
      */
     public function syncStatusFromMidtrans(string $orderId): array
