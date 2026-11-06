@@ -17,13 +17,6 @@
                 Pantau seluruh transaksi pembayaran online otomatis melalui Midtrans Payment Gateway untuk sesi foto dan kursus akademi.
             </p>
         </div>
-
-        <div class="flex items-center gap-3">
-            <div class="px-4 py-2 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center gap-2 shadow-2xs">
-                <i class="ph-duotone ph-shield-check text-base text-emerald-600"></i>
-                <span>Midtrans Gateway Aktif</span>
-            </div>
-        </div>
     </div>
 
     <!-- Quick Stats Cards -->
@@ -186,14 +179,28 @@
 
                             <!-- 4. METODE PEMBAYARAN MIDTRANS GATEWAY -->
                             <td class="p-4 whitespace-nowrap">
+                                @php $channel = $p->channel_pembayaran; @endphp
                                 <div class="space-y-1">
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-black shadow-2xs">
-                                        <i class="ph-duotone ph-lightning text-emerald-600 text-sm"></i>
-                                        <span>Midtrans Gateway</span>
-                                    </span>
-                                    <div class="text-[10px] text-slate-500 font-medium">
-                                        QRIS • Virtual Account • E-Wallet • CC
-                                    </div>
+                                    @if($channel)
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-black shadow-2xs">
+                                            <i class="ph-duotone {{ $channel['icon'] }} text-emerald-600 text-sm"></i>
+                                            <span>{{ $channel['label'] }}</span>
+                                        </span>
+                                        <div class="text-[10px] text-slate-500 font-medium">
+                                            @if(!empty($channel['detail']))
+                                                <span class="font-mono">{{ $channel['detail'] }}</span> •
+                                            @endif
+                                            via Midtrans
+                                        </div>
+                                    @else
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-600 text-[11px] font-black shadow-2xs">
+                                            <i class="ph-duotone ph-lightning text-slate-400 text-sm"></i>
+                                            <span>Belum memilih channel</span>
+                                        </span>
+                                        <div class="text-[10px] text-slate-500 font-medium">
+                                            QRIS • Virtual Account • E-Wallet • CC
+                                        </div>
+                                    @endif
                                 </div>
                             </td>
 
