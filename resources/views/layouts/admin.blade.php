@@ -213,11 +213,6 @@
                             <span>Kelola Jadwal</span>
                         </a>
 
-                        <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
-                            <i class="ph-duotone ph-users text-base w-5"></i>
-                            <span>Kelola Pengguna</span>
-                        </a>
-
                         <!-- Menu Laporan & Submenu -->
                         <div x-data="{ openReports: {{ request()->routeIs('admin.reports*') || request()->routeIs('laporan.*') ? 'true' : 'false' }} }" class="space-y-1">
                             <button type="button" 

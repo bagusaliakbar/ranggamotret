@@ -19,7 +19,6 @@ use App\Http\Controllers\LaporanController;
 // Specialized Utility Controllers
 use App\Http\Controllers\PublicController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -240,14 +239,6 @@ Route::middleware(['auth', 'role:owner'])->prefix('admin')->name('admin.')->grou
     Route::post('/portofolio/{id}/upload-photos', [PortofolioController::class, 'uploadPhotos'])->name('portofolio.upload-photos');
     Route::delete('/portofolio/photos/{photoId}', [PortofolioController::class, 'destroyPhoto'])->name('portofolio.photos.destroy');
     Route::delete('/portofolio/destroy-photo/{photoId}', [PortofolioController::class, 'destroyPhoto'])->name('portofolio.destroy-photo');
-
-    // Manajemen Pengguna
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-    Route::post('/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
-
     // Boundary: Laporan Keuangan & Operasional
     Route::get('/reports', [LaporanController::class, 'index'])->name('reports.index');
     Route::get('/reports/pendapatan', [LaporanController::class, 'pendapatan'])->name('reports.pendapatan');
