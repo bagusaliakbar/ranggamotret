@@ -29,7 +29,7 @@
                 <span class="text-slate-900 font-extrabold">Layanan Fotografi</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Layanan Fotografi Saya</h1>
-            <p class="text-xs text-slate-500 font-medium mt-1">Kelola seluruh sesi pemotretan Anda, kepastian jadwal studio, bukti pelunasan invoice, dan kurasi galeri hasil foto.</p>
+            <p class="text-xs text-slate-500 font-medium mt-1">Kelola seluruh sesi pemotretan Anda, kepastian jadwal studio, bukti pelunasan invoice, dan galeri hasil foto.</p>
         </div>
     </div>
 
@@ -77,7 +77,7 @@
         <!-- 3. Galeri Proofing Siap -->
         <div class="clean-card p-5 rounded-3xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
             <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Proofing & Hasil</span>
+                <span class="text-[10px] sm:text-xs font-extrabold text-slate-400 uppercase tracking-wider">Hasil Foto</span>
                 <div class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm">
                     <i class="ph-duotone ph-images"></i>
                 </div>
@@ -150,7 +150,7 @@
                     :class="activeTab === 'proofing' ? 'bg-white text-purple-700 font-black shadow-2xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
                     class="px-3.5 py-2 rounded-xl text-xs transition-all whitespace-nowrap flex items-center gap-1.5">
                 <i class="ph-duotone ph-images"></i>
-                <span>Ada Proofing Foto</span>
+                <span>Ada Hasil Foto</span>
                 @if($proofingList->count() > 0)
                     <span class="px-1.5 py-0.5 rounded-full text-[10px] bg-purple-100 text-purple-800 ml-1">{{ $proofingList->count() }}</span>
                 @endif
@@ -279,9 +279,9 @@
                         @if($hasGallery > 0)
                             <a href="{{ route('customer.proofing.show', $b->id) }}" 
                                class="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs inline-flex items-center gap-1.5 shadow-2xs hover:scale-105 active:scale-95 transition-all"
-                               title="Pilih dan kurasi foto hasil pemotretan Anda">
+                               title="Lihat dan pilih hasil foto pemotretan Anda">
                                 <i class="ph-duotone ph-images text-sm"></i>
-                                <span>Kurasi Foto ({{ $hasGallery }})</span>
+                                <span>Hasil Foto ({{ $hasGallery }})</span>
                             </a>
                         @endif
 
