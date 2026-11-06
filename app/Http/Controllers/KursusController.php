@@ -526,11 +526,28 @@ class KursusController extends Controller
             'level' => 'required|in:Pemula,Menengah,Mahir',
             'instruktur_id' => 'nullable|exists:users,id',
             'thumbnail' => 'nullable|string',
+            'thumbnail_url' => 'nullable|string|max:1000',
+            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'status' => 'nullable|in:aktif,draft',
         ]);
 
         $validated['instruktur_id'] = $validated['instruktur_id'] ?? Auth::id();
         $validated['status'] = $validated['status'] ?? 'aktif';
+
+        if ($request->hasFile('thumbnail_file')) {
+            $file = $request->file('thumbnail_file');
+            $uploadDir = public_path('uploads/kursus');
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            $validated['thumbnail'] = '/uploads/kursus/' . $filename;
+        } elseif (!empty($validated['thumbnail_url'])) {
+            $validated['thumbnail'] = trim($validated['thumbnail_url']);
+        }
+
+        unset($validated['thumbnail_url'], $validated['thumbnail_file']);
 
         Kursus::create($validated);
         return back()->with('success', 'Kursus baru berhasil ditambahkan.');

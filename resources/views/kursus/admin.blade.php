@@ -449,7 +449,7 @@
                     </button>
                 </div>
 
-                <form method="POST" action="{{ route('admin.courses.store') }}" class="space-y-4">
+                <form method="POST" action="{{ route('admin.courses.store') }}" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Nama Kursus <span
@@ -499,10 +499,31 @@
                         </div>
                         <input type="hidden" name="instruktur_id" value="{{ Auth::id() }}">
                     </div>
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">URL Thumbnail Gambar</label>
-                        <input type="text" name="thumbnail" placeholder="https://images.unsplash.com/..."
-                            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none">
+                    <div class="space-y-3" x-data="{ imgTab: 'upload' }">
+                        <div class="flex items-center justify-between">
+                            <label class="text-slate-700 font-bold">Thumbnail Kursus</label>
+                            <div class="flex rounded-lg bg-slate-100 p-0.5 text-[10px] font-bold">
+                                <button type="button" @click="imgTab = 'url'"
+                                    :class="imgTab === 'url' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'"
+                                    class="px-2.5 py-1 rounded-md transition-all">URL Gambar</button>
+                                <button type="button" @click="imgTab = 'upload'"
+                                    :class="imgTab === 'upload' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'"
+                                    class="px-2.5 py-1 rounded-md transition-all">Upload File</button>
+                            </div>
+                        </div>
+                        <div x-show="imgTab === 'url'">
+                            <input type="text" name="thumbnail_url" placeholder="https://images.unsplash.com/photo-..."
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none">
+                            <span class="text-[10px] text-slate-400 mt-1 block">Tempel link gambar langsung dari Unsplash / CDN atau path lokal.</span>
+                        </div>
+                        <div x-show="imgTab === 'upload'">
+                            <input type="file" name="thumbnail_file" accept="image/*"
+                                @change="const f = $event.target.files[0]; if (f) { const r = new FileReader(); r.onload = e => $refs.prev.src = e.target.result; r.readAsDataURL(f); $refs.prevBox.classList.remove('hidden'); }"
+                                class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800">
+                            <div x-ref="prevBox" class="hidden mt-2">
+                                <img x-ref="prev" src="" class="w-24 h-24 object-cover rounded-xl border border-slate-200 shadow-sm">
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Deskripsi Singkat</label>
