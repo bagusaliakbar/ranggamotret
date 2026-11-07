@@ -177,7 +177,7 @@ class MidtransService
 
         if ($booking) {
             $pembayaran = Pembayaran::firstOrNew(['reservasi_id' => $booking->id]);
-            $pembayaran->nomor_transaksi = 'TRX-' . str_replace(['BK-', 'RSV-'], '', $orderId);
+            $pembayaran->nomor_transaksi = 'TRX-' . str_replace(['BK-', 'RSV-FTG-', 'RSV-KRS-', 'RSV-'], '', $orderId);
             $pembayaran->user_id = $booking->user_id;
             $pembayaran->reservasi_id = $booking->id;
             $pembayaran->jumlah = (float) $grossAmount;
@@ -254,7 +254,7 @@ class MidtransService
                         'tipe' => 'kursus',
                     ],
                     [
-                        'nomor_reservasi' => 'RSV-' . $orderId,
+                        'nomor_reservasi' => Reservasi::generateNomorReservasi('kursus'),
                         'tanggal' => Carbon::now()->format('Y-m-d'),
                         'waktu' => Carbon::now()->format('H:i:s'),
                         'lokasi' => 'Online Classroom LMS',
@@ -393,7 +393,7 @@ class MidtransService
 
             if ($booking) {
                 $pembayaran = Pembayaran::firstOrNew(['reservasi_id' => $booking->id]);
-                $pembayaran->nomor_transaksi = 'TRX-' . str_replace(['BK-', 'RSV-'], '', $orderId);
+                $pembayaran->nomor_transaksi = 'TRX-' . str_replace(['BK-', 'RSV-FTG-', 'RSV-KRS-', 'RSV-'], '', $orderId);
                 $pembayaran->user_id = $booking->user_id;
                 $pembayaran->reservasi_id = $booking->id;
                 $pembayaran->jumlah = (float) ($grossAmount ?: ($booking->paket->harga ?? 0));

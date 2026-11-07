@@ -187,7 +187,7 @@ class PembayaranController extends Controller
                                 'tipe' => 'kursus',
                             ],
                             [
-                                'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                                'nomor_reservasi' => Reservasi::generateNomorReservasi('kursus'),
                                 'status' => 'Dibayar',
                                 'tanggal' => Carbon::now()->format('Y-m-d'),
                                 'lokasi' => 'Online Classroom LMS',
@@ -243,7 +243,7 @@ class PembayaranController extends Controller
                                 'tipe' => 'kursus',
                             ],
                             [
-                                'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                                'nomor_reservasi' => Reservasi::generateNomorReservasi('kursus'),
                                 'status' => 'Menunggu Pembayaran',
                                 'tanggal' => Carbon::now()->format('Y-m-d'),
                                 'lokasi' => 'Online Classroom LMS',
@@ -281,7 +281,7 @@ class PembayaranController extends Controller
                     $pembayaran = Pembayaran::firstOrCreate(
                         ['reservasi_id' => $booking->id],
                         [
-                            'nomor_transaksi' => 'TRX-' . str_replace(['RSV-', 'BK-'], '', $orderId),
+                            'nomor_transaksi' => 'TRX-' . str_replace(['BK-', 'RSV-FTG-', 'RSV-KRS-', 'RSV-'], '', $orderId),
                             'user_id' => $booking->user_id,
                             'reservasi_id' => $booking->id,
                             'jumlah' => $booking->paket->harga ?? 0,
@@ -316,7 +316,7 @@ class PembayaranController extends Controller
                     $pendingBooking = Pembayaran::firstOrCreate(
                         ['reservasi_id' => $booking->id],
                         [
-                            'nomor_transaksi' => 'TRX-' . str_replace(['RSV-', 'BK-'], '', $orderId),
+                            'nomor_transaksi' => 'TRX-' . str_replace(['BK-', 'RSV-FTG-', 'RSV-KRS-', 'RSV-'], '', $orderId),
                             'user_id' => $booking->user_id,
                             'reservasi_id' => $booking->id,
                             'jumlah' => $booking->paket->harga ?? 0,
@@ -492,7 +492,7 @@ class PembayaranController extends Controller
                     'kursus_id' => $pembayaran->kursus_id,
                     'tipe' => 'kursus',
                 ], [
-                    'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                    'nomor_reservasi' => Reservasi::generateNomorReservasi('kursus'),
                     'status' => 'Dibayar',
                     'tanggal' => Carbon::now()->format('Y-m-d'),
                     'lokasi' => 'Online Classroom LMS',

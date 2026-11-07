@@ -31,6 +31,24 @@ class Reservasi extends Model
     ];
 
     /**
+     * Helper untuk menghasilkan nomor reservasi unik berurutan/standar
+     * Fotografi: RSV-FTG-YYYYMMDD-XXX (3 digit)
+     * Kursus:    RSV-KRS-YYYYMMDD-XXXX (4 digit)
+     */
+    public static function generateNomorReservasi(string $tipe = 'fotografi'): string
+    {
+        $date = date('Ymd');
+        if ($tipe === 'kursus') {
+            $prefix = 'RSV-KRS-' . $date . '-';
+            $num = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        } else {
+            $prefix = 'RSV-FTG-' . $date . '-';
+            $num = str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        }
+        return $prefix . $num;
+    }
+
+    /**
      * Otomatisasi pengisian nomor_reservasi dan tipe
      */
     protected static function booted()
@@ -44,8 +62,7 @@ class Reservasi extends Model
                 if (!empty($reservasi->nomor_booking)) {
                     $reservasi->nomor_reservasi = $reservasi->nomor_booking;
                 } else {
-                    $prefix = ($reservasi->tipe === 'kursus' || !empty($reservasi->kursus_id)) ? 'RSV-KRS-' : 'RSV-';
-                    $reservasi->nomor_reservasi = $prefix . date('Ymd') . '-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+                    $reservasi->nomor_reservasi = static::generateNomorReservasi($reservasi->tipe);
                 }
             }
         });

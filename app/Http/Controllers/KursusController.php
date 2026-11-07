@@ -428,7 +428,7 @@ class KursusController extends Controller
                 'kursus_id' => $pembayaran->kursus_id,
                 'tipe' => 'kursus',
             ], [
-                'nomor_reservasi' => 'RSV-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(5)),
+                'nomor_reservasi' => Reservasi::generateNomorReservasi('kursus'),
                 'status' => 'Dibayar',
                 'tanggal' => $pembayaran->tanggal_pembayaran ? Carbon::parse($pembayaran->tanggal_pembayaran)->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
                 'lokasi' => 'Online Classroom LMS',

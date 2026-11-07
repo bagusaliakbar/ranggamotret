@@ -249,7 +249,7 @@ class ReservasiController extends Controller
             }
         }
 
-        $bookingNumber = 'RSV-' . date('Ymd') . '-' . str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
+        $bookingNumber = Reservasi::generateNomorReservasi('fotografi');
 
         $booking = Reservasi::create([
             'tipe' => 'fotografi',
