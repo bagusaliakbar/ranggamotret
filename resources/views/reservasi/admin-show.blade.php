@@ -16,16 +16,12 @@
             <h1 class="text-3xl font-extrabold text-slate-900 mt-1">{{ $booking->nomor_booking }}</h1>
         </div>
         
-        <form method="POST" action="{{ route('admin.bookings.update-status', $booking->id) }}" class="flex items-center gap-3">
-            @csrf
-            <span class="text-xs text-slate-600 font-medium">Ubah Status:</span>
-            <select name="status" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 font-bold focus:border-slate-900 focus:ring-1 focus:ring-slate-900 focus:outline-none transition-colors shadow-sm">
-                @foreach(['Menunggu Konfirmasi', 'Disetujui', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Pemotretan Selesai', 'Selesai', 'Dibatalkan', 'Ditolak'] as $st)
-                    <option value="{{ $st }}" {{ $booking->status === $st ? 'selected' : '' }}>{{ $st }}</option>
-                @endforeach
-            </select>
-            <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-colors shadow-sm">Simpan</button>
-        </form>
+        <div>
+            <span class="px-3.5 py-1.5 rounded-full text-xs font-black uppercase border tracking-wider
+                {{ in_array($booking->status, ['Dibayar', 'Selesai', 'Pemotretan Selesai', 'Terjadwal']) ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : (in_array($booking->status, ['Dibatalkan', 'Ditolak']) ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-amber-50 border-amber-200 text-amber-800') }}">
+                {{ $booking->status }}
+            </span>
+        </div>
     </div>
 
     <!-- Details Grid -->
