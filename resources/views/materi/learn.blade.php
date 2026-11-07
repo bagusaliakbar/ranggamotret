@@ -118,9 +118,9 @@
 
                             @if($bestAttempt)
                                 <div class="px-4 py-2 rounded-2xl bg-slate-50 border border-slate-200 text-right">
-                                    <div class="text-[10px] font-bold text-slate-500 uppercase">Nilai Tertinggi</div>
+                                    <div class="text-[10px] font-bold text-slate-500 uppercase">Nilai Kuis</div>
                                     <div class="text-lg font-black {{ $bestAttempt->is_passed ? 'text-emerald-700' : 'text-amber-700' }}">
-                                        {{ $bestAttempt->nilai }}% <span class="text-xs font-bold">({{ $bestAttempt->is_passed ? 'Lulus' : 'Belum Lulus' }})</span>
+                                        {{ $bestAttempt->nilai }}
                                     </div>
                                 </div>
                             @endif

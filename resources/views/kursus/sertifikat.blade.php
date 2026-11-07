@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sertifikat Kelulusan - {{ $sertifikat->nomor_sertifikat }} — RanggaMotret.id</title>
+    <title>Sertifikat Kursus - {{ $sertifikat->nomor_sertifikat }} — RanggaMotret.id</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('images/favicon-square.png') }}">
@@ -132,7 +132,7 @@
             <!-- Recipient & Body Section (Centered & Majestic) -->
             <div class="text-center space-y-2.5 py-3 max-w-3xl mx-auto relative z-10">
                 <p class="text-[11px] text-slate-500 uppercase tracking-widest font-bold">
-                    Sertifikat Kelulusan Ini Diberikan Kepada:
+                    Sertifikat Kursus Ini Diberikan Kepada:
                 </p>
 
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight underline decoration-slate-900 decoration-2 underline-offset-8">
@@ -140,7 +140,7 @@
                 </h2>
 
                 <p class="text-xs text-slate-600 max-w-xl mx-auto leading-relaxed pt-2 font-medium">
-                    Telah berhasil menyelesaikan seluruh kurikulum pembelajaran dan lulus ujian evaluasi kuis pada kursus fotografi:
+                    Telah berhasil menyelesaikan seluruh kurikulum pembelajaran dan kuis pada kursus fotografi:
                 </p>
 
                 <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">
@@ -163,9 +163,9 @@
 
                 <!-- 2. Middle: Score Badge -->
                 <div class="text-center">
-                    <span class="text-[9px] text-slate-400 block uppercase font-bold tracking-wider mb-1">Nilai Kelulusan</span>
+                    <span class="text-[9px] text-slate-400 block uppercase font-bold tracking-wider mb-1">Nilai Kuis</span>
                     <div class="inline-block px-6 py-1.5 rounded-xl bg-slate-900 text-white font-extrabold text-xl shadow-sm">
-                        {{ $sertifikat->nilai_akhir }} <span class="text-xs font-normal text-slate-400">/ 100</span>
+                        {{ $sertifikat->nilai_akhir }} <span class="text-xs font-normal text-slate-400"></span>
                     </div>
                 </div>
 

@@ -102,7 +102,7 @@
                     <div class="clean-card rounded-3xl overflow-hidden flex flex-col justify-between group border-2 border-amber-300 ring-4 ring-amber-400/10 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
                         <div>
                             <!-- Thumbnail with Unpaid Badge -->
-                            <div class="aspect-16/10 overflow-hidden relative bg-slate-200">
+                            <div class="aspect-[16/10] overflow-hidden relative bg-slate-200">
                                 @if($pay->kursus && $pay->kursus->thumbnail)
                                     <img src="{{ $pay->kursus->thumbnail }}" alt="{{ $pay->kursus->nama }}" class="w-full h-full object-cover">
                                 @else
@@ -230,7 +230,7 @@
                          class="clean-card rounded-3xl overflow-hidden flex flex-col justify-between group border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
                         <div>
                             <!-- Thumbnail with Badges -->
-                            <div class="aspect-16/10 overflow-hidden relative bg-slate-200">
+                            <div class="aspect-[16/10] overflow-hidden relative bg-slate-200">
                                 <img src="{{ $e->kursus->thumbnail }}" alt="{{ $e->kursus->nama }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 
                                 <div class="absolute top-3 left-3 flex items-center gap-2">
@@ -281,7 +281,7 @@
                             @if($e->sertifikat)
                                 <a href="{{ route('student.certificate.show', $e->sertifikat->id) }}" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors">
                                     <i class="ph-duotone ph-certificate text-base"></i>
-                                    <span>Unduh Sertifikat Kelulusan</span>
+                                    <span>Unduh Sertifikat</span>
                                 </a>
                             @endif
                         </div>
@@ -317,7 +317,7 @@
                 <div>
                     <h2 class="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                         <i class="ph-duotone ph-certificate text-amber-500"></i>
-                        <span>Sertifikat Kelulusan Resmi Anda</span>
+                        <span>Sertifikat</span>
                     </h2>
                     <p class="text-xs text-slate-500 font-medium mt-0.5">Sertifikat terverifikasi QR Code sebagai bukti kompetensi fotografi.</p>
                 </div>
