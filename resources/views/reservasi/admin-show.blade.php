@@ -100,44 +100,163 @@
 
     @if($booking->isFotografi())
         <!-- Owner Photo Deliverables Uploader & Proofing Manager -->
-        <div class="clean-card p-8 rounded-3xl space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
-                <div>
-                    <h3 class="text-lg font-extrabold text-slate-900">Unggah Hasil Foto Pemotretan</h3>
-                    <p class="text-xs text-slate-500 font-medium mt-1">Foto yang diunggah akan otomatis muncul di halaman pelanggan.</p>
+        <div class="clean-card p-6 sm:p-8 rounded-3xl space-y-6"
+             x-data="{
+                files: [],
+                previews: [],
+                isDragging: false,
+                handleFiles(selectedFiles) {
+                    const valid = Array.from(selectedFiles).filter(f => f.type.startsWith('image/'));
+                    this.files = valid;
+                    this.previews = [];
+                    valid.slice(0, 12).forEach(f => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => this.previews.push({ name: f.name, size: (f.size / (1024 * 1024)).toFixed(1) + ' MB', url: e.target.result });
+                        reader.readAsDataURL(f);
+                    });
+                },
+                removeFile(idx) {
+                    this.files.splice(idx, 1);
+                    this.previews.splice(idx, 1);
+                    const dt = new DataTransfer();
+                    this.files.forEach(f => dt.items.add(f));
+                    this.$refs.fileInput.files = dt.files;
+                },
+                resetFiles() {
+                    this.files = [];
+                    this.previews = [];
+                    if (this.$refs.fileInput) this.$refs.fileInput.value = '';
+                }
+             }">
+            <!-- Card Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0 border border-purple-100">
+                        <i class="ph-duotone ph-camera-rotate"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900 tracking-tight">Unggah Hasil Foto Pemotretan</h3>
+                        <p class="text-xs text-slate-500 font-medium">Foto yang diunggah akan otomatis tersedia di portal proofing & unduhan pelanggan.</p>
+                    </div>
                 </div>
-                <span class="text-[10px] text-slate-600 font-extrabold uppercase tracking-wider bg-slate-100 px-3 py-1.5 rounded-lg">{{ $booking->galeriFotos->count() }} Foto Terunggah</span>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-black text-slate-700 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200">
+                        <i class="ph-duotone ph-images text-slate-500 text-sm"></i>
+                        <span>{{ $booking->galeriFotos->count() }} Foto Terunggah</span>
+                    </span>
+                </div>
             </div>
 
-            <form method="POST" action="{{ route('admin.proofing.upload', $booking->id) }}" enctype="multipart/form-data" class="flex flex-col sm:flex-row items-center gap-4 text-xs">
+            <!-- Upload Area Form -->
+            <form method="POST" action="{{ route('admin.proofing.upload', $booking->id) }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
-                <input type="file" name="fotos[]" multiple required accept="image/*"
-                    class="w-full sm:flex-1 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white file:cursor-pointer cursor-pointer hover:border-slate-300 transition-colors">
-                <button type="submit" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-bold text-xs whitespace-nowrap shadow-md transition-all flex items-center justify-center gap-2">
-                    <i class="ph-duotone ph-cloud-arrow-up text-base"></i>
-                    <span>Upload Foto</span>
-                </button>
+                <input type="file" name="fotos[]" multiple required accept="image/*" x-ref="fileInput"
+                       @change="handleFiles($event.target.files)"
+                       class="hidden">
+
+                <!-- Interactive Drag and Drop Zone -->
+                <div @dragover.prevent="isDragging = true"
+                     @dragleave.prevent="isDragging = false"
+                     @drop.prevent="isDragging = false; handleFiles($event.dataTransfer.files); $refs.fileInput.files = $event.dataTransfer.files"
+                     @click="$refs.fileInput.click()"
+                     :class="isDragging ? 'border-purple-600 bg-purple-50/60 scale-[1.005]' : 'border-slate-200 hover:border-purple-400 bg-slate-50/50 hover:bg-white'"
+                     class="group relative cursor-pointer border-2 border-dashed rounded-3xl p-8 sm:p-10 transition-all duration-300 flex flex-col items-center justify-center text-center">
+                    
+                    <!-- Decorative Background Glow -->
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-linear-to-tr from-purple-100 via-indigo-50 to-pink-100 text-purple-700 flex items-center justify-center text-3xl sm:text-4xl mb-4 group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
+                        <i class="ph-duotone ph-cloud-arrow-up"></i>
+                    </div>
+
+                    <h4 class="text-sm sm:text-base font-extrabold text-slate-900 mb-1">
+                        Tarik & Lepaskan File Foto ke Sini, atau <span class="text-purple-600 underline underline-offset-4 decoration-purple-300">Pilih Berkas</span>
+                    </h4>
+                    <p class="text-xs text-slate-500 max-w-md font-medium leading-relaxed">
+                        Mendukung format JPG, PNG, WEBP resolusi tinggi. Dapat memilih banyak foto sekaligus untuk sesi pemotretan ini.
+                    </p>
+
+                    <!-- Hint specs -->
+                    <div class="mt-4 flex flex-wrap items-center justify-center gap-3 text-[11px] font-bold text-slate-400">
+                        <span class="inline-flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                            <i class="ph-duotone ph-image text-xs"></i> Multi-upload
+                        </span>
+                        <span class="inline-flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                            <i class="ph-duotone ph-sparkle text-xs text-amber-500"></i> Max 20MB / file
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Selected Files Preview Tray (Muncul saat user memilih foto) -->
+                <div x-show="previews.length > 0" x-cloak class="p-5 rounded-2xl bg-white border border-slate-200 space-y-4 shadow-xs">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-xs font-black text-slate-900" x-text="`${files.length} Foto Siap Diunggah`"></span>
+                        </div>
+                        <button type="button" @click="resetFiles()" class="text-xs text-rose-600 hover:text-rose-700 font-bold inline-flex items-center gap-1">
+                            <i class="ph-duotone ph-x-circle"></i> Batal Semua
+                        </button>
+                    </div>
+
+                    <!-- Mini thumbnail preview grid -->
+                    <div class="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-8 gap-3 max-h-56 overflow-y-auto pr-1">
+                        <template x-for="(p, idx) in previews" :key="idx">
+                            <div class="relative group aspect-square rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shadow-2xs">
+                                <img :src="p.url" :alt="p.name" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button type="button" @click="removeFile(idx)" class="w-7 h-7 rounded-lg bg-rose-600 text-white flex items-center justify-center hover:bg-rose-700 text-xs shadow-md">
+                                        <i class="ph-bold ph-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-2 flex justify-end">
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs inline-flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-95">
+                            <i class="ph-duotone ph-upload-simple text-base"></i>
+                            <span x-text="`Mulai Unggah ${files.length} Foto`"></span>
+                        </button>
+                    </div>
+                </div>
             </form>
 
             <!-- Existing Photos Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4 pt-4">
-                @foreach($booking->galeriFotos as $foto)
-                    <div class="relative group rounded-2xl overflow-hidden clean-card shadow-sm border border-slate-200 h-40">
-                        <img src="{{ asset($foto->foto_path) }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        @if($foto->is_selected)
-                            <div class="absolute top-2 left-2 bg-slate-900 text-white px-2 py-1 rounded text-[9px] font-bold shadow-sm flex items-center gap-1">
-                                <i class="ph-bold ph-check text-[10px]"></i> DIPILIH
-                            </div>
-                        @endif
-                        <form method="POST" action="{{ route('admin.proofing.delete', $foto->id) }}" class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            @csrf
-                            <button type="submit" class="w-8 h-8 rounded-lg bg-white/90 text-rose-600 hover:bg-rose-50 text-xs font-bold flex items-center justify-center shadow-md backdrop-blur-sm transition-colors" onclick="return confirm('Hapus foto ini?')">
-                                <i class="ph-duotone ph-trash text-sm"></i>
-                            </button>
-                        </form>
+            @if($booking->galeriFotos->count() > 0)
+                <div class="space-y-3 pt-4 border-t border-slate-100">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Galeri Foto Tersimpan</span>
+                        <span class="text-[11px] font-medium text-slate-400">Arahkan kursor pada foto untuk menghapus</span>
                     </div>
-                @endforeach
-            </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+                        @foreach($booking->galeriFotos as $foto)
+                            <div class="relative group rounded-2xl overflow-hidden clean-card shadow-xs border border-slate-200 h-44 bg-slate-100">
+                                <img src="{{ asset($foto->foto_path) }}" alt="Foto Hasil Pemotretan" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                
+                                @if($foto->is_selected)
+                                    <div class="absolute top-2.5 left-2.5 bg-emerald-500/90 backdrop-blur-xs text-white px-2.5 py-1 rounded-lg text-[10px] font-black shadow-xs flex items-center gap-1">
+                                        <i class="ph-fill ph-check-circle text-xs"></i> DIPILIH
+                                    </div>
+                                @endif
+
+                                <div class="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
+                                    <a href="{{ asset($foto->foto_path) }}" target="_blank" class="w-8 h-8 rounded-lg bg-white/90 text-slate-900 hover:bg-white text-xs font-bold flex items-center justify-center shadow-md backdrop-blur-xs transition-colors" title="Buka Resolusi Penuh">
+                                        <i class="ph-duotone ph-arrows-out text-sm"></i>
+                                    </a>
+
+                                    <form method="POST" action="{{ route('admin.proofing.delete', $foto->id) }}">
+                                        @csrf
+                                        <button type="submit" class="w-8 h-8 rounded-lg bg-rose-600 text-white hover:bg-rose-700 text-xs font-bold flex items-center justify-center shadow-md transition-colors" onclick="return confirm('Hapus foto ini dari galeri pelanggan?')" title="Hapus Foto">
+                                            <i class="ph-duotone ph-trash text-sm"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
     @else
         <!-- Course LMS Information Card -->
