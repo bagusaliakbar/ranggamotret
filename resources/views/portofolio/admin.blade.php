@@ -128,53 +128,6 @@
         </div>
     @endif
 
-    <!-- 4 Quick Stats Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
-            <div class="space-y-1">
-                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Album</span>
-                <div class="text-2xl font-black text-slate-900">{{ $totalAlbums ?? $portofolios->total() }}</div>
-                <div class="text-[11px] text-slate-500 font-medium">Koleksi karya terdaftar</div>
-            </div>
-            <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-800 flex items-center justify-center text-2xl">
-                <i class="ph-duotone ph-folders"></i>
-            </div>
-        </div>
-
-        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
-            <div class="space-y-1">
-                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Album Tayang</span>
-                <div class="text-2xl font-black text-emerald-600">{{ $publishedAlbums ?? 0 }}</div>
-                <div class="text-[11px] text-emerald-600 font-medium">Aktif di galeri publik</div>
-            </div>
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">
-                <i class="ph-duotone ph-check-circle"></i>
-            </div>
-        </div>
-
-        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
-            <div class="space-y-1">
-                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Draft / Arsip</span>
-                <div class="text-2xl font-black text-amber-600">{{ $draftAlbums ?? 0 }}</div>
-                <div class="text-[11px] text-amber-600 font-medium">Hanya terlihat owner</div>
-            </div>
-            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl">
-                <i class="ph-duotone ph-pause-circle"></i>
-            </div>
-        </div>
-
-        <div class="clean-card p-5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between">
-            <div class="space-y-1">
-                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Foto Koleksi</span>
-                <div class="text-2xl font-black text-indigo-600">{{ $totalPhotos ?? 0 }}</div>
-                <div class="text-[11px] text-indigo-600 font-medium">Foto di seluruh album</div>
-            </div>
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl">
-                <i class="ph-duotone ph-images"></i>
-            </div>
-        </div>
-    </div>
-
     <!-- Filter & Search Toolbar -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <form method="GET" action="{{ route('admin.portofolio.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
