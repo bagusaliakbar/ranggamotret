@@ -429,10 +429,10 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-slate-700 font-bold mb-1">Durasi Kursus <span
+                            <label class="block text-slate-700 font-bold mb-1">Masa Akses / Durasi <span
                                     class="text-rose-500">*</span></label>
-                            <input type="text" name="durasi" required placeholder="Contoh: 4 Minggu / 12 Jam"
-                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none">
+                            <input type="text" name="durasi" value="Akses Seumur Hidup" required placeholder="Contoh: Akses Seumur Hidup"
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-slate-700 font-bold mb-1">Status Publikasi</label>
@@ -537,10 +537,10 @@
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-slate-700 font-bold mb-1">Durasi Kursus <span
+                            <label class="block text-slate-700 font-bold mb-1">Masa Akses / Durasi <span
                                     class="text-rose-500">*</span></label>
-                            <input type="text" name="durasi" x-model="editCourseData.durasi" required
-                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:bg-white focus:border-slate-900 focus:outline-none">
+                            <input type="text" name="durasi" x-model="editCourseData.durasi" required placeholder="Contoh: Akses Seumur Hidup"
+                                class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold focus:bg-white focus:border-slate-900 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-slate-700 font-bold mb-1">Status Publikasi</label>
