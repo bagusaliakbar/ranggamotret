@@ -99,12 +99,54 @@
     </div>
 
     @if($booking->isFotografi())
+        @php
+            $adminFotosData = $booking->galeriFotos->map(function($f, $idx) {
+                return [
+                    'id' => $f->id,
+                    'index' => $idx,
+                    'foto_path' => asset($f->foto_path),
+                    'is_selected' => (bool)$f->is_selected,
+                    'catatan' => $f->catatan ?? '',
+                    'code' => '#IMG-' . str_pad($f->id, 4, '0', STR_PAD_LEFT)
+                ];
+            });
+        @endphp
+
         <!-- Owner Photo Deliverables Uploader & Proofing Manager -->
         <div class="clean-card p-6 sm:p-8 rounded-3xl space-y-6"
              x-data="{
                 files: [],
                 previews: [],
                 isDragging: false,
+                photos: {{ Js::from($adminFotosData) }},
+                showLightbox: false,
+                activePhotoIndex: 0,
+                openLightbox(index) {
+                    this.activePhotoIndex = index;
+                    this.showLightbox = true;
+                    document.body.style.overflow = 'hidden';
+                },
+                closeLightbox() {
+                    this.showLightbox = false;
+                    document.body.style.overflow = '';
+                },
+                nextPhoto() {
+                    if (this.activePhotoIndex < this.photos.length - 1) {
+                        this.activePhotoIndex++;
+                    } else {
+                        this.activePhotoIndex = 0;
+                    }
+                },
+                prevPhoto() {
+                    if (this.activePhotoIndex > 0) {
+                        this.activePhotoIndex--;
+                    } else {
+                        this.activePhotoIndex = this.photos.length - 1;
+                    }
+                },
+                get activePhoto() {
+                    return this.photos[this.activePhotoIndex] || null;
+                },
                 handleFiles(selectedFiles) {
                     const valid = Array.from(selectedFiles).filter(f => f.type.startsWith('image/'));
                     this.files = valid;
@@ -127,7 +169,10 @@
                     this.previews = [];
                     if (this.$refs.fileInput) this.$refs.fileInput.value = '';
                 }
-             }">
+             }"
+             @keydown.escape.window="closeLightbox()"
+             @keydown.arrow-left.window="if(showLightbox) prevPhoto()"
+             @keydown.arrow-right.window="if(showLightbox) nextPhoto()">
             <!-- Card Header -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5">
                 <div class="flex items-center gap-3.5">
@@ -252,9 +297,9 @@
                                     @endif
 
                                     <div class="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-2.5">
-                                        <a href="{{ asset($foto->foto_path) }}" target="_blank" class="w-7 h-7 rounded-lg bg-white/90 text-slate-900 hover:bg-white text-xs font-bold flex items-center justify-center shadow-md backdrop-blur-xs transition-colors" title="Buka Resolusi Penuh">
+                                        <button type="button" @click="openLightbox({{ $loop->index }})" class="w-7 h-7 rounded-lg bg-white/90 text-slate-900 hover:bg-white text-xs font-bold flex items-center justify-center shadow-md backdrop-blur-xs transition-colors" title="Buka Resolusi Penuh">
                                             <i class="ph-duotone ph-arrows-out text-sm"></i>
-                                        </a>
+                                        </button>
 
                                         <form method="POST" action="{{ route('admin.proofing.delete', $foto->id) }}">
                                             @csrf
@@ -288,6 +333,82 @@
                     </div>
                 </div>
             @endif
+
+            <!-- Full-Screen Lightbox Multi-Photo Viewer untuk Owner -->
+            <template x-teleport="body">
+                <div x-show="showLightbox" 
+                     x-cloak
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-6 lg:p-8"
+                     style="display: none;">
+                    
+                    <!-- Top Lightbox Bar -->
+                    <div class="flex items-center justify-between text-white border-b border-white/10 pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-mono font-bold"
+                                  x-text="`${activePhotoIndex + 1} / ${photos.length}`">
+                            </span>
+                            <div class="text-xs">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-mono font-black text-white text-sm" x-text="activePhoto?.code"></span>
+                                    <template x-if="activePhoto?.is_selected">
+                                        <span class="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
+                                            <i class="ph-fill ph-check-circle text-xs"></i> Dipilih Pelanggan
+                                        </span>
+                                    </template>
+                                </div>
+                                <span class="text-slate-400 font-bold uppercase tracking-wider text-[10px]">{{ $booking->layanan?->nama ?? 'Sesi Foto' }} • Paket {{ $booking->paket?->nama_paket ?? '-' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <a :href="activePhoto?.foto_path" download class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-base" title="Unduh Resolusi Penuh">
+                                <i class="ph-duotone ph-download-simple"></i>
+                            </a>
+
+                            <button @click="closeLightbox()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors text-base" title="Tutup (Esc)">
+                                <i class="ph-bold ph-x"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Center Image Display -->
+                    <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
+                        <button @click="prevPhoto()" class="absolute left-2 sm:left-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Sebelumnya (Panah Kiri)">
+                            <i class="ph-bold ph-caret-left"></i>
+                        </button>
+
+                        <div class="max-w-5xl max-h-[72vh] flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border border-white/10">
+                            <img :src="activePhoto?.foto_path" 
+                                 :alt="activePhoto?.code" 
+                                 class="max-w-full max-h-[72vh] object-contain rounded-2xl transition-all duration-300">
+                        </div>
+
+                        <button @click="nextPhoto()" class="absolute right-2 sm:right-6 z-20 w-12 h-12 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center backdrop-blur-md transition-all active:scale-95 text-lg" title="Foto Selanjutnya (Panah Kanan)">
+                            <i class="ph-bold ph-caret-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Bottom Notes Drawer (Catatan Pelanggan) -->
+                    <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 text-white max-w-4xl mx-auto w-full">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5">
+                                <i class="ph-duotone ph-note-pencil text-amber-400 text-lg"></i>
+                                <span class="text-xs font-black uppercase tracking-wider text-amber-300">Catatan Pelanggan:</span>
+                                <span class="text-xs font-bold text-slate-100" x-text="activePhoto?.catatan ? `&quot;${activePhoto.catatan}&quot;` : 'Tidak ada catatan untuk foto ini'"></span>
+                            </div>
+                            <div class="text-[11px] text-slate-400 font-medium">
+                                Gunakan tombol <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px]">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px]">→</kbd> untuk geser foto
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
     @else
         <!-- Course LMS Information Card -->
