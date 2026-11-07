@@ -33,7 +33,7 @@
                 <span>/</span>
                 <a href="{{ route('customer.bookings.show', $booking->id) }}" class="hover:text-slate-700 transition-colors">{{ $booking->nomor_booking }}</a>
                 <span>/</span>
-                <span class="text-slate-700">Studio Proofing</span>
+                <span class="text-slate-700">Hasil Foto</span>
             </div>
             <div class="flex items-center gap-2 flex-wrap">
                 <span class="text-[10px] font-mono font-black text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
@@ -41,9 +41,9 @@
                 </span>
                 <span class="text-xs font-bold text-slate-500">• {{ $booking->layanan?->nama ?? 'Layanan Foto' }} (Paket {{ $booking->paket?->nama_paket ?? '-' }})</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 tracking-tight">Studio Proofing & Kurasi Foto</h1>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 tracking-tight">Hasil Foto</h1>
             <p class="text-xs text-slate-600 font-medium mt-1">
-                Tinjau foto resolusi tinggi, pilih foto favorit dengan ikon bintang, dan beri catatan retouching khusus.
+                Tinjau foto yang telah diunggah dan tandai foto dengan menekan tombol bintang <i class="ph-fill ph-star text-amber-500"></i> untuk dicetak.
             </p>
         </div>
 
@@ -149,27 +149,6 @@
                     </div>
                 </div>
             </template>
-        </div>
-
-        <!-- Sticky Floating Bottom Selection Action Bar -->
-        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-xl w-[90%] bg-slate-900 text-white p-4 rounded-3xl shadow-2xl border border-slate-800 flex items-center justify-between gap-4 backdrop-blur-md">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xl shadow-sm">
-                    <i class="ph-duotone ph-camera"></i>
-                </div>
-                <div class="text-xs">
-                    <span class="text-slate-400 font-bold block text-[10px] uppercase tracking-wider">Kurasi Foto Anda</span>
-                    <span class="font-black text-white text-sm" x-text="selectedCount + ' Foto Terpilih'"></span>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <button type="button" @click="confirmFinalSubmission()" 
-                        class="px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform active:scale-95">
-                    <i class="ph-duotone ph-paper-plane-tilt text-base text-emerald-600"></i>
-                    <span>Kirim Kurasi Final</span>
-                </button>
-            </div>
         </div>
 
         <!-- Fullscreen High-Resolution Lightbox Modal -->
