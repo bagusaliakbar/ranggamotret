@@ -19,9 +19,9 @@
 <div class="space-y-8" 
      x-data="proofingApp()"
      @keydown.escape.window="closeLightbox()"
-     @keydown.arrow-left.window="if(showLightbox) prevPhoto()"
-     @keydown.arrow-right.window="if(showLightbox) nextPhoto()"
-     @keydown.space.window.prevent="if(showLightbox) toggleActivePhotoSelect()">
+     @keydown.arrow-left.window="if(showLightbox && !isInputFocused($event)) prevPhoto()"
+     @keydown.arrow-right.window="if(showLightbox && !isInputFocused($event)) nextPhoto()"
+     @keydown.space.window="handleSpaceKey($event)">
 
     <!-- Header Section -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-6">
@@ -216,7 +216,7 @@
                 <div class="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 text-white flex flex-col sm:flex-row items-center justify-between gap-4 max-w-4xl mx-auto w-full">
                     <div class="flex-1 w-full flex items-center gap-3">
                         <i class="ph-duotone ph-note-pencil text-slate-400 text-lg"></i>
-                        <input type="text" x-model="activePhotoNotes" @change="savePhotoNotes()" placeholder="Catatan retouching untuk foto ini (misal: tolong bersihkan noda background)..."
+                        <input type="text" x-model="activePhotoNotes" @change="savePhotoNotes()" placeholder="Berikan catatan untuk foto ini (Misal : Dicetak Ukuran 2R)..."
                                class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-white transition-colors">
                     </div>
                     <div class="text-[11px] text-slate-400 font-medium shrink-0">
@@ -353,6 +353,21 @@
                     this.activePhotoIndex = this.photos.length - 1;
                 }
                 this.activePhotoNotes = this.activePhoto?.catatan || '';
+            },
+
+            isInputFocused(event) {
+                const tag = event.target?.tagName?.toLowerCase();
+                return tag === 'input' || tag === 'textarea' || event.target?.isContentEditable;
+            },
+
+            handleSpaceKey(event) {
+                if (!this.showLightbox) return;
+                if (this.isInputFocused(event)) {
+                    // Biarkan spasi berfungsi normal untuk mengetik catatan teks
+                    return;
+                }
+                event.preventDefault();
+                this.toggleActivePhotoSelect();
             },
 
             toggleActivePhotoSelect() {
