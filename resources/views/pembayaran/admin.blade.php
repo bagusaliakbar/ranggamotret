@@ -19,57 +19,6 @@
         </div>
     </div>
 
-    <!-- Quick Stats Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <!-- 1. Total Transaksi -->
-        <a href="{{ route('admin.payments.index') }}" class="clean-card p-5 rounded-2xl space-y-1 block hover:border-slate-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Total Transaksi</span>
-                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-receipt"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-slate-900">{{ number_format($countTotal) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Semua transaksi masuk</div>
-        </a>
-
-        <!-- 2. Lunas Terbayar -->
-        <a href="{{ route('admin.payments.index', ['status' => 'Dibayar']) }}" class="clean-card p-5 rounded-2xl space-y-1 block hover:border-emerald-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Lunas Terbayar</span>
-                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-check-circle"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-emerald-600">{{ number_format($countLunas) }}</div>
-            <div class="text-[11px] text-emerald-700 font-medium">Pembayaran sukses</div>
-        </a>
-
-        <!-- 3. Menunggu Pembayaran -->
-        <a href="{{ route('admin.payments.index', ['status' => 'pending']) }}" class="clean-card p-5 rounded-2xl space-y-1 block hover:border-amber-400 transition-all {{ $countPending > 0 ? 'bg-amber-50/20' : '' }}">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-amber-700 uppercase tracking-wider">Menunggu Bayar</span>
-                <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-hourglass-high"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-amber-600">{{ number_format($countPending) }}</div>
-            <div class="text-[11px] text-amber-700 font-medium">Menunggu penyelesaian klien</div>
-        </a>
-
-        <!-- 4. Gagal / Dibatalkan -->
-        <a href="{{ route('admin.payments.index', ['status' => 'failed']) }}" class="clean-card p-5 rounded-2xl space-y-1 block hover:border-rose-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-rose-700 uppercase tracking-wider">Batal / Kadaluarsa</span>
-                <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-x-circle"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-rose-600">{{ number_format($countFailed) }}</div>
-            <div class="text-[11px] text-rose-700 font-medium">Transaksi tidak terselesaikan</div>
-        </a>
-    </div>
-
     <!-- Search & Filter Navigation Tabs -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-4">
         <!-- Search Bar -->

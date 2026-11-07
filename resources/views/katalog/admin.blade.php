@@ -125,57 +125,6 @@
         </div>
     </div>
 
-    <!-- Quick Stats Cards (Ringkasan Metrik Layanan & Paket) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <!-- 1. Total Layanan -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Layanan</span>
-                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-camera"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-slate-900">{{ number_format($totalLayanan) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Katalog tema fotografi</div>
-        </div>
-
-        <!-- 2. Layanan Aktif -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Layanan Aktif</span>
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-check-circle"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-emerald-600">{{ number_format($layananAktif) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Bisa dibooking oleh klien</div>
-        </div>
-
-        <!-- 3. Total Paket -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Paket</span>
-                <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-package"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-indigo-600">{{ number_format($totalPaket) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Opsi variasi harga & durasi</div>
-        </div>
-
-        <!-- 4. Paket Aktif -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-2xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Paket Aktif</span>
-                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-tag"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-blue-600">{{ number_format($paketAktif) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Tersedia untuk reservasi</div>
-        </div>
-    </div>
-
     <!-- Filter, Search, & Toolbar -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs">
         <form method="GET" action="{{ route('admin.layanan.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center text-xs">

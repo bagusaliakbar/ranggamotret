@@ -103,8 +103,8 @@
         <div class="clean-card p-8 rounded-3xl space-y-6">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
                 <div>
-                    <h3 class="text-lg font-extrabold text-slate-900">Unggah Hasil Foto Pemotretan (Proofing Deliverables)</h3>
-                    <p class="text-xs text-slate-500 font-medium mt-1">Foto yang diunggah akan otomatis muncul di halaman proofing galeri pelanggan.</p>
+                    <h3 class="text-lg font-extrabold text-slate-900">Unggah Hasil Foto Pemotretan</h3>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Foto yang diunggah akan otomatis muncul di halaman pelanggan.</p>
                 </div>
                 <span class="text-[10px] text-slate-600 font-extrabold uppercase tracking-wider bg-slate-100 px-3 py-1.5 rounded-lg">{{ $booking->galeriFotos->count() }} Foto Terunggah</span>
             </div>

@@ -73,9 +73,6 @@
                 <div class="p-6 sm:p-7 border-b border-slate-100 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 text-white">
                     <div class="flex items-center justify-between flex-wrap gap-3">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md text-emerald-400 flex items-center justify-center text-2xl border border-white/10 shadow-sm">
-                                <i class="ph-duotone ph-shield-check"></i>
-                            </div>
                             <div>
                                 <h2 class="text-lg sm:text-xl font-black text-white tracking-tight">Midtrans Payment Gateway</h2>
                                 <p class="text-xs text-slate-300 font-medium mt-0.5">Satu portal pembayaran untuk seluruh metode transaksi digital</p>
@@ -201,9 +198,6 @@
                 <!-- Card Header -->
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                            <i class="ph-duotone ph-receipt text-emerald-400"></i>
-                        </div>
                         <div>
                             <h3 class="font-black text-sm text-slate-900">Ringkasan Tagihan</h3>
                             <p class="text-[10px] text-slate-400 font-medium">Rincian pesanan resmi Anda</p>
@@ -264,7 +258,7 @@
                         @if($booking->lokasi)
                             <div class="flex items-center justify-between">
                                 <span class="text-slate-500 font-medium flex items-center gap-1.5">
-                                    <i class="ph-duotone ph-map-pin text-slate-400"></i> Lokasi Studio
+                                    <i class="ph-duotone ph-map-pin text-slate-400"></i> Lokasi
                                 </span>
                                 <span class="font-bold text-slate-900 truncate max-w-[150px]">
                                     {{ $booking->lokasi }}
@@ -353,53 +347,6 @@
                     @endif
                 </div>
             </div>
-
-            <!-- Trust & Assurance Badges Card -->
-            <div class="rounded-3xl border border-slate-200/80 bg-white p-5 space-y-4 shadow-sm">
-                <h4 class="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                    <i class="ph-duotone ph-shield-check text-emerald-600 text-base"></i>
-                    <span>Jaminan Keamanan & Bantuan</span>
-                </h4>
-
-                <div class="space-y-3 text-xs">
-                    <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="ph-duotone ph-lock-key text-sm"></i>
-                        </div>
-                        <div>
-                            <span class="font-bold text-slate-800 block">Enkripsi Tingkat Perbankan</span>
-                            <p class="text-[11px] text-slate-500 font-medium leading-relaxed">Seluruh data pembayaran terlindungi sertifikasi SSL 256-bit standar Bank Indonesia.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="ph-duotone ph-sparkle text-sm"></i>
-                        </div>
-                        <div>
-                            <span class="font-bold text-slate-800 block">Garansi Kepuasan Studio</span>
-                            <p class="text-[11px] text-slate-500 font-medium leading-relaxed">Layanan profesional terstandar dengan dukungan fotografer berpengalaman RanggaMotret.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start gap-3 pt-2 border-t border-slate-100">
-                        <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
-                            <i class="ph-duotone ph-whatsapp-logo text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <span class="font-bold text-slate-800 block">Perlu Bantuan Pembayaran?</span>
-                            <p class="text-[11px] text-slate-500 font-medium leading-relaxed">Hubungi admin resmi studio melalui WhatsApp jika ada kendala transaksi.</p>
-                            <a href="https://wa.me/628123456789?text={{ urlencode('Halo Studio RanggaMotret, saya ingin konfirmasi pembayaran untuk tagihan #' . $kodeTagihan . ' sebesar Rp ' . number_format($totalHarga, 0, ',', '.')) }}" 
-                               target="_blank" 
-                               class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline mt-1.5">
-                                <i class="ph-bold ph-arrow-up-right text-xs"></i>
-                                <span>Chat WhatsApp Admin Studio</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>
