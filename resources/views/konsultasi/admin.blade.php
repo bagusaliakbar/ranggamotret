@@ -19,57 +19,6 @@
         </div>
     </div>
 
-    <!-- Quick Stats Cards (Ringkasan Metrik Konsultasi) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        <!-- 1. Total Permintaan Konsultasi -->
-        <a href="{{ route('admin.consultations.index') }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-slate-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Konsultasi</span>
-                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-chats-circle"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-slate-900">{{ number_format($totalConsultations) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Semua pertanyaan masuk</div>
-        </a>
-
-        <!-- 2. Menunggu Tanggapan -->
-        <a href="{{ route('admin.consultations.index', ['status' => 'pending']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border-2 {{ $countPending > 0 ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200' }} shadow-2xs hover:border-amber-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-amber-700 uppercase tracking-wider">Perlu Ditanggapi</span>
-                <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-hourglass-medium"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-amber-600">{{ number_format($countPending) }}</div>
-            <div class="text-[11px] text-amber-700 font-medium">Calon klien menunggu arahan</div>
-        </a>
-
-        <!-- 3. Selesai Ditanggapi -->
-        <a href="{{ route('admin.consultations.index', ['status' => 'replied']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-emerald-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Sudah Dibalas</span>
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-chat-circle-dots"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-emerald-600">{{ number_format($countReplied) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Balasan rekomendasi terkirim</div>
-        </a>
-
-        <!-- 4. Konsultasi Selesai -->
-        <a href="{{ route('admin.consultations.index', ['status' => 'selesai']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-blue-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-blue-700 uppercase tracking-wider">Konsultasi Selesai</span>
-                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-check-circle"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-blue-600">{{ number_format($countSelesai ?? 0) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Diskusi tuntas & terjawab</div>
-        </a>
-    </div>
-
     <!-- Filter, Search, & Toolbar -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs">
         <form method="GET" action="{{ route('admin.consultations.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center text-xs">
