@@ -396,9 +396,11 @@ class ReservasiController extends Controller
      */
     public function customerProofing($bookingId)
     {
-        $booking = Reservasi::where('user_id', Auth::id())
-            ->with(['layanan', 'paket', 'galeriFotos'])
-            ->findOrFail($bookingId);
+        $query = Reservasi::with(['layanan', 'paket', 'galeriFotos']);
+        if (!Auth::user()->isOwner()) {
+            $query->where('user_id', Auth::id());
+        }
+        $booking = $query->findOrFail($bookingId);
 
         return view('reservasi.proofing', compact('booking'));
     }
@@ -408,9 +410,13 @@ class ReservasiController extends Controller
      */
     public function toggleProofingSelection(Request $request, $id)
     {
-        $foto = GaleriFoto::whereHas('booking', function ($q) {
-            $q->where('user_id', Auth::id());
-        })->findOrFail($id);
+        $query = GaleriFoto::query();
+        if (!Auth::user()->isOwner()) {
+            $query->whereHas('booking', function ($q) {
+                $q->where('user_id', Auth::id());
+            });
+        }
+        $foto = $query->findOrFail($id);
 
         $foto->is_selected = !$foto->is_selected;
         if ($request->has('catatan')) {

@@ -29,17 +29,17 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-2">
                 <a href="{{ route('dashboard') }}" class="hover:text-slate-700 transition-colors">Dashboard</a>
                 <span>/</span>
-                <a href="{{ route('customer.bookings.index') }}" class="hover:text-slate-700 transition-colors">Riwayat Reservasi</a>
-                <span>/</span>
-                <a href="{{ route('customer.bookings.show', $booking->id) }}" class="hover:text-slate-700 transition-colors">{{ $booking->nomor_booking }}</a>
+                @if(Auth::user()->isOwner())
+                    <a href="{{ route('admin.bookings.index') }}" class="hover:text-slate-700 transition-colors">Kelola Reservasi</a>
+                    <span>/</span>
+                    <a href="{{ route('admin.bookings.show', $booking->id) }}" class="hover:text-slate-700 transition-colors">{{ $booking->nomor_booking }}</a>
+                @else
+                    <a href="{{ route('customer.bookings.index') }}" class="hover:text-slate-700 transition-colors">Riwayat Reservasi</a>
+                    <span>/</span>
+                    <a href="{{ route('customer.bookings.show', $booking->id) }}" class="hover:text-slate-700 transition-colors">{{ $booking->nomor_booking }}</a>
+                @endif
                 <span>/</span>
                 <span class="text-slate-700">Hasil Foto</span>
-            </div>
-            <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-[10px] font-mono font-black text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
-                    {{ $booking->nomor_booking }}
-                </span>
-                <span class="text-xs font-bold text-slate-500">• {{ $booking->layanan?->nama ?? 'Layanan Foto' }} (Paket {{ $booking->paket?->nama_paket ?? '-' }})</span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mt-2 tracking-tight">Hasil Foto</h1>
             <p class="text-xs text-slate-600 font-medium mt-1">
@@ -48,10 +48,6 @@
         </div>
 
         <div class="flex items-center gap-3">
-            <a href="{{ route('customer.bookings.show', $booking->id) }}" class="btn-outline px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
-                <i class="ph-duotone ph-arrow-left"></i> Detail Reservasi
-            </a>
-            
             <div class="clean-card px-4 py-2.5 rounded-xl border border-slate-200 flex items-center gap-3 text-xs font-bold shadow-sm bg-white">
                 <span class="text-slate-500">Dipilih:</span>
                 <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 font-black text-xs" x-text="selectedCount + ' / ' + photos.length">

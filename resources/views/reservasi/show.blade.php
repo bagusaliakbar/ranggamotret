@@ -130,7 +130,7 @@
                     <div class="clean-card p-6 rounded-2xl space-y-4 border-purple-200 bg-purple-50/20">
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div>
-                                <h3 class="font-bold text-slate-900 text-base">Galeri Proofing Foto</h3>
+                                <h3 class="font-bold text-slate-900 text-base">Galeri Hasil Foto</h3>
                                 <p class="text-xs text-slate-600 font-medium">Tersedia {{ $booking->galeriFotos->count() }} foto untuk ditinjau dan dipilih.</p>
                             </div>
                             <a href="{{ route('customer.proofing.show', $booking->id) }}" class="px-5 py-2.5 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 shadow-md">
