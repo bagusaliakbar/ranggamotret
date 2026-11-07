@@ -387,8 +387,7 @@
         <!-- 1. Modal Tambah Kursus Baru -->
         <div x-show="openAddCourse" x-transition.opacity
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
-                @click.away="openAddCourse = false">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Tambah Kursus</h3>
                     <button type="button" @click="openAddCourse = false" 
@@ -490,8 +489,7 @@
         <!-- 2. Modal Edit Kursus -->
         <div x-show="openEditCourse" x-transition.opacity
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto"
-                @click.away="openEditCourse = false">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Data Kursus</h3>
                     <button type="button" @click="openEditCourse = false" 
@@ -595,8 +593,7 @@
         <!-- 3. Modal Tambah Modul Silabus -->
         <div x-show="openAddModule" x-transition.opacity
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl"
-                @click.away="openAddModule = false">
+            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <div>
                         <h3 class="font-extrabold text-base text-slate-900">Tambah Modul Silabus</h3>
@@ -639,8 +636,7 @@
         <!-- 4. Modal Edit Modul Silabus -->
         <div x-show="openEditModule" x-transition.opacity
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl"
-                @click.away="openEditModule = false">
+            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Modul Silabus</h3>
                     <button type="button" @click="openEditModule = false" 
@@ -680,8 +676,7 @@
         <!-- 5. Modal Tambah Materi Pembelajaran / Kuis Evaluasi -->
         <div x-show="openAddMateri" x-transition.opacity
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-3 sm:p-4">
-            <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
-                @click.away="openAddMateri = false">
+            <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
                 <!-- Modal Sticky Header -->
                 <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
                     <div class="space-y-0.5 pr-4">
@@ -883,8 +878,7 @@
         <!-- 6. Modal Edit Materi Pembelajaran -->
         <div x-show="openEditMateri" x-transition.opacity
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-3 sm:p-4">
-            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
-                @click.away="openEditMateri = false">
+            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
                 <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
                     <div class="space-y-0.5">
                         <h3 class="font-extrabold text-base text-slate-900">Edit Materi Pembelajaran</h3>

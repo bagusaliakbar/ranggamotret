@@ -122,8 +122,7 @@
                                 <div x-show="openReply" 
                                      x-cloak 
                                      class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-                                    <div class="bg-white p-6 rounded-3xl max-w-xl w-full text-left space-y-4 border border-slate-200 shadow-2xl" 
-                                         @click.away="openReply = false">
+                                    <div class="bg-white p-6 rounded-3xl max-w-xl w-full text-left space-y-4 border border-slate-200 shadow-2xl">
                                         <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                                             <div>
                                                 <h4 class="font-black text-base text-slate-900 flex items-center gap-2">

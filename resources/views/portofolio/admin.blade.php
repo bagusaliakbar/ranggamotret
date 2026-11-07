@@ -295,8 +295,7 @@
         <div x-show="openAddModal" 
              x-cloak
              class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-            <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative my-8"
-                 @click.away="openAddModal = false">
+            <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative my-8">
                 
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div class="flex items-center gap-3">
@@ -460,8 +459,7 @@
         <div x-show="openEditModal" 
              x-cloak
              class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-            <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative my-8"
-                 @click.away="openEditModal = false">
+            <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 relative my-8">
                 
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div class="flex items-center gap-3">
@@ -604,8 +602,7 @@
         <div x-show="openDeleteModal" 
              x-cloak
              class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl border border-slate-200"
-                 @click.away="openDeleteModal = false">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl border border-slate-200">
                 <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mx-auto border border-rose-100">
                     <i class="ph-duotone ph-trash"></i>
                 </div>

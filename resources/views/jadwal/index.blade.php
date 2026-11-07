@@ -117,8 +117,7 @@
     <div x-show="openManageModal" 
          x-cloak
          class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-6 shadow-2xl border border-slate-200 relative"
-             @click.away="openManageModal = false">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 space-y-6 shadow-2xl border border-slate-200 relative">
             
             <!-- Modal Header -->
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">

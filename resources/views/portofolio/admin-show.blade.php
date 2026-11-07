@@ -276,8 +276,7 @@
         <div x-show="openDeleteModal" 
              x-cloak
              class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-200"
-                 @click.away="openDeleteModal = false">
+            <div class="bg-white rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-slate-200">
                 <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl mx-auto border border-rose-100">
                     <i class="ph-duotone ph-trash"></i>
                 </div>

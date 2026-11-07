@@ -230,8 +230,7 @@
              class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" 
              style="display: none;">
             
-            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
-                 @click.away="openAddModal = false">
+            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8">
                 
                 <!-- Modal Header -->
                 <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
@@ -347,8 +346,7 @@
              class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto" 
              style="display: none;">
             
-            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8" 
-                 @click.away="openEditModal = false">
+            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8">
                 
                 <!-- Modal Header -->
                 <div class="px-6 py-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
@@ -465,8 +463,7 @@
              class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" 
              style="display: none;">
             
-            <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 space-y-5 text-xs" 
-                 @click.away="openDeleteModal = false">
+            <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl p-6 space-y-5 text-xs">
                 
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-base shrink-0">

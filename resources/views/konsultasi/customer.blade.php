@@ -497,8 +497,7 @@
          class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
          style="display: none;">
         
-        <div @click.outside="openModal = false" 
-             x-transition:enter="transition ease-out duration-200"
+        <div x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95 translate-y-3"
              x-transition:enter-end="opacity-100 scale-100 translate-y-0"
              class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto text-xs custom-scrollbar">
