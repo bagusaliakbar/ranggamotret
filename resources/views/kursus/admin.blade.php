@@ -386,7 +386,6 @@
                                                         <div class="truncate">
                                                             <div class="flex items-center gap-2">
                                                                 <span class="font-extrabold text-blue-950">{{ $qz->judul }}</span>
-                                                                <span class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase bg-blue-100 text-blue-800 border border-blue-200">Kuis Evaluasi</span>
                                                             </div>
                                                             <span class="text-[10px] text-blue-700/80 block truncate">
                                                                 Durasi: {{ $qz->durasi_menit }} Menit • Passing Grade: {{ $qz->passing_grade }}% • Total: {{ $qz->soals->count() }} Soal

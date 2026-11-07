@@ -89,10 +89,10 @@
     <!-- Filter & Pencarian Toolbar -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
         <form method="GET" action="{{ route('admin.courses.reservations.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-            <!-- Pencarian Transaksi/Pelanggan -->
+            <!-- Pencarian Reservasi/Pelanggan -->
             <div class="sm:col-span-5 relative">
                 <i class="ph-duotone ph-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Cari kode transaksi, nama pelanggan, email..."
+                <input type="text" name="search" value="{{ $search }}" placeholder="Cari kode reservasi, nama pelanggan, email..."
                        class="w-full pl-9 pr-4 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all">
             </div>
 
@@ -140,7 +140,7 @@
             <table class="w-full text-left text-xs text-slate-700">
                 <thead class="bg-slate-50 text-slate-900 uppercase font-extrabold text-[10px] border-b border-slate-200 tracking-wider">
                     <tr>
-                        <th class="p-4">Kode Transaksi</th>
+                        <th class="p-4">Kode Reservasi</th>
                         <th class="p-4">Pelanggan Kursus</th>
                         <th class="p-4">Program Kursus</th>
                         <th class="p-4">Total Biaya & Metode</th>
@@ -160,13 +160,14 @@
                                 default => 'bg-slate-100 text-slate-700 border-slate-200',
                             };
                             $isGateway = str_contains($r->metode_pembayaran ?? '', 'Midtrans') || !empty($r->snap_token);
+                            $kodeReservasi = $r->reservasi?->nomor_reservasi ?? ('RSV-KRS-' . date('Ymd', strtotime($r->created_at)) . '-' . str_pad($r->id, 4, '0', STR_PAD_LEFT));
                         @endphp
                         <tr class="hover:bg-slate-50/80 transition-colors {{ $r->status === 'Menunggu Verifikasi' ? 'bg-sky-50/30' : '' }}">
                             
-                            <!-- 1. Kode Transaksi -->
+                            <!-- 1. Kode Reservasi -->
                             <td class="p-4 whitespace-nowrap">
                                 <div class="flex items-center gap-1.5">
-                                    <span class="font-mono font-black text-slate-900 text-xs">{{ $r->nomor_transaksi }}</span>
+                                    <span class="font-mono font-black text-slate-900 text-xs">{{ $kodeReservasi }}</span>
                                     <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-200">
                                         KRS-{{ $r->kursus_id }}
                                     </span>

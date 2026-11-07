@@ -356,11 +356,14 @@ class KursusController extends Controller
         $kursusId = $request->query('kursus_id');
 
         $query = Pembayaran::whereNotNull('kursus_id')
-            ->with(['user', 'kursus.instruktur', 'invoice']);
+            ->with(['user', 'kursus.instruktur', 'invoice', 'reservasi']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nomor_transaksi', 'like', "%{$search}%")
+                  ->orWhereHas('reservasi', function ($rq) use ($search) {
+                      $rq->where('nomor_reservasi', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('user', function ($uq) use ($search) {
                       $uq->where('name', 'like', "%{$search}%")
                          ->orWhere('email', 'like', "%{$search}%")
