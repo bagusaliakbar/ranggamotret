@@ -185,10 +185,6 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('customer.proofing.show', $booking->id) }}" class="inline-flex items-center gap-1.5 text-xs font-black text-purple-700 bg-purple-50 hover:bg-purple-100 px-3.5 py-1.5 rounded-xl border border-purple-200 transition-colors shadow-2xs">
-                        <i class="ph-duotone ph-eye text-sm"></i>
-                        <span>Lihat Tampilan Pelanggan</span>
-                    </a>
                     <span class="inline-flex items-center gap-1.5 text-xs font-black text-slate-700 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200">
                         <i class="ph-duotone ph-images text-slate-500 text-sm"></i>
                         <span>{{ $booking->galeriFotos->count() }} Foto Terunggah</span>
@@ -275,13 +271,7 @@
                 <div class="space-y-3 pt-4 border-t border-slate-100">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-black text-slate-800 uppercase tracking-wider">Galeri Foto Tersimpan</span>
-                        <div class="flex items-center gap-3">
-                            <a href="{{ route('customer.proofing.show', $booking->id) }}" class="text-xs font-extrabold text-purple-700 hover:text-purple-800 inline-flex items-center gap-1">
-                                <i class="ph-duotone ph-arrows-out-simple"></i> Buka Mode Studio Pelanggan
-                            </a>
-                            <span class="text-slate-300">•</span>
-                            <span class="text-[11px] font-medium text-slate-400">Arahkan kursor pada foto untuk menghapus</span>
-                        </div>
+                        <span class="text-[11px] font-medium text-slate-400">Arahkan kursor pada foto untuk melihat opsi</span>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
