@@ -134,7 +134,7 @@
                                 <p class="text-xs text-slate-600 font-medium">Tersedia {{ $booking->galeriFotos->count() }} foto untuk ditinjau dan dipilih.</p>
                             </div>
                             <a href="{{ route('customer.proofing.show', $booking->id) }}" class="px-5 py-2.5 rounded-xl bg-purple-700 text-white font-bold text-xs hover:bg-purple-800 shadow-md">
-                                Buka Panel Proofing
+                                Buka Hasil Foto
                             </a>
                         </div>
                     </div>

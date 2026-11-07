@@ -124,27 +124,35 @@
                     </div>
 
                     <!-- Card Bottom Details & Star Toggle -->
-                    <div class="p-4 flex items-center justify-between text-xs border-t border-slate-100 bg-white">
-                        <div class="space-y-0.5">
-                            <span class="font-mono text-[11px] font-black text-slate-900" x-text="foto.code"></span>
-                            <div x-show="foto.catatan" class="text-[10px] text-slate-500 italic truncate max-w-32.5" x-text="foto.catatan"></div>
+                    <div class="p-4 space-y-3 border-t border-slate-100 bg-white">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="font-mono text-xs font-black tracking-wider text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 shrink-0" x-text="foto.code"></span>
+
+                            <div class="flex items-center gap-2 shrink-0">
+                                <!-- Toggle Star Button -->
+                                <button type="button" @click.stop="toggleSelect(foto.id)" 
+                                        class="h-9 px-3 rounded-xl flex items-center justify-center gap-1.5 text-xs font-bold transition-all shadow-sm active:scale-95 border"
+                                        :class="foto.is_selected ? 'bg-amber-400 text-slate-950 border-amber-500 shadow-amber-200' : 'bg-slate-50 text-slate-500 hover:text-amber-600 border-slate-200 hover:bg-amber-50/50'"
+                                        :title="foto.is_selected ? 'Batalkan pilihan' : 'Tandai bintang foto ini'">
+                                    <i :class="foto.is_selected ? 'ph-fill ph-star text-sm text-slate-950' : 'ph-duotone ph-star text-sm text-amber-500'"></i>
+                                    <span x-text="foto.is_selected ? 'Terpilih' : 'Pilih'"></span>
+                                </button>
+
+                                <!-- Download Single Photo -->
+                                <a :href="foto.foto_path" download 
+                                   class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-950 hover:bg-slate-100 flex items-center justify-center text-sm transition-colors shadow-2xs"
+                                   title="Unduh resolusi tinggi">
+                                    <i class="ph-duotone ph-download-simple"></i>
+                                </a>
+                            </div>
                         </div>
 
-                        <div class="flex items-center gap-2">
-                            <!-- Toggle Star Button -->
-                            <button type="button" @click.stop="toggleSelect(foto.id)" 
-                                    class="w-9 h-9 rounded-xl flex items-center justify-center text-sm transition-all shadow-sm active:scale-90 border"
-                                    :class="foto.is_selected ? 'bg-amber-400 text-slate-900 border-amber-500 shadow-amber-300' : 'bg-slate-50 text-slate-400 hover:text-amber-500 border-slate-200 hover:bg-white'"
-                                    :title="foto.is_selected ? 'Hapus pilihan' : 'Pilih foto ini'">
-                                <i :class="foto.is_selected ? 'ph-fill ph-star text-base' : 'ph-duotone ph-star text-base'"></i>
-                            </button>
-
-                            <!-- Download Single Photo -->
-                            <a :href="foto.foto_path" download 
-                               class="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100 flex items-center justify-center text-base transition-colors"
-                               title="Unduh resolusi tinggi">
-                                <i class="ph-duotone ph-download-simple"></i>
-                            </a>
+                        <!-- Catatan Foto yang Jelas & Terbaca -->
+                        <div x-show="foto.catatan" class="p-2.5 rounded-xl bg-amber-50/80 border border-amber-200/80 text-amber-950 space-y-1">
+                            <span class="text-[10px] font-black uppercase tracking-wider text-amber-700 flex items-center gap-1">
+                                <i class="ph-duotone ph-note-pencil text-xs"></i> Catatan Cetak / Permintaan:
+                            </span>
+                            <p class="text-xs font-extrabold text-slate-900 leading-snug break-words" x-text="foto.catatan"></p>
                         </div>
                     </div>
                 </div>
@@ -218,9 +226,6 @@
                         <i class="ph-duotone ph-note-pencil text-slate-400 text-lg"></i>
                         <input type="text" x-model="activePhotoNotes" @change="savePhotoNotes()" placeholder="Berikan catatan untuk foto ini (Misal : Dicetak Ukuran 2R)..."
                                class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-white transition-colors">
-                    </div>
-                    <div class="text-[11px] text-slate-400 font-medium shrink-0">
-                        Tekan <kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white text-[10px]">Spasi</kbd> untuk pilih bintang
                     </div>
                 </div>
             </div>

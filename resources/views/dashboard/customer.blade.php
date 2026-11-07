@@ -126,7 +126,7 @@
                             'icon' => 'ph-camera'
                         ],
                         5 => [
-                            'title' => 'Proofing & Retouch',
+                            'title' => 'Selesai',
                             'desc' => 'Koleksi Foto Siap',
                             'icon' => 'ph-sparkle'
                         ],
@@ -230,7 +230,7 @@
                                             </span>
                                         @elseif($num === 5 && $isCompleted)
                                             <span class="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full mt-0.5">
-                                                <i class="ph-fill ph-check-circle text-[9px]"></i> Tuntas
+                                                <i class="ph-fill ph-check-circle text-[9px]"></i> Selesai
                                             </span>
                                         @endif
                                     </div>
@@ -279,7 +279,7 @@
                                     @elseif($statusStep === 4)
                                         Foto mentah sesi Anda sedang dalam tahap sortir awal, kurasi resolusi tinggi, dan retouching oleh tim editor RanggaMotret.
                                     @else
-                                        Koleksi foto hasil pemotretan telah selesai diproses. Anda dapat melihat, mengunduh, atau memilih foto cetak di Galeri Proofing.
+                                        Koleksi foto hasil pemotretan telah selesai diproses. Anda dapat melihat, mengunduh, atau memilih foto untuk dicetak.
                                     @endif
                                 </p>
                             </div>
@@ -295,7 +295,7 @@
                             @elseif($statusStep === 5 && $latestBooking->galeriFotos->count() > 0)
                                 <a href="{{ route('customer.proofing.show', $latestBooking->id) }}" class="btn-dark px-3.5 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
                                     <i class="ph-duotone ph-images text-emerald-400"></i>
-                                    <span>Buka Galeri Proofing</span>
+                                    <span>Buka Hasil Foto</span>
                                 </a>
                             @else
                                 <a href="{{ route('customer.bookings.show', $latestBooking->id) }}" class="text-xs font-bold text-slate-700 hover:text-slate-900 inline-flex items-center gap-1 py-1 px-2.5 rounded-lg hover:bg-slate-200/50 transition-colors">
@@ -663,17 +663,6 @@
                             <span class="px-2.5 py-1 rounded-md text-[10px] font-black uppercase border {{ $bBadge }}">
                                 {{ $b->status }}
                             </span>
-
-                            <div class="flex items-center gap-2">
-                                <a href="{{ route('customer.bookings.show', $b->id) }}" class="btn-dark px-3.5 py-1.5 rounded-xl text-xs font-bold">
-                                    Detail
-                                </a>
-                                @if($b->galeriFotos->count() > 0)
-                                    <a href="{{ route('customer.proofing.show', $b->id) }}" class="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5">
-                                        <i class="ph-duotone ph-images text-sm"></i> Proofing
-                                    </a>
-                                @endif
-                            </div>
                         </div>
                     </div>
                 @empty
