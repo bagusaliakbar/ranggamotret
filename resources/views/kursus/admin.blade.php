@@ -385,19 +385,23 @@
         <!-- ==================== MODALS ==================== -->
 
         <!-- 1. Modal Tambah Kursus Baru -->
-        <div x-show="openAddCourse" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-                    <h3 class="font-extrabold text-base text-slate-900">Tambah Kursus</h3>
-                    <button type="button" @click="openAddCourse = false" 
-                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
-                        title="Tutup (Esc)">
-                        <i class="ph-duotone ph-x text-base font-bold"></i>
-                    </button>
-                </div>
+        <template x-teleport="body">
+            <div x-show="openAddCourse" 
+                 x-cloak
+                 x-transition.opacity
+                 class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+                 style="display: none;">
+                <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto my-auto relative z-10">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                        <h3 class="font-extrabold text-base text-slate-900">Tambah Kursus</h3>
+                        <button type="button" @click="openAddCourse = false" 
+                            class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
+                            title="Tutup (Esc)">
+                            <i class="ph-duotone ph-x text-base font-bold"></i>
+                        </button>
+                    </div>
 
-                <form method="POST" action="{{ route('admin.courses.store') }}" enctype="multipart/form-data" class="space-y-4">
+                    <form method="POST" action="{{ route('admin.courses.store') }}" enctype="multipart/form-data" class="space-y-4">
                     @csrf
                     <div>
                         <label class="block text-slate-700 font-bold mb-1">Nama Kursus <span
@@ -485,11 +489,16 @@
                 </form>
             </div>
         </div>
+    </template>
 
-        <!-- 2. Modal Edit Kursus -->
-        <div x-show="openEditCourse" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <!-- 2. Modal Edit Kursus -->
+    <template x-teleport="body">
+        <div x-show="openEditCourse" 
+             x-cloak
+             x-transition.opacity
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+             style="display: none;">
+            <div class="bg-white p-6 sm:p-8 rounded-3xl max-w-lg w-full space-y-6 text-xs border border-slate-200 shadow-2xl max-h-[90vh] overflow-y-auto my-auto relative z-10">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Data Kursus</h3>
                     <button type="button" @click="openEditCourse = false" 
@@ -589,11 +598,16 @@
                 </form>
             </div>
         </div>
+    </template>
 
-        <!-- 3. Modal Tambah Modul Silabus -->
-        <div x-show="openAddModule" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl">
+    <!-- 3. Modal Tambah Modul Silabus -->
+    <template x-teleport="body">
+        <div x-show="openAddModule" 
+             x-cloak
+             x-transition.opacity
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+             style="display: none;">
+            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl my-auto relative z-10">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <div>
                         <h3 class="font-extrabold text-base text-slate-900">Tambah Modul Silabus</h3>
@@ -632,11 +646,16 @@
                 </form>
             </div>
         </div>
+    </template>
 
-        <!-- 4. Modal Edit Modul Silabus -->
-        <div x-show="openEditModule" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-4">
-            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl">
+    <!-- 4. Modal Edit Modul Silabus -->
+    <template x-teleport="body">
+        <div x-show="openEditModule" 
+             x-cloak
+             x-transition.opacity
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+             style="display: none;">
+            <div class="bg-white p-6 rounded-3xl max-w-md w-full space-y-6 text-xs border border-slate-200 shadow-2xl my-auto relative z-10">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-4">
                     <h3 class="font-extrabold text-base text-slate-900">Edit Modul Silabus</h3>
                     <button type="button" @click="openEditModule = false" 
@@ -673,10 +692,14 @@
             </div>
         </div>
 
-        <!-- 5. Modal Tambah Materi Pembelajaran / Kuis Evaluasi -->
-        <div x-show="openAddMateri" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-3 sm:p-4">
-            <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
+    <!-- 5. Modal Tambah Materi Pembelajaran / Kuis Evaluasi -->
+    <template x-teleport="body">
+        <div x-show="openAddMateri" 
+             x-cloak
+             x-transition.opacity
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+             style="display: none;">
+            <div class="bg-white rounded-3xl max-w-xl w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden my-auto relative z-10">
                 <!-- Modal Sticky Header -->
                 <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
                     <div class="space-y-0.5 pr-4">
@@ -874,11 +897,16 @@
             </form>
         </div>
     </div>
+</template>
 
-        <!-- 6. Modal Edit Materi Pembelajaran -->
-        <div x-show="openEditMateri" x-transition.opacity
-            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-100 flex items-center justify-center p-3 sm:p-4">
-            <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden">
+<!-- 6. Modal Edit Materi Pembelajaran -->
+<template x-teleport="body">
+    <div x-show="openEditMateri" 
+         x-cloak
+         x-transition.opacity
+         class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+         style="display: none;">
+        <div class="bg-white rounded-3xl max-w-lg w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden my-auto relative z-10">
                 <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
                     <div class="space-y-0.5">
                         <h3 class="font-extrabold text-base text-slate-900">Edit Materi Pembelajaran</h3>
@@ -945,5 +973,6 @@
                 </form>
             </div>
         </div>
-    </div>
+    </template>
+</div>
 @endsection
