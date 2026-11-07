@@ -300,18 +300,109 @@
                     <i class="ph-duotone ph-globe text-base"></i>
                 </a>
 
-                <!-- Notification Dropdown Preview -->
-                <div x-data="{ notifOpen: false }" class="relative">
+                <!-- Notification Dropdown Preview with Realtime & Sound -->
+                <div x-data="{ 
+                        notifOpen: false,
+                        soundEnabled: localStorage.getItem('notif_sound_enabled') !== 'false',
+                        unreadCount: {{ Auth::user()->unreadNotificationsCount() }},
+                        latestId: {{ Auth::user()->notifikasis()->max('id') ?? 0 }},
+                        hasInitialized: false,
+                        notifications: @js(
+                            Auth::user()->notifikasis()->latest()->take(5)->get()->map(function($n) {
+                                $icon = 'ph-bell-simple';
+                                $t = strtolower($n->judul);
+                                if (str_contains($t, 'pembayaran') || str_contains($t, 'transaksi')) {
+                                    $icon = 'ph-receipt';
+                                } elseif (str_contains($t, 'booking') || str_contains($t, 'reservasi') || str_contains($t, 'jadwal')) {
+                                    $icon = 'ph-calendar-check';
+                                } elseif (str_contains($t, 'kursus') || str_contains($t, 'materi')) {
+                                    $icon = 'ph-graduation-cap';
+                                } elseif (str_contains($t, 'konsultasi')) {
+                                    $icon = 'ph-chats-circle';
+                                }
+                                return [
+                                    'id' => $n->id,
+                                    'judul' => $n->judul,
+                                    'pesan' => $n->pesan,
+                                    'link' => route('notifications.read', $n->id),
+                                    'is_read' => (bool)$n->is_read,
+                                    'time_ago' => $n->created_at->diffForHumans(),
+                                    'icon' => $icon,
+                                ];
+                            })
+                        ),
+                        toggleSound() {
+                            this.soundEnabled = !this.soundEnabled;
+                            localStorage.setItem('notif_sound_enabled', this.soundEnabled ? 'true' : 'false');
+                            if (this.soundEnabled) {
+                                this.playChime();
+                            }
+                        },
+                        playChime() {
+                            try {
+                                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                                const now = ctx.currentTime;
+                                
+                                const osc1 = ctx.createOscillator();
+                                const gain1 = ctx.createGain();
+                                osc1.type = 'sine';
+                                osc1.frequency.setValueAtTime(587.33, now); // D5
+                                osc1.frequency.exponentialRampToValueAtTime(880, now + 0.12); // A5
+                                gain1.gain.setValueAtTime(0, now);
+                                gain1.gain.linearRampToValueAtTime(0.2, now + 0.02);
+                                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                                osc1.connect(gain1);
+                                gain1.connect(ctx.destination);
+                                osc1.start(now);
+                                osc1.stop(now + 0.35);
+
+                                const osc2 = ctx.createOscillator();
+                                const gain2 = ctx.createGain();
+                                osc2.type = 'sine';
+                                osc2.frequency.setValueAtTime(1174.66, now + 0.12); // D6
+                                gain2.gain.setValueAtTime(0, now + 0.12);
+                                gain2.gain.linearRampToValueAtTime(0.25, now + 0.14);
+                                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+                                osc2.connect(gain2);
+                                gain2.connect(ctx.destination);
+                                osc2.start(now + 0.12);
+                                osc2.stop(now + 0.55);
+                            } catch (e) {
+                                console.warn('Audio notification failed:', e);
+                            }
+                        },
+                        init() {
+                            // Polling berkala setiap 5 detik tanpa perlu reload browser
+                            setInterval(() => {
+                                fetch('{{ route('notifications.poll') }}', { credentials: 'same-origin' })
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        if (this.hasInitialized && data.latest_id > this.latestId && data.unread_count > 0) {
+                                            if (this.soundEnabled) {
+                                                this.playChime();
+                                            }
+                                        }
+                                        this.latestId = Math.max(this.latestId, data.latest_id);
+                                        this.unreadCount = data.unread_count;
+                                        this.notifications = data.notifications;
+                                        this.hasInitialized = true;
+                                    })
+                                    .catch(err => console.error('Error polling notifications:', err));
+                            }, 5000);
+                            this.hasInitialized = true;
+                        }
+                    }" 
+                    class="relative">
                     <button @click="notifOpen = !notifOpen" 
                             type="button"
                             class="relative p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400" 
                             title="Notifikasi">
                         <i class="ph-duotone ph-bell text-base"></i>
-                        @if(Auth::user()->unreadNotificationsCount() > 0)
-                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs animate-pulse">
-                                {{ Auth::user()->unreadNotificationsCount() }}
+                        <template x-if="unreadCount > 0">
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-xs animate-pulse"
+                                  x-text="unreadCount">
                             </span>
-                        @endif
+                        </template>
                     </button>
 
                     <!-- Preview Dropdown Panel -->
@@ -331,67 +422,71 @@
                             <div class="flex items-center gap-2">
                                 <i class="ph-duotone ph-bell-ringing text-slate-800 text-base"></i>
                                 <h4 class="font-extrabold text-slate-900 text-xs tracking-tight">Pemberitahuan</h4>
-                                @if(Auth::user()->unreadNotificationsCount() > 0)
-                                    <span class="px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black">
-                                        {{ Auth::user()->unreadNotificationsCount() }} Baru
+                                <template x-if="unreadCount > 0">
+                                    <span class="px-2 py-0.5 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black"
+                                          x-text="unreadCount + ' Baru'">
                                     </span>
-                                @endif
+                                </template>
                             </div>
 
-                            @if(Auth::user()->unreadNotificationsCount() > 0)
-                                <form action="{{ route('notifications.read-all') }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-colors">
-                                        Tandai Semua Dibaca
-                                    </button>
-                                </form>
-                            @endif
+                            <!-- Right Controls: Audio Toggle & Mark all read -->
+                            <div class="flex items-center gap-2">
+                                <button type="button" 
+                                        @click="toggleSound()" 
+                                        :title="soundEnabled ? 'Suara Notifikasi Aktif (Klik untuk Matikan)' : 'Suara Notifikasi Senyap (Klik untuk Nyalakan)'"
+                                        class="p-1.5 rounded-lg border text-xs transition-all flex items-center gap-1 font-bold"
+                                        :class="soundEnabled ? 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100' : 'bg-slate-100 border-slate-200 text-slate-400 hover:text-slate-600'">
+                                    <i :class="soundEnabled ? 'ph-duotone ph-speaker-high text-emerald-600' : 'ph-duotone ph-speaker-slash text-slate-400'" class="text-sm"></i>
+                                    <span class="text-[10px]" x-text="soundEnabled ? 'Suara On' : 'Suara Off'"></span>
+                                </button>
+
+                                <template x-if="unreadCount > 0">
+                                    <form action="{{ route('notifications.read-all') }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-colors">
+                                            Tandai Dibaca
+                                        </button>
+                                    </form>
+                                </template>
+                            </div>
                         </div>
 
                         <!-- Notification List Preview (Top 5) -->
-                        @php
-                            $previewNotifs = Auth::user()->notifikasis()->latest()->take(5)->get();
-                        @endphp
-
                         <div class="max-h-85 overflow-y-auto divide-y divide-slate-100 no-scrollbar">
-                            @forelse($previewNotifs as $n)
-                                <a href="{{ route('notifications.read', $n->id) }}" 
-                                   class="p-4 block transition-colors hover:bg-slate-50 group {{ !$n->is_read ? 'bg-amber-50/40' : 'bg-white opacity-80' }}">
+                            <template x-for="n in notifications" :key="n.id">
+                                <a :href="n.link" 
+                                   class="p-4 block transition-colors hover:bg-slate-50 group"
+                                   :class="!n.is_read ? 'bg-amber-50/40' : 'bg-white opacity-80'">
                                     <div class="flex items-start gap-3">
                                         <!-- Category Icon Avatar -->
-                                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-sm {{ !$n->is_read ? 'bg-slate-900 text-emerald-400 shadow-2xs' : 'bg-slate-100 text-slate-500' }}">
-                                            @if(str_contains(strtolower($n->judul), 'pembayaran') || str_contains(strtolower($n->judul), 'transaksi'))
-                                                <i class="ph-duotone ph-receipt"></i>
-                                            @elseif(str_contains(strtolower($n->judul), 'booking') || str_contains(strtolower($n->judul), 'reservasi') || str_contains(strtolower($n->judul), 'jadwal'))
-                                                <i class="ph-duotone ph-calendar-check"></i>
-                                            @elseif(str_contains(strtolower($n->judul), 'kursus') || str_contains(strtolower($n->judul), 'materi'))
-                                                <i class="ph-duotone ph-graduation-cap"></i>
-                                            @else
-                                                <i class="ph-duotone ph-bell-simple"></i>
-                                            @endif
+                                        <div class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-sm"
+                                             :class="!n.is_read ? 'bg-slate-900 text-emerald-400 shadow-2xs' : 'bg-slate-100 text-slate-500'">
+                                            <i class="ph-duotone" :class="n.icon"></i>
                                         </div>
 
                                         <!-- Content -->
                                         <div class="space-y-1 flex-1 min-w-0">
                                             <div class="flex items-center justify-between gap-2">
-                                                <h5 class="text-xs font-black text-slate-900 truncate group-hover:text-black">
-                                                    {{ $n->judul }}
+                                                <h5 class="text-xs font-black text-slate-900 truncate group-hover:text-black"
+                                                    x-text="n.judul">
                                                 </h5>
-                                                @if(!$n->is_read)
+                                                <template x-if="!n.is_read">
                                                     <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                                                @endif
+                                                </template>
                                             </div>
-                                            <p class="text-[11px] text-slate-600 font-medium leading-relaxed line-clamp-2">
-                                                {{ $n->pesan }}
+                                            <p class="text-[11px] text-slate-600 font-medium leading-relaxed line-clamp-2"
+                                               x-text="n.pesan">
                                             </p>
                                             <div class="text-[10px] text-slate-400 font-semibold pt-0.5 flex items-center gap-1">
                                                 <i class="ph-duotone ph-clock text-[10px]"></i>
-                                                <span>{{ $n->created_at->diffForHumans() }}</span>
+                                                <span x-text="n.time_ago"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </a>
-                            @empty
+                            </template>
+
+                            <template x-if="notifications.length === 0">
                                 <div class="p-8 text-center space-y-2">
                                     <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center text-lg mx-auto">
                                         <i class="ph-duotone ph-bell-slash"></i>
@@ -399,7 +494,7 @@
                                     <p class="text-xs font-bold text-slate-700">Belum Ada Notifikasi</p>
                                     <p class="text-[11px] text-slate-400 font-medium">Pemberitahuan transaksi atau jadwal akan muncul di sini.</p>
                                 </div>
-                            @endforelse
+                            </template>
                         </div>
 
                         <!-- Footer Link to Full Page -->
