@@ -229,28 +229,49 @@
                         <span class="text-[11px] font-medium text-slate-400">Arahkan kursor pada foto untuk menghapus</span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                         @foreach($booking->galeriFotos as $foto)
-                            <div class="relative group rounded-2xl overflow-hidden clean-card shadow-xs border border-slate-200 h-44 bg-slate-100">
-                                <img src="{{ asset($foto->foto_path) }}" alt="Foto Hasil Pemotretan" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                
-                                @if($foto->is_selected)
-                                    <div class="absolute top-2.5 left-2.5 bg-emerald-500/90 backdrop-blur-xs text-white px-2.5 py-1 rounded-lg text-[10px] font-black shadow-xs flex items-center gap-1">
-                                        <i class="ph-fill ph-check-circle text-xs"></i> DIPILIH
+                            <div class="rounded-2xl overflow-hidden clean-card shadow-xs border border-slate-200 bg-white flex flex-col">
+                                <div class="relative group h-40 bg-slate-100 overflow-hidden">
+                                    <img src="{{ asset($foto->foto_path) }}" alt="Foto Hasil Pemotretan" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                    
+                                    @if($foto->is_selected)
+                                        <div class="absolute top-2.5 left-2.5 bg-emerald-500/95 backdrop-blur-xs text-white px-2.5 py-1 rounded-lg text-[10px] font-black shadow-xs flex items-center gap-1">
+                                            <i class="ph-fill ph-check-circle text-xs"></i> DIPILIH
+                                        </div>
+                                    @endif
+
+                                    <div class="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-2.5">
+                                        <a href="{{ asset($foto->foto_path) }}" target="_blank" class="w-7 h-7 rounded-lg bg-white/90 text-slate-900 hover:bg-white text-xs font-bold flex items-center justify-center shadow-md backdrop-blur-xs transition-colors" title="Buka Resolusi Penuh">
+                                            <i class="ph-duotone ph-arrows-out text-sm"></i>
+                                        </a>
+
+                                        <form method="POST" action="{{ route('admin.proofing.delete', $foto->id) }}">
+                                            @csrf
+                                            <button type="submit" class="w-7 h-7 rounded-lg bg-rose-600 text-white hover:bg-rose-700 text-xs font-bold flex items-center justify-center shadow-md transition-colors" onclick="return confirm('Hapus foto ini dari galeri pelanggan?')" title="Hapus Foto">
+                                                <i class="ph-duotone ph-trash text-sm"></i>
+                                            </button>
+                                        </form>
                                     </div>
-                                @endif
+                                </div>
 
-                                <div class="absolute inset-0 bg-linear-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
-                                    <a href="{{ asset($foto->foto_path) }}" target="_blank" class="w-8 h-8 rounded-lg bg-white/90 text-slate-900 hover:bg-white text-xs font-bold flex items-center justify-center shadow-md backdrop-blur-xs transition-colors" title="Buka Resolusi Penuh">
-                                        <i class="ph-duotone ph-arrows-out text-sm"></i>
-                                    </a>
-
-                                    <form method="POST" action="{{ route('admin.proofing.delete', $foto->id) }}">
-                                        @csrf
-                                        <button type="submit" class="w-8 h-8 rounded-lg bg-rose-600 text-white hover:bg-rose-700 text-xs font-bold flex items-center justify-center shadow-md transition-colors" onclick="return confirm('Hapus foto ini dari galeri pelanggan?')" title="Hapus Foto">
-                                            <i class="ph-duotone ph-trash text-sm"></i>
-                                        </button>
-                                    </form>
+                                <!-- Card Footer: Catatan Khusus Pelanggan -->
+                                <div class="p-2.5 border-t border-slate-100 flex-1 flex flex-col justify-between bg-slate-50/60">
+                                    @if(!empty($foto->catatan))
+                                        <div class="space-y-1">
+                                            <span class="text-[9px] font-black uppercase tracking-wider text-amber-700 flex items-center gap-1">
+                                                <i class="ph-duotone ph-note-pencil text-xs"></i> Catatan Pelanggan:
+                                            </span>
+                                            <p class="text-[11px] font-bold text-slate-800 leading-snug line-clamp-2 bg-amber-50/80 border border-amber-200/80 rounded-lg p-1.5" title="{{ $foto->catatan }}">
+                                                "{{ $foto->catatan }}"
+                                            </p>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center gap-1 text-[10px] font-medium text-slate-400 py-1">
+                                            <i class="ph-duotone ph-minus-circle text-xs"></i>
+                                            <span>Tanpa catatan</span>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
