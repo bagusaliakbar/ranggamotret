@@ -92,57 +92,6 @@
         </div>
     @endif
 
-    <!-- Quick Stats Cards (Ringkasan Sesi) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <!-- 1. Total Sesi -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Sesi Foto</span>
-                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-camera"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-slate-900">{{ number_format($totalSesi ?? 0) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Seluruh pemesanan</div>
-        </div>
-
-        <!-- 2. Terjadwal & Aktif -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Sesi Terjadwal</span>
-                <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm border border-blue-100">
-                    <i class="ph-duotone ph-calendar-check"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-blue-600">{{ number_format($sesiTerjadwal ?? 0) }}</div>
-            <div class="text-[11px] text-blue-700 font-medium">Slot terkonfirmasi & lunas</div>
-        </div>
-
-        <!-- 3. Menunggu Konfirmasi -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Menunggu Konfirmasi</span>
-                <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm border border-amber-100">
-                    <i class="ph-duotone ph-clock animate-pulse"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-amber-600">{{ number_format($sesiPending ?? 0) }}</div>
-            <div class="text-[11px] text-amber-700 font-medium">Perlu review jadwal</div>
-        </div>
-
-        <!-- 4. Selesai -->
-        <div class="clean-card p-5 rounded-2xl space-y-1 bg-white border border-slate-200 shadow-xs">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Selesai Pemotretan</span>
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm border border-emerald-100">
-                    <i class="ph-duotone ph-check-circle"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-emerald-600">{{ number_format($sesiSelesai ?? 0) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Dokumentasi terlaksana</div>
-        </div>
-    </div>
-
     <!-- Petunjuk Interaksi & Keterangan Warna -->
     <div class="flex flex-wrap items-center justify-between gap-3 text-xs bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
         <div class="flex items-center gap-2 text-slate-700 font-medium">
