@@ -63,10 +63,28 @@
                 <div class="text-slate-600">{{ $invoice->user?->address ?? '-' }}</div>
             </div>
             <div class="text-right">
-                <span class="text-slate-400 uppercase font-bold text-[10px] block">Rincian Tanggal Transaksi:</span>
+                <span class="text-slate-400 uppercase font-bold text-[10px] block">Rincian Transaksi & Reservasi:</span>
                 <div class="text-slate-700 mt-1">Tanggal Invoice: <strong>{{ $invoice->created_at ? date('d F Y', strtotime($invoice->created_at)) : date('d F Y') }}</strong></div>
+                @php
+                    $kodeReservasi = $invoice->booking?->nomor_booking ?? $invoice->reservasi?->nomor_reservasi;
+                    $channel = $invoice->pembayaran?->channel_pembayaran;
+                @endphp
+                @if($kodeReservasi)
+                    <div class="text-slate-700">Kode Reservasi: <strong class="font-mono text-slate-900">{{ $kodeReservasi }}</strong></div>
+                @endif
                 <div class="text-slate-700">Nomor Transaksi: <strong class="font-mono">{{ $invoice->pembayaran?->nomor_transaksi ?? '-' }}</strong></div>
-                <div class="text-slate-700">Metode Bayar: <strong>{{ $invoice->pembayaran?->metode_pembayaran ?? 'Online Payment (Midtrans)' }}</strong></div>
+                <div class="text-slate-700">
+                    Metode Bayar: 
+                    @if($channel)
+                        <strong>{{ $channel['label'] }}</strong>
+                        @if(!empty($channel['detail']))
+                            <span class="text-slate-500 font-mono">({{ $channel['detail'] }})</span>
+                        @endif
+                        <span class="text-[11px] text-slate-400 font-medium">via Midtrans</span>
+                    @else
+                        <strong>{{ $invoice->pembayaran?->metode_pembayaran ?? 'Online Payment (Midtrans)' }}</strong>
+                    @endif
+                </div>
             </div>
         </div>
 
