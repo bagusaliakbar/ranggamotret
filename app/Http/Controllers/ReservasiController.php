@@ -306,7 +306,11 @@ class ReservasiController extends Controller
         $status = $request->query('status');
         $search = $request->query('search');
 
-        $query = Reservasi::with(['customer', 'layanan', 'paket', 'kursus', 'pembayaran']);
+        // Filter hanya reservasi fotografi (tipe 'fotografi' atau null/default legacy)
+        $query = Reservasi::where(function ($q) {
+            $q->where('tipe', 'fotografi')
+              ->orWhereNull('tipe');
+        })->with(['customer', 'layanan', 'paket', 'pembayaran']);
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -330,11 +334,14 @@ class ReservasiController extends Controller
         $bookings = $query->latest()->paginate(15)->withQueryString();
         $statuses = ['Menunggu Konfirmasi', 'Disetujui', 'Ditolak', 'Menunggu Pembayaran', 'Dibayar', 'Terjadwal', 'Pemotretan Selesai', 'Selesai', 'Dibatalkan'];
 
-        // Metrik statistik untuk Quick KPI Cards & Tabs
-        $totalBookings = Reservasi::count();
-        $countPending = Reservasi::where('status', 'Menunggu Konfirmasi')->count();
-        $countScheduled = Reservasi::whereIn('status', ['Dibayar', 'Disetujui', 'Terjadwal'])->count();
-        $countCompleted = Reservasi::where('status', 'Selesai')->count();
+        // Metrik statistik khusus fotografi
+        $baseFotografi = Reservasi::where(function ($q) {
+            $q->where('tipe', 'fotografi')->orWhereNull('tipe');
+        });
+        $totalBookings = (clone $baseFotografi)->count();
+        $countPending = (clone $baseFotografi)->where('status', 'Menunggu Konfirmasi')->count();
+        $countScheduled = (clone $baseFotografi)->whereIn('status', ['Dibayar', 'Disetujui', 'Terjadwal'])->count();
+        $countCompleted = (clone $baseFotografi)->where('status', 'Selesai')->count();
 
         return view('reservasi.admin', compact(
             'bookings',
