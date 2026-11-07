@@ -206,13 +206,23 @@
                                 <div class="font-black text-slate-900 text-xs">
                                     Rp {{ number_format($r->jumlah, 0, ',', '.') }}
                                 </div>
-                                <div class="text-[10px] text-slate-500 font-bold mt-0.5 flex items-center gap-1">
-                                    @if($isGateway)
-                                        <i class="ph-duotone ph-lightning text-emerald-600"></i>
-                                        <span>Midtrans Snap (Gateway)</span>
+                                <div class="text-[10px] text-slate-500 font-bold mt-0.5">
+                                    @php $channel = $r->channel_pembayaran; @endphp
+                                    @if($channel)
+                                        <div class="inline-flex items-center gap-1 text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md font-black">
+                                            <i class="ph-duotone {{ $channel['icon'] }} text-emerald-600"></i>
+                                            <span>{{ $channel['label'] }}</span>
+                                        </div>
+                                    @elseif($isGateway)
+                                        <div class="flex items-center gap-1 text-emerald-700">
+                                            <i class="ph-duotone ph-lightning text-emerald-600"></i>
+                                            <span>Midtrans Snap</span>
+                                        </div>
                                     @else
-                                        <i class="ph-duotone ph-bank text-indigo-600"></i>
-                                        <span>{{ $r->metode_pembayaran ?: 'Transfer Bank' }}</span>
+                                        <div class="flex items-center gap-1 text-slate-700">
+                                            <i class="ph-duotone ph-bank text-indigo-600"></i>
+                                            <span>{{ $r->metode_pembayaran ?: 'Transfer Bank' }}</span>
+                                        </div>
                                     @endif
                                 </div>
                             </td>

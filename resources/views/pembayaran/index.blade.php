@@ -217,11 +217,30 @@
 
                             <!-- 4. Metode Bayar -->
                             <td class="p-4 whitespace-nowrap">
-                                @if($isGateway)
-                                    <span class="inline-flex items-center gap-1 text-slate-800 font-bold text-xs">
-                                        <i class="ph-duotone ph-lightning text-emerald-600 text-sm"></i>
-                                        <span>Midtrans Snap (Gateway)</span>
-                                    </span>
+                                @php $channel = $p->channel_pembayaran; @endphp
+                                @if($channel)
+                                    <div class="space-y-0.5">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-black shadow-2xs">
+                                            <i class="ph-duotone {{ $channel['icon'] }} text-emerald-600 text-sm"></i>
+                                            <span>{{ $channel['label'] }}</span>
+                                        </span>
+                                        <div class="text-[10px] text-slate-500 font-medium">
+                                            @if(!empty($channel['detail']))
+                                                <span class="font-mono">{{ $channel['detail'] }}</span> •
+                                            @endif
+                                            via Midtrans
+                                        </div>
+                                    </div>
+                                @elseif($isGateway)
+                                    <div class="space-y-0.5">
+                                        <span class="inline-flex items-center gap-1 text-slate-800 font-bold text-xs">
+                                            <i class="ph-duotone ph-lightning text-emerald-600 text-sm"></i>
+                                            <span>Midtrans Snap</span>
+                                        </span>
+                                        <div class="text-[10px] text-slate-400 font-medium">
+                                            QRIS / VA / E-Wallet
+                                        </div>
+                                    </div>
                                 @else
                                     <span class="inline-flex items-center gap-1 text-slate-800 font-bold text-xs">
                                         <i class="ph-duotone ph-bank text-indigo-600 text-sm"></i>
