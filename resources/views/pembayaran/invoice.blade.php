@@ -72,16 +72,6 @@
             <div class="sm:text-right">
                 <span class="text-xs font-bold uppercase tracking-widest text-amber-600 block">OFFICIAL INVOICE</span>
                 <h2 class="font-mono text-xl font-bold text-slate-900 mt-1">{{ $invoice->nomor_invoice }}</h2>
-                @if($isPaid)
-                    <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-black uppercase tracking-wider">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>TERVERIFIKASI LUNAS</span>
-                    </div>
-                @else
-                    <div class="mt-2 inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold uppercase">
-                        STATUS: {{ $invoice->status_pembayaran }}
-                    </div>
-                @endif
             </div>
         </div>
 
@@ -194,14 +184,29 @@
         </div>
 
         <!-- Footer Sign Off -->
-        <div class="border-t border-gray-200 pt-8 flex justify-between items-end text-xs text-slate-500">
-            <div>
-                <p class="font-semibold text-slate-800">Syarat & Ketentuan:</p>
-                <p>Invoice ini sah dan diterbitkan otomatis oleh sistem RanggaMotret.id sebagai bukti pembayaran pelunasan resmi.</p>
+        <div class="border-t border-gray-200 pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 text-xs text-slate-500 relative z-10">
+            <div class="max-w-md space-y-1">
+                <p class="font-bold text-slate-800">Syarat & Ketentuan Bukti Pembayaran:</p>
+                <p class="text-[11px] leading-relaxed">Invoice ini sah dan diterbitkan otomatis oleh sistem RanggaMotret.id sebagai bukti pembayaran pelunasan resmi tanpa memerlukan tanda tangan basah.</p>
             </div>
-            <div class="text-center">
-                <p class="mb-8">Tim Administrasi RanggaMotret</p>
-                <p class="font-bold text-slate-900">( Matrik Stempel Digital )</p>
+            
+            <!-- QR Code Validasi & Cap Digital -->
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-200/90 rounded-2xl p-3 shadow-2xs">
+                @php
+                    $qrData = route('invoices.show', $invoice->id);
+                    $qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=0&data=' . urlencode($qrData);
+                @endphp
+                <div class="w-16 h-16 bg-white p-1 rounded-xl border border-slate-200 shrink-0 shadow-2xs flex items-center justify-center">
+                    <img src="{{ $qrApiUrl }}" alt="QR Code Verifikasi Invoice" class="w-full h-full object-contain">
+                </div>
+                <div class="text-left space-y-0.5">
+                    <span class="text-[9px] uppercase font-bold text-slate-400 block tracking-wider">Verifikasi Digital</span>
+                    <p class="text-[11px] font-black text-slate-900 leading-tight">Tim Administrasi</p>
+                    <p class="text-[10px] font-semibold text-slate-600">RanggaMotret.id</p>
+                    <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded">
+                        <span class="w-1 h-1 rounded-full bg-emerald-600"></span> Valid & Terdaftar
+                    </span>
+                </div>
             </div>
         </div>
     </div>
