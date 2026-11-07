@@ -94,45 +94,6 @@
         </div>
     </div>
 
-    <!-- Quick Stats Cards (Ringkasan Metrik Kategori) -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        <!-- 1. Total Kategori -->
-        <a href="{{ route('admin.kategori-layanan.index') }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-slate-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Total Kategori</span>
-                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-squares-four"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-slate-900">{{ number_format($totalKategori) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Semua grup klasifikasi</div>
-        </a>
-
-        <!-- 2. Kategori Aktif -->
-        <a href="{{ route('admin.kategori-layanan.index', ['status' => 'aktif']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-emerald-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Kategori Aktif</span>
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-check-circle"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-emerald-600">{{ number_format($kategoriAktif) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Tampil di navigasi & booking</div>
-        </a>
-
-        <!-- 3. Kategori Nonaktif -->
-        <a href="{{ route('admin.kategori-layanan.index', ['status' => 'nonaktif']) }}" class="clean-card p-5 rounded-2xl space-y-1 block bg-white border border-slate-200 shadow-2xs hover:border-amber-400 transition-all">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Kategori Nonaktif</span>
-                <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-sm">
-                    <i class="ph-duotone ph-eye-slash"></i>
-                </div>
-            </div>
-            <div class="text-2xl font-black text-slate-600">{{ number_format($totalKategori - $kategoriAktif) }}</div>
-            <div class="text-[11px] text-slate-500 font-medium">Diarsipkan dari katalog publik</div>
-        </a>
-    </div>
-
     <!-- Filter, Search, & Toolbar -->
     <div class="clean-card p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs">
         <form method="GET" action="{{ route('admin.kategori-layanan.index') }}" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center text-xs">
