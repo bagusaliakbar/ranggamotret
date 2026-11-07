@@ -484,7 +484,7 @@ class ReservasiController extends Controller
                 $file->move(public_path('uploads/galeri'), $filename);
 
                 GaleriFoto::create([
-                    'booking_id' => $booking->id,
+                    'reservasi_id' => $booking->id,
                     'foto_path' => 'uploads/galeri/' . $filename,
                     'is_selected' => false,
                 ]);
