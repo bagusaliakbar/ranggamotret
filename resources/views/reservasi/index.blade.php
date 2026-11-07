@@ -12,7 +12,7 @@
             return ['Dibayar', 'Disetujui', 'Terjadwal'].includes(bookingStatus);
         }
         if (this.activeTab === 'completed') {
-            return bookingStatus === 'Selesai';
+            return ['Selesai', 'Pemotretan Selesai'].includes(bookingStatus);
         }
         if (this.activeTab === 'proofing') {
             return hasGallery > 0;
@@ -35,9 +35,9 @@
 
     @php
         $totalCount = $bookings->count();
-        $unpaidList = $bookings->filter(fn($b) => (!$b->pembayaran || $b->pembayaran->status !== 'Dibayar') && !in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai', 'Dibatalkan', 'Ditolak']));
+        $unpaidList = $bookings->filter(fn($b) => (!$b->pembayaran || $b->pembayaran->status !== 'Dibayar') && !in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Pemotretan Selesai', 'Selesai', 'Dibatalkan', 'Ditolak']));
         $activeList = $bookings->filter(fn($b) => in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal']));
-        $completedList = $bookings->filter(fn($b) => $b->status === 'Selesai');
+        $completedList = $bookings->filter(fn($b) => in_array($b->status, ['Selesai', 'Pemotretan Selesai']));
         $proofingList = $bookings->filter(fn($b) => $b->galeriFotos->count() > 0);
         $totalNominal = $bookings->sum(fn($b) => $b->paket?->harga ?? 0);
     @endphp
@@ -180,7 +180,7 @@
     <div class="space-y-4">
         @forelse($bookings as $b)
             @php
-                $isPaid = ($b->pembayaran && $b->pembayaran->status === 'Dibayar') || in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Selesai']);
+                $isPaid = ($b->pembayaran && $b->pembayaran->status === 'Dibayar') || in_array($b->status, ['Dibayar', 'Disetujui', 'Terjadwal', 'Pemotretan Selesai', 'Selesai']);
                 $paymentStatus = $b->pembayaran?->status ?? 'Belum Dibayar';
                 $hasGallery = $b->galeriFotos->count();
                 $bookingDate = strtotime($b->tanggal);
@@ -194,11 +194,17 @@
                         'iconColor' => 'text-emerald-600',
                         'label' => 'Terjadwal & Lunas'
                     ],
+                    'Pemotretan Selesai' => [
+                        'bg' => 'bg-purple-50 text-purple-800 border-purple-200',
+                        'icon' => 'ph-camera',
+                        'iconColor' => 'text-purple-600',
+                        'label' => 'Pemotretan Selesai'
+                    ],
                     'Selesai' => [
                         'bg' => 'bg-blue-50 text-blue-800 border-blue-200',
                         'icon' => 'ph-check-square-offset',
                         'iconColor' => 'text-blue-600',
-                        'label' => 'Pemotretan Selesai'
+                        'label' => 'Sesi Selesai'
                     ],
                     'Dibatalkan', 'Ditolak' => [
                         'bg' => 'bg-rose-50 text-rose-800 border-rose-200',
