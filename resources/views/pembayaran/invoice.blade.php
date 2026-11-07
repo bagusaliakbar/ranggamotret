@@ -86,11 +86,12 @@
             </div>
             <div class="text-right">
                 <span class="text-slate-400 uppercase font-bold text-[10px] block">Rincian Transaksi & Reservasi:</span>
-                <div class="text-slate-700 mt-1">Tanggal Invoice: <strong>{{ $invoice->created_at ? date('d F Y', strtotime($invoice->created_at)) : date('d F Y') }}</strong></div>
                 @php
+                    $tglInvoice = $invoice->created_at ? \Carbon\Carbon::parse($invoice->created_at)->locale('id') : \Carbon\Carbon::now()->locale('id');
                     $kodeReservasi = $invoice->booking?->nomor_booking ?? $invoice->reservasi?->nomor_reservasi;
                     $channel = $invoice->pembayaran?->channel_pembayaran;
                 @endphp
+                <div class="text-slate-700 mt-1">Tanggal Invoice: <strong>{{ $tglInvoice->translatedFormat('d F Y') }}</strong></div>
                 @if($kodeReservasi)
                     <div class="text-slate-700">Kode Reservasi: <strong class="font-mono text-slate-900">{{ $kodeReservasi }}</strong></div>
                 @endif
@@ -186,7 +187,6 @@
         <!-- Footer Sign Off -->
         <div class="border-t border-gray-200 pt-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 text-xs text-slate-500 relative z-10">
             <div class="max-w-md space-y-1">
-                <p class="font-bold text-slate-800">Syarat & Ketentuan Bukti Pembayaran:</p>
                 <p class="text-[11px] leading-relaxed">Invoice ini sah dan diterbitkan otomatis oleh sistem RanggaMotret.id sebagai bukti pembayaran pelunasan resmi tanpa memerlukan tanda tangan basah.</p>
             </div>
             

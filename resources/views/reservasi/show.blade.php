@@ -181,6 +181,10 @@
                         @endif
                     </div>
                 @else
+                    @php
+                        $channel = $booking->pembayaran->channel_pembayaran;
+                        $tglBayar = $booking->pembayaran->tanggal_pembayaran ? \Carbon\Carbon::parse($booking->pembayaran->tanggal_pembayaran)->locale('id') : null;
+                    @endphp
                     <div class="pt-3 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs space-y-2">
                         <div class="flex items-center justify-between">
                             <span class="text-slate-600 font-medium">Status:</span>
@@ -188,13 +192,24 @@
                                 <i class="ph-duotone ph-check-circle mr-1 text-emerald-600"></i> Lunas / Terverifikasi
                             </span>
                         </div>
-                        <div class="flex justify-between text-slate-600 font-medium">
+                        <div class="flex justify-between items-start text-slate-600 font-medium">
                             <span>Metode:</span>
-                            <span class="font-bold text-slate-900">{{ $booking->pembayaran->metode_pembayaran }}</span>
+                            <span class="font-bold text-slate-900 text-right">
+                                @if($channel)
+                                    <span>{{ $channel['label'] }}</span>
+                                    @if(!empty($channel['detail']))
+                                        <span class="block text-[11px] font-mono text-slate-500 font-normal">{{ $channel['detail'] }}</span>
+                                    @endif
+                                @else
+                                    <span>{{ $booking->pembayaran->metode_pembayaran }}</span>
+                                @endif
+                            </span>
                         </div>
                         <div class="flex justify-between text-slate-600 font-medium">
                             <span>Dibayar Pada:</span>
-                            <span class="text-slate-900">{{ $booking->pembayaran->tanggal_pembayaran ? date('d M Y, H:i', strtotime($booking->pembayaran->tanggal_pembayaran)) : '-' }}</span>
+                            <span class="text-slate-900 font-semibold">
+                                {{ $tglBayar ? $tglBayar->translatedFormat('d M Y, H:i') . ' WIB' : '-' }}
+                            </span>
                         </div>
                     </div>
                 @endif

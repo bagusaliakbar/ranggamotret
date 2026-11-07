@@ -337,9 +337,10 @@
 
                         <!-- Metode Pembayaran jika sudah tercatat -->
                         @if($b->pembayaran)
+                            @php $ch = $b->pembayaran->channel_pembayaran; @endphp
                             <div class="flex items-center gap-1.5 text-slate-700">
                                 <i class="ph-duotone ph-wallet text-slate-400 text-sm"></i>
-                                <span>Metode: <strong class="text-slate-900 font-bold">{{ $b->pembayaran->metode_pembayaran }}</strong></span>
+                                <span>Metode: <strong class="text-slate-900 font-bold">{{ $ch ? $ch['label'] : $b->pembayaran->metode_pembayaran }}</strong></span>
                             </div>
                         @endif
                     </div>
