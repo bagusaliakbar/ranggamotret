@@ -46,7 +46,60 @@
                 }
             },
             openEditMateri: false,
-            editMateriData: {}
+            editMateriData: {},
+            openEditQuiz: false,
+            editQuizData: {
+                id: null,
+                judul: '',
+                durasi_menit: 20,
+                passing_grade: 70,
+                soal: []
+            },
+            openEditQuizModal(quiz) {
+                this.editQuizData = {
+                    id: quiz.id,
+                    judul: quiz.judul || '',
+                    durasi_menit: quiz.durasi_menit || 20,
+                    passing_grade: quiz.passing_grade || 70,
+                    soal: (quiz.soals && quiz.soals.length > 0) ? quiz.soals.map(s => ({
+                        pertanyaan: s.pertanyaan || '',
+                        pilihan_a: s.pilihan_a || '',
+                        pilihan_b: s.pilihan_b || '',
+                        pilihan_c: s.pilihan_c || '',
+                        pilihan_d: s.pilihan_d || '',
+                        jawaban_benar: s.jawaban_benar || 'A',
+                        bobot_nilai: s.bobot_nilai || 10,
+                        pembahasan: s.pembahasan || ''
+                    })) : [{
+                        pertanyaan: '',
+                        pilihan_a: '',
+                        pilihan_b: '',
+                        pilihan_c: '',
+                        pilihan_d: '',
+                        jawaban_benar: 'A',
+                        bobot_nilai: 10,
+                        pembahasan: ''
+                    }]
+                };
+                this.openEditQuiz = true;
+            },
+            addEditQuizQuestion() {
+                this.editQuizData.soal.push({
+                    pertanyaan: '',
+                    pilihan_a: '',
+                    pilihan_b: '',
+                    pilihan_c: '',
+                    pilihan_d: '',
+                    jawaban_benar: 'A',
+                    bobot_nilai: 10,
+                    pembahasan: ''
+                });
+            },
+            removeEditQuizQuestion(index) {
+                if (this.editQuizData.soal.length > 1) {
+                    this.editQuizData.soal.splice(index, 1);
+                }
+            }
          }">
 
         <!-- Top Header & Action Buttons -->
@@ -342,6 +395,12 @@
                                                     </div>
 
                                                     <div class="flex items-center gap-1 shrink-0">
+                                                        <button type="button"
+                                                            @click="openEditQuizModal({{ $qz->toJson() }})"
+                                                            class="w-6 h-6 rounded bg-blue-100 hover:bg-blue-200 text-blue-700 flex items-center justify-center transition-colors"
+                                                            title="Edit Kuis Evaluasi">
+                                                            <i class="ph-duotone ph-pencil-simple text-xs"></i>
+                                                        </button>
                                                         <form method="POST"
                                                             action="{{ route('admin.quizzes.destroy', $qz->id) }}"
                                                             onsubmit="return confirm('Hapus kuis evaluasi {{ addslashes($qz->judul) }} beserta seluruh butir soalnya?')">
@@ -969,6 +1028,169 @@
                             class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
                             <i class="ph-duotone ph-floppy-disk text-base"></i>
                             <span>Simpan Perubahan Materi</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+
+    <!-- 7. Modal Edit Kuis Evaluasi -->
+    <template x-teleport="body">
+        <div x-show="openEditQuiz" 
+             x-cloak
+             x-transition.opacity
+             class="modal-backdrop-fixed bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+             style="display: none;">
+            <div class="bg-white rounded-3xl max-w-2xl w-full border border-slate-200/80 shadow-2xl max-h-[92vh] flex flex-col overflow-hidden my-auto relative z-10">
+                <div class="px-6 py-4 sm:px-7 sm:py-5 border-b border-slate-100 flex items-center justify-between bg-white shrink-0">
+                    <div class="space-y-0.5">
+                        <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                            <i class="ph-duotone ph-list-checks text-blue-600 text-lg"></i>
+                            Edit Kuis Evaluasi Kompetensi
+                        </h3>
+                        <p class="text-[11px] text-slate-400 font-medium">Perbarui judul kuis, durasi waktu, passing grade, dan butir soal evaluasi</p>
+                    </div>
+                    <button type="button" @click="openEditQuiz = false" 
+                        class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 flex items-center justify-center transition-all shrink-0"
+                        title="Tutup Modal (Esc)">
+                        <i class="ph-duotone ph-x text-base font-bold"></i>
+                    </button>
+                </div>
+
+                <form method="POST" :action="'{{ url('/admin/quizzes') }}/' + editQuizData.id" class="flex flex-col flex-1 overflow-hidden">
+                    @csrf
+                    @method('PUT')
+                    <div class="p-6 sm:p-7 space-y-5 overflow-y-auto custom-scrollbar flex-1 text-xs">
+                        <!-- Info Utama Kuis -->
+                        <div class="p-4 rounded-2xl bg-blue-50/60 border border-blue-100 space-y-3">
+                            <div>
+                                <label class="block text-slate-800 font-bold mb-1">Judul Kuis Evaluasi <span class="text-rose-500">*</span></label>
+                                <input type="text" name="judul" x-model="editQuizData.judul" required placeholder="Contoh: Kuis Evaluasi Kompetensi Dasar"
+                                    class="w-full px-4 py-2.5 rounded-xl bg-white border border-blue-200 text-slate-900 font-bold focus:border-blue-600 focus:outline-none">
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-slate-800 font-bold mb-1">Durasi Pengerjaan (Menit) <span class="text-rose-500">*</span></label>
+                                    <div class="relative">
+                                        <input type="number" name="durasi_menit" x-model="editQuizData.durasi_menit" required min="1"
+                                            class="w-full pl-4 pr-12 py-2.5 rounded-xl bg-white border border-blue-200 text-slate-900 font-bold focus:border-blue-600 focus:outline-none">
+                                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs pointer-events-none">Menit</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-slate-800 font-bold mb-1">Passing Grade (%) <span class="text-rose-500">*</span></label>
+                                    <div class="relative">
+                                        <input type="number" name="passing_grade" x-model="editQuizData.passing_grade" required min="0" max="100"
+                                            class="w-full pl-4 pr-9 py-2.5 rounded-xl bg-white border border-blue-200 text-slate-900 font-bold focus:border-blue-600 focus:outline-none">
+                                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs pointer-events-none">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Daftar Butir Pertanyaan Evaluasi -->
+                        <div class="space-y-4 pt-2">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-extrabold text-slate-900 text-xs flex items-center gap-1.5">
+                                    <i class="ph-duotone ph-question text-blue-600 text-base"></i>
+                                    Daftar Butir Pertanyaan (<span x-text="editQuizData.soal ? editQuizData.soal.length : 0"></span> Soal)
+                                </h4>
+                                <span class="text-[11px] text-slate-400">Pilihan Ganda A/B/C/D</span>
+                            </div>
+
+                            <template x-for="(q, idx) in editQuizData.soal" :key="idx">
+                                <div class="p-4 rounded-2xl bg-white border border-blue-200/80 shadow-sm space-y-3.5 relative">
+                                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-[11px] font-black flex items-center justify-center"
+                                                x-text="idx + 1"></span>
+                                            <span class="font-bold text-slate-800 text-xs">Butir Soal Nomor <span x-text="idx + 1"></span></span>
+                                        </div>
+                                        <button type="button" @click="removeEditQuizQuestion(idx)"
+                                            x-show="editQuizData.soal && editQuizData.soal.length > 1"
+                                            class="text-rose-500 hover:text-rose-700 text-xs font-bold flex items-center gap-1 hover:bg-rose-50 px-2 py-1 rounded-lg transition-colors"
+                                            title="Hapus Butir Soal Ini">
+                                            <i class="ph-duotone ph-trash text-sm"></i> Hapus Soal
+                                        </button>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-slate-800 font-bold mb-1">Pertanyaan Soal <span class="text-rose-500">*</span></label>
+                                        <textarea :name="'soal[' + idx + '][pertanyaan]'" x-model="q.pertanyaan" rows="2" required placeholder="Tuliskan butir soal evaluasi pemahaman di sini..."
+                                            class="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 focus:bg-white focus:border-blue-600 focus:outline-none text-xs"></textarea>
+                                    </div>
+
+                                    <div class="space-y-1.5">
+                                        <label class="block text-slate-800 font-bold text-[11px]">Pilihan Jawaban (A, B, C, D) <span class="text-rose-500">*</span></label>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">A</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_a]'" x-model="q.pilihan_a" required placeholder="Pilihan A"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">B</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_b]'" x-model="q.pilihan_b" required placeholder="Pilihan B"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">C</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_c]'" x-model="q.pilihan_c" required placeholder="Pilihan C"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="w-6 h-6 rounded bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">D</span>
+                                                <input type="text" :name="'soal[' + idx + '][pilihan_d]'" x-model="q.pilihan_d" required placeholder="Pilihan D"
+                                                    class="w-full px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                        <div>
+                                            <label class="block text-slate-800 font-bold mb-1 text-[11px]">Kunci Jawaban Benar <span class="text-rose-500">*</span></label>
+                                            <select :name="'soal[' + idx + '][jawaban_benar]'" x-model="q.jawaban_benar" required
+                                                class="w-full px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-400 text-blue-950 font-black text-xs focus:outline-none">
+                                                <option value="A">Pilihan A</option>
+                                                <option value="B">Pilihan B</option>
+                                                <option value="C">Pilihan C</option>
+                                                <option value="D">Pilihan D</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-slate-800 font-bold mb-1 text-[11px]">Bobot Nilai Soal</label>
+                                            <input type="number" :name="'soal[' + idx + '][bobot_nilai]'" x-model="q.bobot_nilai" min="1"
+                                                class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 font-bold text-xs focus:bg-white focus:outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-slate-800 font-bold mb-1 text-[11px]">Pembahasan & Penjelasan Teori (Opsional)</label>
+                                        <textarea :name="'soal[' + idx + '][pembahasan]'" x-model="q.pembahasan" rows="1" placeholder="Penjelasan kenapa kunci jawaban tersebut benar..."
+                                            class="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 text-xs focus:bg-white focus:border-blue-600 focus:outline-none"></textarea>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <button type="button" @click="addEditQuizQuestion()"
+                                class="w-full py-2.5 rounded-xl border border-dashed border-blue-300 hover:border-blue-500 hover:bg-blue-100/50 text-blue-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+                                <i class="ph-duotone ph-plus-circle text-base"></i> Tambah Butir Soal Berikutnya
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Modal Sticky Footer Action Bar -->
+                    <div class="px-6 py-4 sm:px-7 sm:py-4 bg-slate-50/80 border-t border-slate-200/80 flex items-center justify-end gap-3 shrink-0">
+                        <button type="button" @click="openEditQuiz = false"
+                            class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
+                            <i class="ph-duotone ph-floppy-disk text-base"></i>
+                            <span>Simpan Perubahan Kuis</span>
                         </button>
                     </div>
                 </form>

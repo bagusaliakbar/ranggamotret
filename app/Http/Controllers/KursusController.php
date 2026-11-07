@@ -765,6 +765,58 @@ class KursusController extends Controller
     }
 
     /**
+     * Memperbarui Kuis Evaluasi beserta butir soalnya
+     */
+    public function updateQuiz(Request $request, $id)
+    {
+        $quiz = Quiz::findOrFail($id);
+
+        $validated = $request->validate([
+            'judul' => 'required|string|max:255',
+            'durasi_menit' => 'required|integer|min:1',
+            'passing_grade' => 'required|numeric|min:0|max:100',
+            // Mendukung array butir soal (multiple questions)
+            'soal' => 'nullable|array|min:1',
+            'soal.*.pertanyaan' => 'required_with:soal|string',
+            'soal.*.pilihan_a' => 'required_with:soal|string',
+            'soal.*.pilihan_b' => 'required_with:soal|string',
+            'soal.*.pilihan_c' => 'required_with:soal|string',
+            'soal.*.pilihan_d' => 'required_with:soal|string',
+            'soal.*.jawaban_benar' => 'required_with:soal|in:A,B,C,D',
+            'soal.*.bobot_nilai' => 'nullable|numeric|min:1',
+            'soal.*.pembahasan' => 'nullable|string',
+        ]);
+
+        $quiz->update([
+            'judul' => $validated['judul'],
+            'durasi_menit' => $validated['durasi_menit'],
+            'passing_grade' => $validated['passing_grade'],
+        ]);
+
+        // Re-sinkronisasi butir soal jika form mengirimkan array soal
+        if (!empty($validated['soal']) && is_array($validated['soal'])) {
+            $quiz->soals()->delete();
+            foreach ($validated['soal'] as $item) {
+                if (!empty($item['pertanyaan'])) {
+                    QuizSoal::create([
+                        'quiz_id' => $quiz->id,
+                        'pertanyaan' => $item['pertanyaan'],
+                        'pilihan_a' => $item['pilihan_a'] ?? '',
+                        'pilihan_b' => $item['pilihan_b'] ?? '',
+                        'pilihan_c' => $item['pilihan_c'] ?? '',
+                        'pilihan_d' => $item['pilihan_d'] ?? '',
+                        'jawaban_benar' => $item['jawaban_benar'] ?? 'A',
+                        'bobot_nilai' => $item['bobot_nilai'] ?? 10,
+                        'pembahasan' => $item['pembahasan'] ?? null,
+                    ]);
+                }
+            }
+        }
+
+        return back()->with('success', 'Kuis evaluasi dan butir pertanyaan berhasil diperbarui.');
+    }
+
+    /**
      * Menghapus Kuis Evaluasi beserta butir soalnya
      */
     public function destroyQuiz($id)

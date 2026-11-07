@@ -63,7 +63,7 @@
                 </div>
                 <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">{{ $kursus->nama }}</h1>
                 <p class="text-xs text-slate-500 font-medium">
-                    Pengampu (Owner): <strong class="text-slate-800">{{ $kursus->instruktur->name ?? 'Owner RanggaMotret' }}</strong>
+                    Instruktur : <strong class="text-slate-800">{{ $kursus->instruktur->name ?? 'Owner RanggaMotret' }}</strong>
                 </p>
             </div>
 
@@ -253,21 +253,6 @@
                         @endif
                     </div>
                 @endif
-
-                <!-- In-Page Student Notes Pad (Auto-Saved) -->
-                <div class="clean-card p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="font-extrabold text-xs text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-notebook text-slate-700"></i> Catatan Siswa Pribadi (Tersimpan Otomatis)
-                        </span>
-                        <span x-show="notesSaved" x-transition class="text-[10px] text-emerald-600 font-bold">
-                            <i class="fa-solid fa-check"></i> Tersimpan
-                        </span>
-                    </div>
-                    <textarea x-model="studentNotes" @input="saveNotes()" rows="3" 
-                              placeholder="Tuliskan catatan penting materi, rumus eksposur kamera, atau ide yang terlintas saat belajar..."
-                              class="w-full p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-slate-900 focus:outline-none transition-colors leading-relaxed"></textarea>
-                </div>
 
                 <!-- Bottom Navigation: Prev & Next Lesson -->
                 <div class="flex items-center justify-between gap-4 pt-2">

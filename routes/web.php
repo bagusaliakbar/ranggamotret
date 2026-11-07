@@ -221,6 +221,7 @@ Route::middleware(['auth', 'role:owner'])->prefix('admin')->name('admin.')->grou
     Route::delete('/materis/{id}', [KursusController::class, 'destroyMateri'])->name('modules.materis.destroy');
 
     Route::post('/modules/{modulId}/quizzes', [KursusController::class, 'storeQuiz'])->name('modules.quizzes.store');
+    Route::put('/quizzes/{id}', [KursusController::class, 'updateQuiz'])->name('quizzes.update');
     Route::delete('/quizzes/{id}', [KursusController::class, 'destroyQuiz'])->name('quizzes.destroy');
 
     // Konsultasi Fotografer
