@@ -135,18 +135,19 @@
     </div>
 
     <!-- Tabel Data Reservasi Kursus -->
-    <div class="clean-card rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm">
+    <div class="clean-card rounded-3xl overflow-hidden shadow-2xs border border-slate-200 bg-white">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-slate-700">
-                <thead class="bg-slate-50 text-slate-900 uppercase font-extrabold text-[10px] border-b border-slate-200 tracking-wider">
+                <thead
+                    class="bg-slate-50 text-slate-900 uppercase font-extrabold text-[10px] border-b border-slate-200 tracking-wider">
                     <tr>
                         <th class="p-4">Kode Reservasi</th>
-                        <th class="p-4">Pelanggan Kursus</th>
+                        <th class="p-4">Nama Pelanggan</th>
                         <th class="p-4">Program Kursus</th>
                         <th class="p-4">Total Biaya & Metode</th>
                         <th class="p-4">Tanggal Daftar</th>
                         <th class="p-4 text-center">Status</th>
-                        <th class="p-4 text-center">Aksi / Verifikasi</th>
+                        <th class="p-4 text-center">Tindakan Owner</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium">
@@ -160,17 +161,17 @@
                                 default => 'bg-slate-100 text-slate-700 border-slate-200',
                             };
                             $isGateway = str_contains($r->metode_pembayaran ?? '', 'Midtrans') || !empty($r->snap_token);
-                            $kodeReservasi = $r->reservasi?->nomor_reservasi ?? ('RSV-KRS-' . date('Ymd', strtotime($r->created_at)) . '-' . str_pad($r->id, 4, '0', STR_PAD_LEFT));
+                            $rawKode = $r->reservasi?->nomor_reservasi ?? ('RSV-KRS-' . date('Ymd', strtotime($r->created_at)) . '-' . str_pad($r->id, 4, '0', STR_PAD_LEFT));
+                            $kodeReservasi = str_starts_with($rawKode, '#') ? $rawKode : ('#' . $rawKode);
+                            $channel = $r->channel_pembayaran;
                         @endphp
                         <tr class="hover:bg-slate-50/80 transition-colors {{ $r->status === 'Menunggu Verifikasi' ? 'bg-sky-50/30' : '' }}">
                             
                             <!-- 1. Kode Reservasi -->
-                            <td class="p-4 whitespace-nowrap">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="font-mono font-black text-slate-900 text-xs">{{ $kodeReservasi }}</span>
-                                    <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-200">
-                                        KRS-{{ $r->kursus_id }}
-                                    </span>
+                            <td class="p-4">
+                                <div class="font-mono font-black text-slate-900 text-xs">{{ $kodeReservasi }}</div>
+                                <div class="text-[10px] text-slate-400">
+                                    {{ $r->created_at ? $r->created_at->format('d M Y, H:i') : '-' }}
                                 </div>
                                 @if($r->catatan)
                                     <div class="text-[10px] text-slate-500 italic mt-0.5 max-w-xs truncate" title="{{ $r->catatan }}">
@@ -179,26 +180,23 @@
                                 @endif
                             </td>
 
-                            <!-- 2. Pelanggan Kursus -->
+                            <!-- 2. Nama Pelanggan -->
                             <td class="p-4">
-                                <div class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                    <i class="ph-duotone ph-user text-slate-600"></i>
-                                    <span>{{ $r->user->name ?? 'Pengguna Dihapus' }}</span>
-                                </div>
-                                <div class="text-[10px] text-slate-500 font-medium mt-0.5">
-                                    {{ $r->user->email ?? '-' }} • {{ $r->user->phone ?? 'Tanpa Nomor' }}
+                                <div class="font-bold text-slate-900 text-xs">{{ $r->user->name ?? 'Guest User' }}</div>
+                                <div class="text-[10px] text-slate-500 font-mono">
+                                    {{ $r->user->phone ?? ($r->user->email ?? '-') }}
                                 </div>
                             </td>
 
                             <!-- 3. Program Kursus -->
                             <td class="p-4">
-                                <div class="font-black text-slate-900 text-xs line-clamp-1" title="{{ $r->kursus->nama ?? '-' }}">
-                                    {{ $r->kursus->nama ?? 'Kursus Tidak Ditemukan' }}
+                                <div class="font-extrabold text-slate-900 text-xs line-clamp-1" title="{{ $r->kursus->nama ?? '-' }}">
+                                    {{ $r->kursus->nama ?? 'Kursus Akademi' }}
                                 </div>
-                                <div class="text-[10px] text-slate-500 font-medium mt-0.5 flex items-center gap-2">
-                                    <span>Tingkat: <strong>{{ ucfirst($r->kursus->level ?? 'Semua') }}</strong></span>
+                                <div class="text-[11px] text-purple-700 font-semibold mt-0.5 flex items-center gap-1.5">
+                                    <span>Tingkat: {{ ucfirst($r->kursus->level ?? 'Semua') }}</span>
                                     <span>•</span>
-                                    <span>Durasi: <strong>{{ $r->kursus->durasi ?? '-' }}</strong></span>
+                                    <span>Durasi: {{ $r->kursus->durasi ?? 'Seumur Hidup' }}</span>
                                 </div>
                             </td>
 
@@ -208,7 +206,6 @@
                                     Rp {{ number_format($r->jumlah, 0, ',', '.') }}
                                 </div>
                                 <div class="text-[10px] text-slate-500 font-bold mt-0.5">
-                                    @php $channel = $r->channel_pembayaran; @endphp
                                     @if($channel)
                                         <div class="inline-flex items-center gap-1 text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md font-black">
                                             <i class="ph-duotone {{ $channel['icon'] }} text-emerald-600"></i>
@@ -228,14 +225,14 @@
                                 </div>
                             </td>
 
-                            <!-- 5. Tanggal Transaksi -->
+                            <!-- 5. Tanggal Transaksi / Daftar -->
                             <td class="p-4 text-slate-500 whitespace-nowrap text-[11px] font-medium">
                                 {{ date('d M Y, H:i', strtotime($r->tanggal_pembayaran ?? $r->created_at)) }} WIB
                             </td>
 
                             <!-- 6. Status Transaksi -->
                             <td class="p-4 text-center whitespace-nowrap">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $badgeClass }}">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase border {{ $badgeClass }}">
                                     @if($r->status === 'Menunggu Verifikasi')
                                         <i class="ph-duotone ph-clock mr-0.5 animate-pulse"></i>
                                     @elseif($r->status === 'Dibayar')
@@ -245,14 +242,14 @@
                                 </span>
                             </td>
 
-                            <!-- 7. Aksi / Ubah Status -->
+                            <!-- 7. Tindakan Owner -->
                             <td class="p-4 text-center whitespace-nowrap">
                                 <div class="flex items-center justify-center gap-2">
-                                    <!-- Quick Change Status Form -->
-                                    <form method="POST" action="{{ route('admin.courses.reservations.update-status', $r->id) }}" class="inline">
+                                    <!-- Change Status Form Quick Selector -->
+                                    <form method="POST" action="{{ route('admin.courses.reservations.update-status', $r->id) }}">
                                         @csrf
                                         <select name="status" onchange="this.form.submit()" 
-                                                class="px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-[10px] text-slate-900 font-black focus:bg-white focus:outline-none cursor-pointer">
+                                                class="px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] text-slate-900 font-bold focus:bg-white focus:outline-none transition-all cursor-pointer">
                                             <option value="Menunggu Verifikasi" {{ $r->status === 'Menunggu Verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
                                             <option value="Dibayar" {{ $r->status === 'Dibayar' ? 'selected' : '' }}>Setujui (Lunas)</option>
                                             <option value="Belum Dibayar" {{ $r->status === 'Belum Dibayar' ? 'selected' : '' }}>Belum Dibayar</option>
@@ -264,9 +261,10 @@
                                     <!-- Cetak Invoice jika ada -->
                                     @if($r->invoice)
                                         <a href="{{ route('invoices.show', $r->invoice->id) }}" target="_blank" 
-                                           class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 transition-colors shadow-2xs"
+                                           class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 font-extrabold text-[11px] inline-flex items-center gap-1 transition-all shadow-2xs"
                                            title="Cetak Invoice PDF">
                                             <i class="ph-duotone ph-receipt text-xs"></i>
+                                            <span>Invoice</span>
                                         </a>
                                     @endif
                                 </div>
