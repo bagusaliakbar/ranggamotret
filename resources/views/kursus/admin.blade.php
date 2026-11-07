@@ -691,6 +691,7 @@
                 </form>
             </div>
         </div>
+    </template>
 
     <!-- 5. Modal Tambah Materi Pembelajaran / Kuis Evaluasi -->
     <template x-teleport="body">
