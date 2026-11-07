@@ -81,9 +81,6 @@
                                 <p class="text-xs text-slate-300 font-medium mt-0.5">Satu portal pembayaran untuk seluruh metode transaksi digital</p>
                             </div>
                         </div>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                            <i class="ph-duotone ph-lightning text-sm text-emerald-400"></i> Instan & Otomatis
-                        </span>
                     </div>
                 </div>
 
@@ -191,19 +188,6 @@
                             <p class="text-[11px] mt-1">{{ $snapError ?? 'Silakan refresh halaman ini untuk memuat ulang koneksi pembayaran instan.' }}</p>
                         </div>
                     @endif
-
-                    @if($booking && $isSandbox)
-                        <!-- Sandbox Test Simulation Button -->
-                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-                            <span class="text-[10px] text-slate-400 font-mono">Mode Pengujian Sandbox:</span>
-                            <a href="{{ route('payments.finish', ['order_id' => $booking->nomor_booking, 'transaction_status' => 'settlement']) }}" 
-                               class="px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold inline-flex items-center gap-1.5 transition-colors">
-                                <i class="ph-duotone ph-test-tube text-sm text-emerald-600"></i>
-                                <span>Simulasi Bayar Berhasil (Sandbox)</span>
-                            </a>
-                        </div>
-                    @endif
-
                 </div>
             </div>
 
@@ -235,7 +219,12 @@
                 <div class="flex gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
                     <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-slate-200 shrink-0 border border-slate-200/90 relative">
                         @if($thumbnailItem)
-                            <img src="{{ asset('storage/' . $thumbnailItem) }}" alt="{{ $namaItem }}" class="w-full h-full object-cover">
+                            @php
+                                $thumbSrc = (str_starts_with($thumbnailItem, 'http://') || str_starts_with($thumbnailItem, 'https://') || str_starts_with($thumbnailItem, '/'))
+                                    ? $thumbnailItem
+                                    : (file_exists(public_path('storage/' . $thumbnailItem)) ? asset('storage/' . $thumbnailItem) : asset($thumbnailItem));
+                            @endphp
+                            <img src="{{ $thumbSrc }}" alt="{{ $namaItem }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-white">
                                 <i class="ph-duotone {{ $booking ? 'ph-camera' : 'ph-graduation-cap' }} text-2xl text-emerald-400"></i>
@@ -244,9 +233,6 @@
                     </div>
 
                     <div class="min-w-0 flex-1 space-y-1">
-                        <span class="inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-white border border-slate-200 text-slate-700">
-                            {{ $booking ? 'Sesi Pemotretan Studio' : 'Kursus Akademi Online' }}
-                        </span>
                         <h4 class="font-black text-xs sm:text-sm text-slate-900 leading-snug line-clamp-2">
                             {{ $namaItem }}
                         </h4>
