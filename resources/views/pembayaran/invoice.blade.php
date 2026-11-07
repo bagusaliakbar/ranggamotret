@@ -11,6 +11,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .stamp-watermark {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            user-select: none;
+            pointer-events: none;
+        }
         @media print {
             .no-print { display: none !important; }
             body { background-color: #ffffff; }
@@ -31,10 +38,28 @@
     </div>
 
     <!-- Invoice Card -->
-    <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl border border-gray-200 shadow-xl invoice-card space-y-8">
+    <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl border border-gray-200 shadow-xl invoice-card space-y-8 relative overflow-hidden">
+        
+        @php
+            $isPaid = strtoupper(trim($invoice->status_pembayaran ?? '')) === 'LUNAS' || strtoupper(trim($invoice->pembayaran?->status ?? '')) === 'DIBAYAR';
+        @endphp
+
+        @if($isPaid)
+            <!-- Elegant Luxury PAID / LUNAS Watermark Stamp -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                <div class="stamp-watermark transform -rotate-12 border-8 border-dashed border-emerald-600/15 rounded-3xl px-12 py-6 text-center shadow-xs">
+                    <div class="text-6xl sm:text-7xl font-black text-emerald-600/15 leading-none tracking-widest">
+                        LUNAS
+                    </div>
+                    <div class="text-xs sm:text-sm font-extrabold text-emerald-700/20 tracking-widest mt-2 border-t border-dashed border-emerald-600/20 pt-1">
+                        PAID & VERIFIED • RANGGAMOTRET.ID
+                    </div>
+                </div>
+            </div>
+        @endif
         
         <!-- Header Company & Invoice Title -->
-        <div class="flex flex-col sm:flex-row justify-between items-start border-b border-gray-200 pb-8 gap-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start border-b border-gray-200 pb-8 gap-4 relative z-10">
             <div class="flex items-start gap-4">
                 <img src="{{ asset('images/logo.png') }}" alt="RanggaMotret.id" class="w-16 h-16 rounded-2xl object-contain border border-slate-200 p-1">
                 <div>
@@ -47,9 +72,16 @@
             <div class="sm:text-right">
                 <span class="text-xs font-bold uppercase tracking-widest text-amber-600 block">OFFICIAL INVOICE</span>
                 <h2 class="font-mono text-xl font-bold text-slate-900 mt-1">{{ $invoice->nomor_invoice }}</h2>
-                <div class="mt-2 inline-block px-4 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase">
-                    STATUS: {{ $invoice->status_pembayaran }}
-                </div>
+                @if($isPaid)
+                    <div class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-black uppercase tracking-wider">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>TERVERIFIKASI LUNAS</span>
+                    </div>
+                @else
+                    <div class="mt-2 inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold uppercase">
+                        STATUS: {{ $invoice->status_pembayaran }}
+                    </div>
+                @endif
             </div>
         </div>
 
