@@ -261,7 +261,7 @@ class ReservasiController extends Controller
             'tanggal' => $validated['tanggal'],
             'waktu' => $validated['waktu'],
             'lokasi' => $validated['lokasi'],
-            'kebutuhan_khusus' => $validated['kebutuhan_khusus'],
+            'kebutuhan_khusus' => $validated['kebutuhan_khusus'] ?? null,
             'status' => 'Menunggu Konfirmasi',
         ]);
 

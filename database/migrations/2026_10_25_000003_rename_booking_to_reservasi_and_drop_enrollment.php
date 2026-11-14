@@ -49,13 +49,11 @@ return new class extends Migration
             $table->string('tipe', 20)->default('fotografi')->after('id');
 
             // Jadikan kolom khusus fotografi menjadi nullable untuk mendukung kursus
-            if ($driver !== 'sqlite') {
-                $table->unsignedBigInteger('layanan_id')->nullable()->change();
-                $table->unsignedBigInteger('paket_id')->nullable()->change();
-                $table->date('tanggal')->nullable()->change();
-                $table->time('waktu')->nullable()->change();
-                $table->string('lokasi')->nullable()->change();
-            }
+            $table->unsignedBigInteger('layanan_id')->nullable()->change();
+            $table->unsignedBigInteger('paket_id')->nullable()->change();
+            $table->date('tanggal')->nullable()->change();
+            $table->time('waktu')->nullable()->change();
+            $table->string('lokasi')->nullable()->change();
 
             // Tambahkan kolom kursus_id untuk reservasi kursus
             $table->unsignedBigInteger('kursus_id')->nullable()->after('paket_id');
